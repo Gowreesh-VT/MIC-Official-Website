@@ -46,7 +46,7 @@ const NonTechSecCard: React.FC<NonTechSecCardProps> = ({ name, imageSrc = '/imag
         className="absolute z-10 font-press-start text-[20px] text-black"
         style={{ left: NAME_X, top: NAME_Y, width: 120, textAlign: 'left', lineHeight: 1 }}
       >
-        {'Vishnu  Swaroop'}
+        {name}
       </div>
 
       {/* IMAGE: Insert the Non-Tech Secretary's image here. To add an image, pass the 'imageSrc' prop. */}

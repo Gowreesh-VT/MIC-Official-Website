@@ -46,7 +46,7 @@ const TechSecCard: React.FC<TechSecCardProps> = ({ name, imageSrc = '/images/mic
         className="absolute z-10 font-press-start text-[20px] text-black"
         style={{ left: NAME_X, top: NAME_Y, width: 120, textAlign: 'left', lineHeight: 1 }}
       >
-        {'Mannat Jaiswal'}
+        {name}
       </div>
 
       {/* IMAGE: Insert the Tech Secretary's image here. To add an image, pass the 'imageSrc' prop. */}

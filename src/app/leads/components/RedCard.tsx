@@ -5,9 +5,10 @@ interface RedCardProps {
   name: string;
   title?: string;
   imageSrc?: string;
+  imagePosition?: string;
 }
 
-const RedCard: React.FC<RedCardProps> = ({ name, title, imageSrc }) => {
+const RedCard: React.FC<RedCardProps> = ({ name, title, imageSrc, imagePosition }) => {
   // SVG dimensions
   const CARD_WIDTH = 327;
   const CARD_HEIGHT = 279;
@@ -39,13 +40,16 @@ const RedCard: React.FC<RedCardProps> = ({ name, title, imageSrc }) => {
 
       {/* Name */}
       <div
-        className="absolute z-10 font-press-start text-[17px] text-black"
+        className="absolute z-10 font-press-start text-black flex flex-col justify-center"
         style={{
           left: NAME_X,
-          top: NAME_Y,
-          width: 120,
+          top: NAME_Y - 10,
+          width: 150,
+          height: 60,
           textAlign: 'left',
-          lineHeight: 1,
+          lineHeight: 1.4,
+          fontSize: name.length > 15 ? '12.5px' : name.length > 9 ? '14px' : '16px',
+          wordBreak: 'break-word',
         }}
       >
         {name}
@@ -79,7 +83,7 @@ const RedCard: React.FC<RedCardProps> = ({ name, title, imageSrc }) => {
               style={{
                 transform: 'scale(1.1)',          // Zoom in by 20%
                 transformOrigin: 'center center',
-                objectPosition: '+2px center', // Center the image
+                objectPosition: imagePosition || '+2px center', // Center the image
               }}
             />
           )}
@@ -100,14 +104,16 @@ const RedCard: React.FC<RedCardProps> = ({ name, title, imageSrc }) => {
           )} */}
           {title && (
             <div
-              className="absolute z-10 font-press-start text-[14px] text-black font-bold"
+              className="absolute z-10 font-press-start text-black font-bold flex flex-col justify-center items-center"
               style={{
-                top: -64,
+                top: -72,
                 left: '-15%',
+                width: 240,
+                height: 35,
                 transform: 'translateX(-50%)',
                 textAlign: 'center',
-                lineHeight: 1,
-                whiteSpace: 'nowrap',
+                lineHeight: 1.3,
+                fontSize: title.length > 18 ? '11px' : title.length > 14 ? '12px' : '14px',
               }}
             >
               {title}

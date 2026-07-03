@@ -46,7 +46,7 @@ const PresidentCard: React.FC<PresidentCardProps> = ({ name = 'Eshaan', imageSrc
         className="absolute z-10 font-press-start text-[20px] text-black"
         style={{ left: NAME_X, top: NAME_Y, width: 120, textAlign: 'left', lineHeight: 1 }}
       >
-        {'Eshaan'}
+        {name}
       </div>
 
       {/* IMAGE: Insert the President's image here. To add an image, pass the 'imageSrc' prop. */}

@@ -46,7 +46,7 @@ const ManagementSecCard: React.FC<ManagementSecCardProps> = ({ name, imageSrc ='
         className="absolute z-10 font-press-start text-[20px] text-black"
         style={{ left: NAME_X, top: NAME_Y, width: 120, textAlign: 'left', lineHeight: 1 }}
       >
-        {'Raina  Samtani'}
+        {name}
       </div>
 
       {/* IMAGE: Insert the Management Secretary's image here. To add an image, pass the 'imageSrc' prop. */}

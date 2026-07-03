@@ -38,12 +38,12 @@ const YearButton: React.FC<YearButtonProps> = ({ selectedTenure, onTenureChange 
       <button
         className="relative flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none cursor-pointer w-full"
         onClick={() => setIsOpen((prev) => !prev)}
-        style={{ 
+        style={{
           outline: 'none',
           height: 'auto',
           minHeight: '50px',
           maxWidth: '1100px',
-        }}  
+        }}
       >
         <Image
           src="/images/tenure.png"

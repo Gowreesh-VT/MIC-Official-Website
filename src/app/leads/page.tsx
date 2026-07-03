@@ -26,9 +26,11 @@ interface LeadData {
   title: string;
   imageSrc: string;
   tenure: string;
+  imagePosition?: string;
 }
 
 const leadsData: LeadData[] = [
+  // 2025-2026 Data
   { name: 'Sanjay Dinesh', title: 'AIML', imageSrc: '/images/mic_departments/aiml_sanjay.jpg', tenure: '2025-2026' },
   { name: 'Abhinav Kumar V', title: 'AIML', imageSrc: '/images/mic_departments/aiml_abhinav.jpg', tenure: '2025-2026' },
   { name: 'Aman', title: 'CP', imageSrc: '/images/mic_departments/cp_aman.jpg', tenure: '2025-2026' },
@@ -50,6 +52,25 @@ const leadsData: LeadData[] = [
   { name: 'Mithun Miras', title: 'Social Media', imageSrc: '/images/mic_departments/so_mithun.jpg', tenure: '2025-2026' },
   { name: 'Sravan Kowsik G', title: 'UI/UX', imageSrc: '/images/mic_departments/uiux_shravan.jpg', tenure: '2025-2026' },
   { name: 'Richika Rani', title: 'UI/UX', imageSrc: '/images/mic_departments/uiux_richika.jpg', tenure: '2025-2026' },
+
+  // 2026-2027 Data
+  { name: 'Gowreesh V T', title: 'Dev', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEUtYJgRdHmv6NAQPqtFZLJxCe2437IdY1nlS9', tenure: '2026-2027' },
+  { name: 'Sri Saidhakshini', title: 'Dev', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEHHbAQd1ltk8sCVhvgKTpUzQyXnafuj70O5i4', tenure: '2026-2027', imagePosition: '70% center' },
+  { name: 'Arya Jayram M', title: 'AIML', imageSrc: 'https://cdn.phototourl.com/free/2026-06-29-fa5ff916-3c70-4785-9f16-b2ec493fe09c.jpg', tenure: '2026-2027' },
+  { name: 'Anas Arfeen', title: 'AIML', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKE8Fjl68qLQ2xVrP4AaXvOqzW0g1dcDfemSwsp', tenure: '2026-2027' },
+  { name: 'Heba Jahan', title: 'UI/UX', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEnaBdf8X4XfKE8dVYAS3iJPGLUQthW0u6F1xw', tenure: '2026-2027' },
+  { name: 'Maanya Ramesh', title: 'UI/UX', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEQH2Xqh6l1Hn7zksoqKEgIFuwlcDyadAj6SP0', tenure: '2026-2027' },
+  { name: 'Suhani', title: 'Management', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKECWEPkHeJaBN8xfuV7iYTPHK3QA0SXWp2tUhv', tenure: '2026-2027' },
+  { name: 'Balaganesh', title: 'Management', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEuNg9ycz4GRJyS3pjE8dT6PNtDZVeIqY7LOAF', tenure: '2026-2027' },
+  { name: 'Ayan Chogle', title: 'Cyber Security', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKElY1TXjUmuIWeFadG1QP8jwZAfYKCcb4pk30y', tenure: '2026-2027' },
+  { name: 'Suyash', title: 'Cyber Security', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKECVRDdceJaBN8xfuV7iYTPHK3QA0SXWp2tUhv', tenure: '2026-2027' },
+  { name: 'Bhuvan Nayak', title: 'CP', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEk1qSuRaHF5hwn3uCcqPm4ORVQJW8SBvgpL0A', tenure: '2026-2027' },
+  { name: 'Vraj Mevada', title: 'CP', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEH8ehus1ltk8sCVhvgKTpUzQyXnafuj70O5i4', tenure: '2026-2027' },
+  { name: 'Humaira', title: 'Social Media & Content', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEe8IYxV76RN0mDpnTUjK56G2u38oCVSxg7rzQ', tenure: '2026-2027' },
+  { name: 'Meera Sujith', title: 'Design', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEOSinyiWot5fUOEcXdyaZNTrPYb7MSJQIlwzH', tenure: '2026-2027' },
+  { name: 'Vardaa', title: 'Entrepreneurship', imageSrc: 'https://cdn.phototourl.com/free/2026-06-29-6c7e264c-566f-4c2f-a1cb-4f468bccdcb8.jpg', tenure: '2026-2027' },
+  { name: 'Tanushree', title: 'Entrepreneurship', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEidRRO6o4CjI3DVaMq6R02UgBwNZ7AJy5leEn', tenure: '2026-2027' },
+  { name: 'Vansh Aggarwal', title: 'MLSA', imageSrc: 'https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEF5PHQ2A09oihcYfavCU8QVN7Oswmu3e6j14G', tenure: '2026-2027' },
 ];
 
 const cardOrder = [RedCard, BlueCard, GreenCard, YellowCard];
@@ -84,7 +105,7 @@ const Cloud = memo(({
   position: { top: string | number; left: string | number };
   src: string;
   index: number;
-  view: 'board' | 'departments';
+  view: 'core' | 'board' | 'departments';
 }) => (
   <Image
     src={src}
@@ -104,10 +125,10 @@ const Cloud = memo(({
 Cloud.displayName = 'Cloud';
 
 const MeetTheBoardPage: React.FC = () => {
-  const [view, setView] = useState<'board' | 'departments'>('board');
+  const [view, setView] = useState<'core' | 'board' | 'departments'>('core');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1440);
-  const selectedTenure = '2025-2026';
+  const selectedTenure = '2026-2027';
 
   // Define cloud positions using hooks at the top level
   const cloudPositions = [
@@ -180,7 +201,7 @@ const MeetTheBoardPage: React.FC = () => {
     document.documentElement.style.overflowX = 'hidden';
 
     // Set scroll behavior based on view
-    if (view === 'board') {
+    if (view === 'core') {
       document.body.style.overflowY = 'hidden';
       document.documentElement.style.overflowY = 'hidden';
     } else {
@@ -251,7 +272,7 @@ const MeetTheBoardPage: React.FC = () => {
     <div className="full-screen-container">
       <div className="content-wrapper">
         <div
-          className={`${view === 'board' ? 'h-screen' : 'min-h-screen'} w-full flex flex-col items-center px-4 py-8 relative overflow-x-hidden`}
+          className={`${view === 'core' ? 'h-screen' : 'min-h-screen'} w-full flex flex-col items-center px-4 py-8 relative overflow-x-hidden`}
           style={{
             backgroundImage: `
               linear-gradient(to right, ${themeColors.gridOpacity} 1px, transparent 1px),
@@ -291,7 +312,7 @@ const MeetTheBoardPage: React.FC = () => {
           )} */}
 
           {/* Stars / Dots - show in both views */}
-          <div style={{ position: view === 'board' ? 'absolute' : 'fixed', top: 0, left: 0, width: 1154, height: 364, zIndex: 2 }}>
+          <div style={{ position: view === 'core' ? 'absolute' : 'fixed', top: 0, left: 0, width: 1154, height: 364, zIndex: 2 }}>
             <svg width="1154" height="364" viewBox="0 0 1154 364" fill="none" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="1150.02" cy="55" rx="3.98" ry="4" fill="white" />
               <ellipse cx="949.88" cy="19" rx="3.98" ry="4" fill="white" />
@@ -313,10 +334,27 @@ const MeetTheBoardPage: React.FC = () => {
 
 
           {/* Navigation Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 relative z-10 w-full max-w-[720px] px-4">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 relative z-10 w-full max-w-5xl px-4 justify-center">
+            {/* Core Button */}
+            <button
+              className={`relative w-full sm:w-[320px] h-[60px] sm:h-[81px] flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none transition-all duration-1000`}
+              onClick={() => setView('core')}
+              aria-pressed={view === 'core'}
+              style={{ outline: 'none' }}
+            >
+              <img src="/images/button-gold.svg" className={`absolute inset-0 w-full h-full ${view === 'core' ? 'opacity-100' : 'opacity-0'}`} alt="" />
+              <img src="/images/button-peach.svg" className={`absolute inset-0 w-full h-full ${view === 'core' ? 'opacity-0' : 'opacity-100'}`} alt="" />
+              <span
+                className="font-press-start text-[16px] sm:text-[24px] text-black z-10 leading-none flex items-center justify-center"
+                style={{ lineHeight: "1", marginTop: "-16px" }}
+              >
+                CORE
+              </span>
+            </button>
+
             {/* Board Button */}
             <button
-              className={`relative w-full sm:w-[345px] h-[60px] sm:h-[81px] flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none transition-all duration-1000`}
+              className={`relative w-full sm:w-[320px] h-[60px] sm:h-[81px] flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none transition-all duration-1000`}
               onClick={() => setView('board')}
               aria-pressed={view === 'board'}
               style={{ outline: 'none' }}
@@ -333,7 +371,7 @@ const MeetTheBoardPage: React.FC = () => {
 
             {/* Departments Button */}
             <button
-              className={`relative w-full sm:w-[345px] h-[60px] sm:h-[81px] flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none transition-all duration-1000`}
+              className={`relative w-full sm:w-[320px] h-[60px] sm:h-[81px] flex items-center justify-center border-none bg-transparent p-0 outline-none focus:outline-none focus-visible:outline-none transition-all duration-1000`}
               onClick={() => setView('departments')}
               aria-pressed={view === 'departments'}
               style={{ outline: 'none' }}
@@ -349,17 +387,26 @@ const MeetTheBoardPage: React.FC = () => {
             </button>
           </div>
 
+          {/* Core View */}
+          {view === 'core' && (
+            <div className="flex flex-wrap justify-center gap-8 w-full" style={{ transform: `scale(${rowScale})`, transformOrigin: 'top center' }}>
+              <RedCard name="Samyak" title="Vice Chairperson" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKECJuszdeJaBN8xfuV7iYTPHK3QA0SXWp2tUhv" />
+              <BlueCard name="Sudeep" title="Secretary" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKE5L8GfxEvK0cVWaoY4UbStprle19NBx8f3nZT" />
+              <GreenCard name="Palak" title="Co-Secretary" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEISfnBwPc5JbMFG4smKfNiBZauQt6l8OLEyp3" />
+            </div>
+          )}
+
           {/* Board View */}
           {view === 'board' && (
-            <div className="flex flex-col items-center space-y-8 relative z-10" style={{ transform: windowWidth < 900 ? `scale(${Math.max(0.55, (windowWidth - 32) / 900)})` : 'none', transformOrigin: 'top center' }}>
-              <div className="flex justify-center space-x-8">
-                <PresidentCard name="NAME" />
-                <VicePresidentCard name="NAME" />
-                <ManagementSecCard name="NAME" />
-              </div>
-              <div className="flex justify-center space-x-8">
-                <TechSecCard name="NAME" />
-                <NonTechSecCard name="NAME" />
+            <div className="flex flex-col items-center space-y-8 relative z-10 w-full">
+              <div className="flex justify-center flex-wrap gap-8 w-full max-w-7xl" style={{ transform: `scale(${rowScale})`, transformOrigin: 'top center' }}>
+                <GreenCard name="Ram" title="Management Sec" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEvmEGLHhWmy6tpuiexQX81z0fGaEJbT52MDPl" />
+                <YellowCard name="Gouse Moideen" title="Technical Head" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEqo3zaDIInNK8kJlzwGpxeOijdSYC2VZAs1XP" />
+                <RedCard name="Preeti B R" title="Creative Head" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKElsJLslUmuIWeFadG1QP8jwZAfYKCcb4pk30y" />
+                <BlueCard name="Akanksha" title="Event Head" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKEuNsZGPz4GRJyS3pjE8dT6PNtDZVeIqY7LOAF" />
+                <GreenCard name="Ahmed Sajjad" title="Publicity Head" imageSrc="https://h8z6stjynz.ufs.sh/f/nEev6VX4XfKErsUjjionT9jgs5WpEKi34UvaDCyhSeY1McxP" />
+                {/* @ts-ignore */}
+                <YellowCard name="Tarang" title="Projects Head" imageSrc="https://cdn.phototourl.com/free/2026-06-29-0248d95d-c69c-4c1d-b09d-7db2424ed502.jpg" imagePosition="right center" />
               </div>
             </div>
           )}
@@ -371,13 +418,14 @@ const MeetTheBoardPage: React.FC = () => {
               {rows.map((rowData, rowIndex) => (
                 <div key={rowIndex} className="flex justify-center space-x-8" style={{ transform: `scale(${rowScale})`, transformOrigin: 'top center', marginBottom: `${(rowScale - 1) * 279}px` }}>
                   {rowData.map((data, index) => {
-                    const CardComponent = cardOrder[index % cardOrder.length];
+                    const CardComponent = cardOrder[index % cardOrder.length] as any;
                     return (
                       <CardComponent
                         key={index}
                         name={data.name}
                         title={data.title}
                         imageSrc={data.imageSrc}
+                        imagePosition={data.imagePosition}
                       />
                     );
                   })}
