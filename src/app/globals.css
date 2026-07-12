@@ -231,3 +231,34 @@ body {
 .Animated-Logo:active {
   transform: scale(0.95);
 }
+
+/* ── Custom Redesign Animations ─────────────────────────────── */
+
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(-1.2deg);
+  }
+  50% {
+    transform: rotate(1.2deg);
+  }
+}
+
+.animate-sway {
+  transform-origin: top center;
+  animation: sway 5s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
+}

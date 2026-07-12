@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Get the user-agent from the request headers.
   const userAgent = request.headers.get('user-agent') || '';
 
@@ -20,11 +20,11 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Set a matcher to define which paths the middleware should run on.
+// Set a matcher to define which paths the proxy should run on.
 export const config = {
   matcher: [
     /*
-     * The following regex ensures the middleware does not run on static files,
+     * The following regex ensures the proxy does not run on static files,
      * such as images, fonts, and stylesheets. It matches all paths that do not
      * end with a file extension, while also excluding Next.js internal paths and API routes.
      */
