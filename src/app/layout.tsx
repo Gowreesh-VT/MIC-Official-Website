@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     siteName: "MIC VIT Chennai",
     images: [
       {
-        url: "https://www.microsoftinnovations.club/images/mic-logo.png",
+        url: "https://www.microsoftinnovations.club/mic_logo_pixel.svg",
         width: 512,
         height: 512,
         alt: "Microsoft Innovation Club VIT Chennai Logo",

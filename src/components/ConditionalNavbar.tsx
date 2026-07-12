@@ -8,10 +8,10 @@ import Link from 'next/link';
 
 const Logo = () => (
   <Image
-    src="/images/mic-logo.png"
+    src="/mic_logo_pixel.svg"
     alt="MIC Logo"
-    width={95}
-    height={95}
+    width={72}
+    height={72}
     style={{ position: 'fixed', top: 20, left: 27, zIndex: 50, cursor: 'pointer' }}
     priority
   />
