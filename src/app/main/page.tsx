@@ -76,11 +76,12 @@ const LandingPage = () => {
   const [showLeaderboardWidget, setShowLeaderboardWidget] = useState(false);
   const [animationStep, setAnimationStep] = useState(0);
 
+  // Position clouds only in the upper sky layer (top half) to prevent overlap with bushes/menus
   const cloudPositions = [
-    { baseTop: 180, baseLeft: 60, amplitude: 15, speed: 0.5, phase: 0 },
-    { baseTop: 380, baseLeft: 120, amplitude: 20, speed: 0.6, phase: 1.5 },
-    { baseTop: 100, baseLeft: 1120, amplitude: 15, speed: 0.4, phase: 3 },
-    { baseTop: 360, baseLeft: 1200, amplitude: 20, speed: 0.5, phase: 4.5 },
+    { baseTop: 60, baseLeft: 80, amplitude: 10, speed: 0.4, phase: 0 },
+    { baseTop: 220, baseLeft: 180, amplitude: 15, speed: 0.5, phase: 1.5 },
+    { baseTop: 80, baseLeft: 1100, amplitude: 12, speed: 0.3, phase: 3 },
+    { baseTop: 240, baseLeft: 1250, amplitude: 15, speed: 0.4, phase: 4.5 },
   ].map(useCloudFloat);
 
   const MENU_ITEMS = [
@@ -249,7 +250,7 @@ const LandingPage = () => {
 
       {/* Cityscape Skyline Layer */}
       <div 
-        className="absolute bottom-[80px] left-0 right-0 h-[249px] pointer-events-none select-none z-1"
+        className="absolute bottom-[80px] left-0 right-0 h-[249px] pointer-events-none select-none z-10"
         style={{
           backgroundImage: `url('/cityscape.svg')`,
           backgroundRepeat: 'repeat-x',
@@ -287,18 +288,18 @@ const LandingPage = () => {
         <Image src="/pixel_bird.svg" alt="Pixel Bird" fill className="object-contain" style={{ imageRendering: "pixelated" }} />
       </motion.div>
 
-      {/* Hanging Signboard & Navigation Menu (Centered) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center select-none pointer-events-none w-[90vw] max-w-[895px] h-[780px]">
-        {/* Ropes (Hanging behind the board relative to screen top) */}
-        <div className="absolute top-0 left-[8.9%] w-[17px] h-[180px]">
+      {/* Hanging Signboard & Navigation Menu (Centered and scaled responsively to height & width) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center select-none pointer-events-none w-[90vw] max-w-[500px] sm:max-w-[650px] md:max-w-[750px] lg:max-w-[850px] h-[780px]">
+        {/* Ropes (Hanging behind the board relative to screen top, scaling with layout) */}
+        <div className="absolute top-0 left-[8.9%] w-[12px] sm:w-[17px] h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px]">
           <Image src="/hanging_ropes.svg" alt="Left Rope" fill className="object-top object-contain" />
         </div>
-        <div className="absolute top-0 right-[12.8%] w-[17px] h-[180px]">
+        <div className="absolute top-0 right-[12.8%] w-[12px] sm:w-[17px] h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px]">
           <Image src="/hanging_ropes.svg" alt="Right Rope" fill className="object-top object-contain" />
         </div>
 
-        {/* Signboard with dynamic font resizing */}
-        <div className="relative mt-[110px] w-full aspect-[895/455] pointer-events-auto">
+        {/* Signboard wrapper (Scales vertically and horizontally to prevent bottom menu collisions) */}
+        <div className="relative mt-[70px] sm:mt-[90px] md:mt-[100px] lg:mt-[110px] w-full aspect-[895/455] pointer-events-auto">
           <Image src="/signboard.svg" alt="Signboard" fill className="object-contain" priority />
           
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-8 z-40 select-none pointer-events-none">
@@ -315,8 +316,8 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Center Menu Links (Directly under Signboard) */}
-        <div className="mt-8 flex flex-col items-start gap-4 font-press-start pointer-events-auto select-none text-[#1188EE] z-40 bg-transparent text-[clamp(14px,2.2vw,22px)] pl-6">
+        {/* Center Menu Links (Responsively sized and positioned to stay in the sky layout gap) */}
+        <div className="mt-4 sm:mt-6 md:mt-8 flex flex-col items-start gap-2 sm:gap-4 font-press-start pointer-events-auto select-none text-[#1188EE] z-40 bg-transparent text-[clamp(13px,2vw,22px)] pl-6">
           {MENU_ITEMS.map((item, idx) => (
             <Link 
               key={idx} 
