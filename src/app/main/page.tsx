@@ -37,7 +37,7 @@ function useCloudFloat({
   };
 }
 
-/* ─── Cloud configs — larger sizes, 2 left + 2 right ──────────────────── */
+/* ─── Cloud configs — larger, 2 left + 2 right ─────────────────────────── */
 const CLOUD_CONFIGS = [
   { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
   { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
@@ -54,27 +54,28 @@ function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number])
   );
 }
 
-/* ─── Menu items (all pages, matching the full navbar) ────────────────── */
+/* ─── Menu items (all pages) ───────────────────────────────────────────── */
 const MENU_ITEMS = [
-  { label: "Home",         href: "/main"        },
-  { label: "About Us",     href: "/about-us"    },
-  { label: "Board",        href: "/leads"       },
-  { label: "Gallery",      href: "/gallery"     },
-  { label: "Events",       href: "/events"      },
-  { label: "Projects",     href: "/projects"    },
-  { label: "Leaderboard",  href: "/leaderboard" },
+  { label: "Home",        href: "/main"        },
+  { label: "About Us",   href: "/about-us"    },
+  { label: "Board",      href: "/leads"       },
+  { label: "Gallery",    href: "/gallery"     },
+  { label: "Events",     href: "/events"      },
+  { label: "Projects",   href: "/projects"    },
+  { label: "Leaderboard",href: "/leaderboard" },
 ];
+
+const VISIBLE = 5; // how many items to show at once
 
 /* ─── Retro selector arrow — blinks only on the active item ───────────── */
 const RetroArrow = ({ active }: { active: boolean }) => (
   <motion.span
     aria-hidden
-    /* When active: blink infinitely. When inactive: snap to opacity 0 immediately. */
     animate={active ? { opacity: [1, 0.05, 1, 0.05, 1] } : { opacity: 0 }}
     transition={
       active
         ? { opacity: { duration: 0.7, repeat: Infinity, repeatDelay: 0.3 } }
-        : { duration: 0 }   /* instant — no exit animation, no ghost */
+        : { duration: 0 }
     }
     style={{
       display: "inline-block",
@@ -90,8 +91,34 @@ const RetroArrow = ({ active }: { active: boolean }) => (
 const LandingPage = () => {
   const router = useRouter();
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [windowStart, setWindowStart] = useState(0);
 
-  /* ── Keyboard navigation (Up / Down / Enter) ────────────────────────── */
+  // Measure a single item's rendered height so the scroll animation is pixel-perfect
+  const firstItemRef = useRef<HTMLDivElement>(null);
+  const [itemH, setItemH] = useState(36); // fallback px
+
+  useEffect(() => {
+    const measure = () => {
+      if (firstItemRef.current) {
+        setItemH(firstItemRef.current.getBoundingClientRect().height);
+      }
+    };
+    // Small delay to let layout settle after fonts load
+    const id = setTimeout(measure, 80);
+    window.addEventListener("resize", measure);
+    return () => { clearTimeout(id); window.removeEventListener("resize", measure); };
+  }, []);
+
+  // Slide the window whenever selectedIdx goes out of the visible range
+  useEffect(() => {
+    setWindowStart(prev => {
+      if (selectedIdx >= prev + VISIBLE) return selectedIdx - VISIBLE + 1;
+      if (selectedIdx < prev)            return selectedIdx;
+      return prev;
+    });
+  }, [selectedIdx]);
+
+  /* ── Keyboard navigation ─────────────────────────────────────────────── */
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -110,6 +137,9 @@ const LandingPage = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const canScrollUp   = windowStart > 0;
+  const canScrollDown = windowStart + VISIBLE < MENU_ITEMS.length;
+
   return (
     <div
       className="w-full h-screen relative overflow-hidden select-none"
@@ -120,29 +150,19 @@ const LandingPage = () => {
       {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 0, opacity: 0.08,
-          backgroundImage: "linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)",
-          backgroundSize: "30px 30px",
-        }}
+        style={{ zIndex: 0, opacity: 0.08, backgroundImage: "linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)", backgroundSize: "30px 30px" }}
       />
 
-      {/* Social icons — transparent background, no pink accent */}
+      {/* Social icons */}
       <div className="absolute top-4 right-5 z-50 flex items-center gap-2">
         {[
-          { href: "https://www.instagram.com/microsoft.innovations.vitc/",           src: "/insta_pixel.svg",    alt: "Instagram" },
+          { href: "https://www.instagram.com/microsoft.innovations.vitc/",            src: "/insta_pixel.svg",    alt: "Instagram" },
           { href: "https://www.linkedin.com/company/microsoft-innovations-club-vitc/", src: "/linkedin_pixel.svg", alt: "LinkedIn"  },
           { href: "mailto:mic.vit.chennai@gmail.com",                                  src: "/mail_pixel.svg",    alt: "Email"     },
         ].map(({ href, src, alt }) => (
-          <a
-            key={alt} href={href} target="_blank" rel="noopener noreferrer" aria-label={alt}
+          <a key={alt} href={href} target="_blank" rel="noopener noreferrer" aria-label={alt}
             className="Animated-Logo flex items-center justify-center"
-            style={{
-              background: "transparent",
-              width: "clamp(36px,4.5vw,50px)",
-              height: "clamp(36px,4.5vw,50px)",
-              padding: "2px",
-            }}
+            style={{ background: "transparent", width: "clamp(36px,4.5vw,50px)", height: "clamp(36px,4.5vw,50px)", padding: "2px" }}
           >
             <Image src={src} alt={`${alt} Logo`} width={48} height={48}
               style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} priority />
@@ -150,49 +170,35 @@ const LandingPage = () => {
         ))}
       </div>
 
-      {/* Leaderboard trophy widget removed — accessible via nav menu instead */}
-
-      {/* Floating clouds — larger */}
+      {/* Floating clouds */}
       {CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
 
       {/* Big cloud backdrop */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{ bottom: "72px", height: "40vh", backgroundImage: "url('/big_cloud.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 2 }}
-      />
+        style={{ bottom: "72px", height: "40vh", backgroundImage: "url('/big_cloud.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 2 }} />
 
       {/* Cityscape */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{ bottom: "72px", height: "28vh", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 3 }}
-      />
+        style={{ bottom: "72px", height: "28vh", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 3 }} />
 
       {/* Bushes */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{ bottom: "72px", height: "16vh", backgroundImage: "url('/pixel_bushes.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 4 }}
-      />
+        style={{ bottom: "72px", height: "16vh", backgroundImage: "url('/pixel_bushes.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 4 }} />
 
       {/* Bobbing bird */}
-      <motion.div
-        className="absolute pointer-events-none select-none"
+      <motion.div className="absolute pointer-events-none select-none"
         style={{ right: "12%", top: "20%", width: 56, height: 45, zIndex: 8 }}
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ y: [0, -14, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <Image src="/pixel_bird.svg" alt="Pixel Bird" fill className="object-contain" style={{ imageRendering: "pixelated" }} />
       </motion.div>
 
-      {/* ──────────────────────────────────────────────────────────────────
-          CENTRAL COLUMN: ropes → signboard (bigger) → menu (centred)
-          - Signboard width bumped to clamp(320px, 54vw, 700px)
-          - Font size bumped to clamp(1rem, 3.8vw, 3.2rem)
-          - Menu centred with items-center
-          - Keyboard nav: ArrowUp/Down to move, Enter to navigate
-          - Retro blinking ▶ cursor on active item (yellow, like NES menus)
-      ────────────────────────────────────────────────────────────────── */}
+      {/* ── CENTRAL COLUMN: ropes → signboard → scrolling nav ─────────── */}
       <div
         className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none"
         style={{ top: 0, width: "clamp(320px, 54vw, 700px)", zIndex: 29 }}
       >
-        {/* Ropes — spaced to match larger board width */}
+        {/* Ropes */}
         <div className="relative w-full flex justify-between px-[8%]" style={{ height: "clamp(80px, 11vh, 130px)" }}>
           <div className="relative" style={{ width: 14, height: "100%" }}>
             <Image src="/hanging_ropes.svg" alt="Left rope" fill className="object-top object-contain" />
@@ -202,7 +208,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Signboard — larger */}
+        {/* Signboard */}
         <div className="relative w-full pointer-events-auto" style={{ aspectRatio: "895 / 455" }}>
           <Image src="/signboard.svg" alt="Signboard" fill className="object-contain" priority />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
@@ -219,52 +225,114 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Navigation — centred, keyboard-navigable, retro blinking cursor */}
+        {/* ── Scrolling navigation window ────────────────────────────────
+            Shows VISIBLE=5 items. Slides when cursor moves beyond range.
+        ─────────────────────────────────────────────────────────────── */}
         <nav
           aria-label="Main navigation"
           className="font-press-start pointer-events-auto w-full flex flex-col items-center"
-          style={{
-            marginTop: "clamp(8px, 1.3vh, 20px)",
-            gap: "clamp(5px, 0.95vh, 13px)",
-            display: "flex",
-          }}
+          style={{ marginTop: "clamp(6px, 1vh, 16px)" }}
         >
-          {MENU_ITEMS.map((item, idx) => (
+          {/* Up scroll indicator — only shown when items above are hidden */}
+          <motion.div
+            animate={{ opacity: canScrollUp ? 1 : 0 }}
+            transition={{ duration: 0.15 }}
+            className="font-press-start text-center"
+            style={{
+              fontSize: "clamp(8px, 1vw, 12px)",
+              color: "#fff",
+              textShadow: "1px 1px 0 #003399",
+              marginBottom: "2px",
+              userSelect: "none",
+              pointerEvents: "none",
+              height: "1.2em",
+              lineHeight: 1,
+            }}
+          >▲ more</motion.div>
+
+          {/* Clipping window — exactly VISIBLE items tall */}
+          <div
+            style={{
+              height: itemH * VISIBLE,
+              overflow: "hidden",
+              width: "100%",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+            }}
+          >
+            {/* Sliding inner list — animates translateY to reveal correct slice */}
             <motion.div
-              key={idx}
-              animate={selectedIdx === idx ? { scale: [1, 1.04, 1] } : { scale: 1 }}
-              transition={{ duration: 0.5, repeat: selectedIdx === idx ? Infinity : 0, ease: "easeInOut" }}
+              animate={{ y: -windowStart * itemH }}
+              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
             >
-              <Link
-                href={item.href}
-                onMouseEnter={() => setSelectedIdx(idx)}
-                className="flex items-center gap-1"
-                style={{
-                  fontSize: "clamp(11px, 1.5vw, 19px)",
-                  color: selectedIdx === idx ? "#fff" : "#1a5ce0",
-                  textShadow: selectedIdx === idx
-                    ? "1px 1px 0 #003399, -1px -1px 0 #003399, 0 0 8px rgba(255,255,100,0.4)"
-                    : "1px 1px 0 rgba(255,255,255,0.8), -1px -1px 0 rgba(255,255,255,0.5)",
-                  fontWeight: 700,
-                  transition: "color 0.15s, text-shadow 0.15s",
-                }}
-              >
-                <RetroArrow active={selectedIdx === idx} />
-                <span>{item.label}</span>
-              </Link>
+              {MENU_ITEMS.map((item, idx) => (
+                <div
+                  key={idx}
+                  ref={idx === 0 ? firstItemRef : undefined}
+                  style={{
+                    height: itemH || "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    justifyContent: "center",
+                    paddingTop: "clamp(3px, 0.5vh, 6px)",
+                    paddingBottom: "clamp(3px, 0.5vh, 6px)",
+                  }}
+                >
+                  <motion.div
+                    animate={selectedIdx === idx ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+                    transition={{ duration: 0.5, repeat: selectedIdx === idx ? Infinity : 0, ease: "easeInOut" }}
+                  >
+                    <Link
+                      href={item.href}
+                      onMouseEnter={() => setSelectedIdx(idx)}
+                      className="flex items-center gap-1"
+                      style={{
+                        fontSize: "clamp(11px, 1.5vw, 19px)",
+                        color: selectedIdx === idx ? "#fff" : "#1a5ce0",
+                        textShadow: selectedIdx === idx
+                          ? "1px 1px 0 #003399,-1px -1px 0 #003399,0 0 8px rgba(255,255,100,0.4)"
+                          : "1px 1px 0 rgba(255,255,255,0.8),-1px -1px 0 rgba(255,255,255,0.5)",
+                        fontWeight: 700,
+                        transition: "color 0.15s, text-shadow 0.15s",
+                      }}
+                    >
+                      <RetroArrow active={selectedIdx === idx} />
+                      <span>{item.label}</span>
+                    </Link>
+                  </motion.div>
+                </div>
+              ))}
             </motion.div>
-          ))}
+          </div>
+
+          {/* Down scroll indicator — only shown when items below are hidden */}
+          <motion.div
+            animate={{ opacity: canScrollDown ? 1 : 0 }}
+            transition={{ duration: 0.15 }}
+            className="font-press-start text-center"
+            style={{
+              fontSize: "clamp(8px, 1vw, 12px)",
+              color: "#fff",
+              textShadow: "1px 1px 0 #003399",
+              marginTop: "2px",
+              userSelect: "none",
+              pointerEvents: "none",
+              height: "1.2em",
+              lineHeight: 1,
+            }}
+          >▼ more</motion.div>
         </nav>
       </div>
 
       {/* Ground ticker */}
-      <div
-        className="absolute bottom-0 left-0 right-0 flex items-center overflow-hidden"
+      <div className="absolute bottom-0 left-0 right-0 flex items-center overflow-hidden"
         style={{ height: "72px", background: "#CC9339", borderTop: "8px solid #589B00", zIndex: 40 }}
       >
         <div className="relative flex overflow-x-hidden w-full pointer-events-none">
-          <div
-            className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
+          <div className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
             style={{ color: "#5E3A00", fontSize: "clamp(10px,1.3vw,14px)" }}
           >
             {Array.from({ length: 10 }).map((_, i) => (
