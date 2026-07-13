@@ -101,8 +101,8 @@ const NotFoundPage: React.FC = () => {
         <Image src="/images/cloud1.png" alt="Cloud 1" width={355} height={228} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 154, baseLeft: -12, amplitude: 25, speed: 0.8, phase: 0 }), zIndex: 2 }} />
         <Image src="/images/cloud2.png" alt="Cloud 2" width={367} height={219} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 466, baseLeft: 22, amplitude: 35, speed: 1.1, phase: 1 }), zIndex: 2 }} />
         <Image src="/images/cloud1.png" alt="Cloud 3" width={355} height={228} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 772.98, baseLeft: 232, amplitude: 30, speed: 0.9, phase: 2 }), zIndex: 2 }} />
-        <Image src="/images/cloud3.png" alt="Cloud 4" width={204} height={125} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 790, baseLeft: 1003, amplitude: 28, speed: 1.2, phase: 3 }), zIndex: 2 }} />
-        <Image src="/images/cloud3.png" alt="Cloud 5" width={204} height={125} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 604.98, baseLeft: 1331, amplitude: 32, speed: 1.0, phase: 4 }), zIndex: 2 }} />
+        <Image src="/images/cloud3.png" alt="Cloud 4" width={204} height={125} style={{ height: 'auto',  position: 'absolute', ...useCloudFloat({ baseTop: 790, baseLeft: 1003, amplitude: 28, speed: 1.2, phase: 3 }), zIndex: 2 }} />
+        <Image src="/images/cloud3.png" alt="Cloud 5" width={204} height={125} style={{ height: 'auto',  position: 'absolute', ...useCloudFloat({ baseTop: 604.98, baseLeft: 1331, amplitude: 32, speed: 1.0, phase: 4 }), zIndex: 2 }} />
         <Image src="/images/cloud2.png" alt="Cloud 6" width={388} height={254} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 127.98, baseLeft: 1142, amplitude: 27, speed: 1.3, phase: 5 }), zIndex: 2 }} />
         <Image src="/images/cloud1.png" alt="Cloud 7" width={355} height={228} style={{ position: 'absolute', ...useCloudFloat({ baseTop: -23, baseLeft: 847, amplitude: 22, speed: 1.05, phase: 6 }), zIndex: 2 }} />
 
@@ -111,7 +111,7 @@ const NotFoundPage: React.FC = () => {
           <Image src="/images/dot.png" alt="Star" width={8} height={8} />
         </div>
         {/* Cloud above YOU DIED! 404 (animated) */}
-        <Image src="/images/cloud3.png" alt="Cloud Above 404" width={204} height={125} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 80, baseLeft: 500, amplitude: 18, speed: 1.1, phase: 7 }), zIndex: 11 }} />
+        <Image src="/images/cloud3.png" alt="Cloud Above 404" width={204} height={125} style={{ height: 'auto',  position: 'absolute', ...useCloudFloat({ baseTop: 80, baseLeft: 500, amplitude: 18, speed: 1.1, phase: 7 }), zIndex: 11 }} />
         {/* Main PNG text */}
         <div style={{ position: 'absolute', left: '50%', top: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }}>
           <Image src={textPngUrl} alt="YOU DIED! 404" width={1000} height={258} />
@@ -141,7 +141,7 @@ const NotFoundPage: React.FC = () => {
           <Image src="/images/respawn-button.png" alt="RESPAWN TO HOME" width={340} height={70} />
         </button>
         {/* Cloud under and bottom right to RESPWAN button (animated) */}
-        <Image src="/images/cloud3.png" alt="Cloud Bottom Right Respawn" width={204} height={125} style={{ position: 'absolute', ...useCloudFloat({ baseTop: 520, baseLeft: 950, amplitude: 20, speed: 1.15, phase: 8 }), zIndex: 2 }} />
+        <Image src="/images/cloud3.png" alt="Cloud Bottom Right Respawn" width={204} height={125} style={{ height: 'auto',  position: 'absolute', ...useCloudFloat({ baseTop: 520, baseLeft: 950, amplitude: 20, speed: 1.15, phase: 8 }), zIndex: 2 }} />
 
       </div>
     </>
