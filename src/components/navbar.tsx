@@ -135,6 +135,7 @@ const CubeNavbar: React.FC = () => {
                 width={item.width}
                 height={item.height}
                 className="flex-shrink-0"
+                style={{ height: "auto" }}
               />
               <span
                 className="select-none font-press-start"
