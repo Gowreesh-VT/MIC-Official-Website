@@ -62,30 +62,25 @@ const MENU_ITEMS = [
   { label: "Credits",      href: "/about-us" },
 ];
 
-/* ─── Retro selector arrow — blinks like an old-school game cursor ─────── */
+/* ─── Retro selector arrow — blinks only on the active item ───────────── */
 const RetroArrow = ({ active }: { active: boolean }) => (
-  <AnimatePresence>
-    {active && (
-      <motion.span
-        key="arrow"
-        aria-hidden
-        initial={{ opacity: 0, x: -6 }}
-        animate={{ opacity: [1, 0, 1, 0, 1], x: 0 }}
-        exit={{ opacity: 0, x: -6 }}
-        transition={{ opacity: { duration: 0.6, repeat: Infinity, repeatDelay: 0.4 }, x: { duration: 0.15 } }}
-        style={{
-          display: "inline-block",
-          width: "1.2em",
-          flexShrink: 0,
-          color: "#fff700",
-          textShadow: "1px 1px 0 #886600",
-        }}
-      >▶</motion.span>
-    )}
-    {!active && (
-      <span aria-hidden style={{ display: "inline-block", width: "1.2em", flexShrink: 0, opacity: 0 }}>▶</span>
-    )}
-  </AnimatePresence>
+  <motion.span
+    aria-hidden
+    /* When active: blink infinitely. When inactive: snap to opacity 0 immediately. */
+    animate={active ? { opacity: [1, 0.05, 1, 0.05, 1] } : { opacity: 0 }}
+    transition={
+      active
+        ? { opacity: { duration: 0.7, repeat: Infinity, repeatDelay: 0.3 } }
+        : { duration: 0 }   /* instant — no exit animation, no ghost */
+    }
+    style={{
+      display: "inline-block",
+      width: "1.2em",
+      flexShrink: 0,
+      color: "#fff700",
+      textShadow: "1px 1px 0 #886600",
+    }}
+  >▶</motion.span>
 );
 
 /* ─── Page ─────────────────────────────────────────────────────────────── */
