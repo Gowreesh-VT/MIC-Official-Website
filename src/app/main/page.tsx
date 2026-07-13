@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 /* ─── Floating cloud hook ──────────────────────────────────────────────── */
 interface CloudFloatOptions {
@@ -54,12 +54,15 @@ function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number])
   );
 }
 
-/* ─── Menu items ───────────────────────────────────────────────────────── */
+/* ─── Menu items (all pages, matching the full navbar) ────────────────── */
 const MENU_ITEMS = [
-  { label: "Events",       href: "/events"   },
-  { label: "Gallery",      href: "/gallery"  },
-  { label: "Project Hall", href: "/projects" },
-  { label: "Credits",      href: "/about-us" },
+  { label: "Home",         href: "/main"        },
+  { label: "About Us",     href: "/about-us"    },
+  { label: "Board",        href: "/leads"       },
+  { label: "Gallery",      href: "/gallery"     },
+  { label: "Events",       href: "/events"      },
+  { label: "Projects",     href: "/projects"    },
+  { label: "Leaderboard",  href: "/leaderboard" },
 ];
 
 /* ─── Retro selector arrow — blinks only on the active item ───────────── */
@@ -86,18 +89,7 @@ const RetroArrow = ({ active }: { active: boolean }) => (
 /* ─── Page ─────────────────────────────────────────────────────────────── */
 const LandingPage = () => {
   const router = useRouter();
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [animStep, setAnimStep] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState(0);
-
-  /* Leaderboard animation sequence */
-  useEffect(() => {
-    if (!showLeaderboard) { setAnimStep(0); return; }
-    const t1 = setTimeout(() => setAnimStep(1), 0);
-    const t2 = setTimeout(() => setAnimStep(2), 1000);
-    const t3 = setTimeout(() => setAnimStep(3), 2000);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [showLeaderboard]);
 
   /* ── Keyboard navigation (Up / Down / Enter) ────────────────────────── */
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -117,8 +109,6 @@ const LandingPage = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
-
-  const lbSrc = animStep >= 3 ? "/3RD.png" : animStep >= 2 ? "/2ND.png" : animStep >= 1 ? "/1ST.png" : null;
 
   return (
     <div
@@ -160,33 +150,7 @@ const LandingPage = () => {
         ))}
       </div>
 
-      {/* Trophy / leaderboard */}
-      {!showLeaderboard && (
-        <button
-          id="trophy-icon" type="button" aria-label="Show leaderboard"
-          className="fixed z-50 hover:scale-110 transition-transform duration-200"
-          style={{ bottom: 90, left: 24 }}
-          onClick={() => setShowLeaderboard(true)}
-        >
-          <Image src="/cup_home.svg" alt="Leaderboard" width={44} height={48} priority />
-        </button>
-      )}
-      <AnimatePresence>
-        {showLeaderboard && lbSrc && (
-          <motion.div
-            className="fixed z-50" style={{ left: 24, bottom: 95, cursor: "pointer" }}
-            initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            onClick={() => { setShowLeaderboard(false); setAnimStep(0); }}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div key={lbSrc} initial={{ y: -16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                <Image src={lbSrc} alt="Leaderboard" width={200} height={280} style={{ imageRendering: "pixelated", display: "block" }} />
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Leaderboard trophy widget removed — accessible via nav menu instead */}
 
       {/* Floating clouds — larger */}
       {CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
