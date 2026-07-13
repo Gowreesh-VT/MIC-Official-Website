@@ -184,13 +184,12 @@ const LandingPage = () => {
       {/* Bushes */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
         style={{
-          bottom: "70px",           /* 2px overlap into ticker border — closes the gap */
+          bottom: "62px",           
           height: "16vh",
           backgroundImage: "url('/pixel_bushes.svg')",
           backgroundRepeat: "repeat-x",
           backgroundPosition: "bottom",
           backgroundSize: "auto 100%",
-          backgroundColor: "#589B00", /* fills any transparent SVG bottom — matches ticker border */
           zIndex: 4,
         }} />
 
