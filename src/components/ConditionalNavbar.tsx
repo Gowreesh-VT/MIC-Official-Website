@@ -12,7 +12,7 @@ const Logo = () => (
     alt="MIC Logo"
     width={72}
     height={72}
-    style={{ position: 'fixed', top: 20, left: 27, zIndex: 50, cursor: 'pointer' }}
+    style={{ position: 'fixed', top: 20, left: 27, zIndex: 50, cursor: 'pointer', height: 'auto' }}
     priority
   />
 );

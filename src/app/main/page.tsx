@@ -49,7 +49,7 @@ function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number])
   const pos = useCloudFloat(floatOpts);
   return (
     <div className="absolute pointer-events-none select-none" style={{ top: pos.top, left: pos.left, zIndex: 6 }}>
-      <Image src={src} alt="Cloud" width={w} height={h} priority />
+      <Image src={src} alt="Cloud" width={w} height={h} priority style={{ height: "auto" }} />
     </div>
   );
 }
