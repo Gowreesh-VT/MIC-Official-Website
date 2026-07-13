@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ─── Floating cloud hook ──────────────────────────────────────────────── */
@@ -36,12 +37,12 @@ function useCloudFloat({
   };
 }
 
-/* ─── Cloud configs (2 left, 2 right, upper sky only) ─────────────────── */
+/* ─── Cloud configs — larger sizes, 2 left + 2 right ──────────────────── */
 const CLOUD_CONFIGS = [
-  { src: "/images/cloud1.png", w: 190, h: 122, floatOpts: { baseTopVh: 5,  baseLeftVw: 2,  amplitude: 8,  speed: 0.4,  phase: 0   } },
-  { src: "/images/cloud2.png", w: 230, h: 138, floatOpts: { baseTopVh: 18, baseLeftVw: 5,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
-  { src: "/images/cloud1.png", w: 175, h: 112, floatOpts: { baseTopVh: 6,  baseLeftVw: 68, amplitude: 8,  speed: 0.35, phase: 3   } },
-  { src: "/images/cloud2.png", w: 215, h: 129, floatOpts: { baseTopVh: 20, baseLeftVw: 76, amplitude: 10, speed: 0.45, phase: 4.5 } },
+  { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
+  { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
+  { src: "/images/cloud1.png", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
+  { src: "/images/cloud2.png", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
 ] as const;
 
 function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
@@ -53,7 +54,7 @@ function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number])
   );
 }
 
-/* ─── Page ─────────────────────────────────────────────────────────────── */
+/* ─── Menu items ───────────────────────────────────────────────────────── */
 const MENU_ITEMS = [
   { label: "Events",       href: "/events"   },
   { label: "Gallery",      href: "/gallery"  },
@@ -61,11 +62,40 @@ const MENU_ITEMS = [
   { label: "Credits",      href: "/about-us" },
 ];
 
+/* ─── Retro selector arrow — blinks like an old-school game cursor ─────── */
+const RetroArrow = ({ active }: { active: boolean }) => (
+  <AnimatePresence>
+    {active && (
+      <motion.span
+        key="arrow"
+        aria-hidden
+        initial={{ opacity: 0, x: -6 }}
+        animate={{ opacity: [1, 0, 1, 0, 1], x: 0 }}
+        exit={{ opacity: 0, x: -6 }}
+        transition={{ opacity: { duration: 0.6, repeat: Infinity, repeatDelay: 0.4 }, x: { duration: 0.15 } }}
+        style={{
+          display: "inline-block",
+          width: "1.2em",
+          flexShrink: 0,
+          color: "#fff700",
+          textShadow: "1px 1px 0 #886600",
+        }}
+      >▶</motion.span>
+    )}
+    {!active && (
+      <span aria-hidden style={{ display: "inline-block", width: "1.2em", flexShrink: 0, opacity: 0 }}>▶</span>
+    )}
+  </AnimatePresence>
+);
+
+/* ─── Page ─────────────────────────────────────────────────────────────── */
 const LandingPage = () => {
+  const router = useRouter();
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [animStep, setAnimStep] = useState(0);
-  const [activeMenu, setActiveMenu] = useState(0); // first item highlighted by default
+  const [selectedIdx, setSelectedIdx] = useState(0);
 
+  /* Leaderboard animation sequence */
   useEffect(() => {
     if (!showLeaderboard) { setAnimStep(0); return; }
     const t1 = setTimeout(() => setAnimStep(1), 0);
@@ -73,6 +103,25 @@ const LandingPage = () => {
     const t3 = setTimeout(() => setAnimStep(3), 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [showLeaderboard]);
+
+  /* ── Keyboard navigation (Up / Down / Enter) ────────────────────────── */
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIdx(i => (i + 1) % MENU_ITEMS.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIdx(i => (i - 1 + MENU_ITEMS.length) % MENU_ITEMS.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      router.push(MENU_ITEMS[selectedIdx].href);
+    }
+  }, [selectedIdx, router]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   const lbSrc = animStep >= 3 ? "/3RD.png" : animStep >= 2 ? "/2ND.png" : animStep >= 1 ? "/1ST.png" : null;
 
@@ -83,42 +132,34 @@ const LandingPage = () => {
         background: "linear-gradient(180deg,#1188EE 0%,#0E8AEA 24.52%,#1093EB 35.07%,#1197EC 45.67%,#16B6F4 52.35%,#10CBF1 56.04%,#0FC6F1 59.73%,#15DEF0 64.76%,#15DEF0 81.25%)",
       }}
     >
-      {/* FIX 2: Grid overlay — opacity reduced from 20% → 8% so it's subtle, not dominant */}
+      {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          zIndex: 0,
-          opacity: 0.08,
+          zIndex: 0, opacity: 0.08,
           backgroundImage: "linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)",
           backgroundSize: "30px 30px",
         }}
       />
 
-      {/* FIX 4: Social icons — wrapped in pixel-art style square buttons with pastel backgrounds */}
+      {/* Social icons — transparent background, no pink accent */}
       <div className="absolute top-4 right-5 z-50 flex items-center gap-2">
         {[
-          { href: "https://www.instagram.com/microsoft.innovations.vitc/",           src: "/insta_pixel.svg",    alt: "Instagram", bg: "#f0d8e8" },
-          { href: "https://www.linkedin.com/company/microsoft-innovations-club-vitc/", src: "/linkedin_pixel.svg", alt: "LinkedIn",  bg: "#d8e8f8" },
-          { href: "mailto:mic.vit.chennai@gmail.com",                                  src: "/mail_pixel.svg",    alt: "Email",     bg: "#dce8dc" },
-        ].map(({ href, src, alt, bg }) => (
+          { href: "https://www.instagram.com/microsoft.innovations.vitc/",           src: "/insta_pixel.svg",    alt: "Instagram" },
+          { href: "https://www.linkedin.com/company/microsoft-innovations-club-vitc/", src: "/linkedin_pixel.svg", alt: "LinkedIn"  },
+          { href: "mailto:mic.vit.chennai@gmail.com",                                  src: "/mail_pixel.svg",    alt: "Email"     },
+        ].map(({ href, src, alt }) => (
           <a
-            key={alt}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={alt}
+            key={alt} href={href} target="_blank" rel="noopener noreferrer" aria-label={alt}
             className="Animated-Logo flex items-center justify-center"
             style={{
-              background: bg,
-              border: "3px solid #222",
-              borderRadius: "4px",
+              background: "transparent",
               width: "clamp(36px,4.5vw,50px)",
               height: "clamp(36px,4.5vw,50px)",
-              padding: "4px",
-              imageRendering: "pixelated",
+              padding: "2px",
             }}
           >
-            <Image src={src} alt={`${alt} Logo`} width={32} height={32}
+            <Image src={src} alt={`${alt} Logo`} width={48} height={48}
               style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} priority />
           </a>
         ))}
@@ -152,49 +193,22 @@ const LandingPage = () => {
         )}
       </AnimatePresence>
 
-      {/* 4 floating small clouds (upper sky only) */}
+      {/* Floating clouds — larger */}
       {CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
 
-      {/* Big cloud backdrop (z:2, above gradient, below everything else) */}
-      <div
-        className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{
-          bottom: "72px",
-          height: "40vh",
-          backgroundImage: "url('/big_cloud.svg')",
-          backgroundRepeat: "repeat-x",
-          backgroundPosition: "bottom",
-          backgroundSize: "auto 100%",
-          zIndex: 2,
-        }}
+      {/* Big cloud backdrop */}
+      <div className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "40vh", backgroundImage: "url('/big_cloud.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 2 }}
       />
 
       {/* Cityscape */}
-      <div
-        className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{
-          bottom: "72px",
-          height: "28vh",
-          backgroundImage: "url('/cityscape.svg')",
-          backgroundRepeat: "repeat-x",
-          backgroundPosition: "bottom",
-          backgroundSize: "auto 100%",
-          zIndex: 3,
-        }}
+      <div className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "28vh", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 3 }}
       />
 
       {/* Bushes */}
-      <div
-        className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{
-          bottom: "72px",
-          height: "16vh",
-          backgroundImage: "url('/pixel_bushes.svg')",
-          backgroundRepeat: "repeat-x",
-          backgroundPosition: "bottom",
-          backgroundSize: "auto 100%",
-          zIndex: 4,
-        }}
+      <div className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "16vh", backgroundImage: "url('/pixel_bushes.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 4 }}
       />
 
       {/* Bobbing bird */}
@@ -207,42 +221,38 @@ const LandingPage = () => {
         <Image src="/pixel_bird.svg" alt="Pixel Bird" fill className="object-contain" style={{ imageRendering: "pixelated" }} />
       </motion.div>
 
-      {/* ── CENTRAL COLUMN: ropes → signboard → menu ─────────────────────
-          Single flex-col container ensures menu ALWAYS appears below board.
-          FIX 1: Menu now guaranteed to be in the clear-sky zone.
-          FIX 3: Signboard text is larger (3vw vs 2.6vw).
-          FIX 6: First menu item always shows ▶ arrow (not just on hover).
-          FIX 7: Menu text has white drop-shadow for contrast on any bg.
-      ──────────────────────────────────────────────────────────────────── */}
+      {/* ──────────────────────────────────────────────────────────────────
+          CENTRAL COLUMN: ropes → signboard (bigger) → menu (centred)
+          - Signboard width bumped to clamp(320px, 54vw, 700px)
+          - Font size bumped to clamp(1rem, 3.8vw, 3.2rem)
+          - Menu centred with items-center
+          - Keyboard nav: ArrowUp/Down to move, Enter to navigate
+          - Retro blinking ▶ cursor on active item (yellow, like NES menus)
+      ────────────────────────────────────────────────────────────────── */}
       <div
         className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none"
-        style={{
-          top: 0,
-          width: "clamp(280px, 44vw, 560px)",
-          zIndex: 29,
-        }}
+        style={{ top: 0, width: "clamp(320px, 54vw, 700px)", zIndex: 29 }}
       >
-        {/* Ropes */}
-        <div className="relative w-full flex justify-between px-[9%]" style={{ height: "clamp(80px, 11vh, 130px)" }}>
-          <div className="relative" style={{ width: 13, height: "100%" }}>
+        {/* Ropes — spaced to match larger board width */}
+        <div className="relative w-full flex justify-between px-[8%]" style={{ height: "clamp(80px, 11vh, 130px)" }}>
+          <div className="relative" style={{ width: 14, height: "100%" }}>
             <Image src="/hanging_ropes.svg" alt="Left rope" fill className="object-top object-contain" />
           </div>
-          <div className="relative" style={{ width: 13, height: "100%" }}>
+          <div className="relative" style={{ width: 14, height: "100%" }}>
             <Image src="/hanging_ropes.svg" alt="Right rope" fill className="object-top object-contain" />
           </div>
         </div>
 
-        {/* Signboard */}
+        {/* Signboard — larger */}
         <div className="relative w-full pointer-events-auto" style={{ aspectRatio: "895 / 455" }}>
           <Image src="/signboard.svg" alt="Signboard" fill className="object-contain" priority />
-          {/* FIX 3: Larger text to fill the board more prominently */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
             <h1
               className="text-[#FCD7CE] font-bold uppercase leading-snug font-press-start"
               style={{
-                fontSize: "clamp(0.8rem, 3vw, 2.4rem)",
-                textShadow: "3px 3px 0 #4d2304,-2px -2px 0 #4d2304,2px -2px 0 #4d2304,-2px 2px 0 #4d2304,2px 2px 0 #4d2304",
-                letterSpacing: "0.04em",
+                fontSize: "clamp(1rem, 3.8vw, 3.2rem)",
+                textShadow: "4px 4px 0 #4d2304,-2px -2px 0 #4d2304,2px -2px 0 #4d2304,-2px 2px 0 #4d2304,2px 2px 0 #4d2304",
+                letterSpacing: "0.05em",
               }}
             >
               M!CROSOFT<br />!NNOVAT!ONS<br />CLUB.
@@ -250,46 +260,40 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Navigation menu — flows naturally below board, in clear sky area */}
+        {/* Navigation — centred, keyboard-navigable, retro blinking cursor */}
         <nav
           aria-label="Main navigation"
-          className="font-press-start pointer-events-auto w-full"
+          className="font-press-start pointer-events-auto w-full flex flex-col items-center"
           style={{
-            marginTop: "clamp(8px, 1.2vh, 18px)",
-            paddingLeft: "clamp(8px, 3vw, 20px)",
+            marginTop: "clamp(8px, 1.3vh, 20px)",
+            gap: "clamp(5px, 0.95vh, 13px)",
             display: "flex",
-            flexDirection: "column",
-            gap: "clamp(5px, 0.9vh, 12px)",
           }}
         >
           {MENU_ITEMS.map((item, idx) => (
-            <Link
+            <motion.div
               key={idx}
-              href={item.href}
-              onMouseEnter={() => setActiveMenu(idx)}
-              className="group flex items-center gap-2 transition-transform duration-200 hover:translate-x-1"
-              style={{
-                fontSize: "clamp(11px, 1.45vw, 18px)",
-                /* FIX 7: White text-shadow for contrast on any background */
-                textShadow: "1px 1px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(255,255,255,0.6)",
-                color: "#0d6eff",
-                fontWeight: 700,
-              }}
+              animate={selectedIdx === idx ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+              transition={{ duration: 0.5, repeat: selectedIdx === idx ? Infinity : 0, ease: "easeInOut" }}
             >
-              {/* FIX 6: Arrow always shows for active item, fades in for others on hover */}
-              <span
+              <Link
+                href={item.href}
+                onMouseEnter={() => setSelectedIdx(idx)}
+                className="flex items-center gap-1"
                 style={{
-                  opacity: activeMenu === idx ? 1 : 0,
-                  transition: "opacity 0.15s",
-                  display: "inline-block",
-                  width: "1em",
-                  flexShrink: 0,
-                  color: "#0d6eff",
+                  fontSize: "clamp(11px, 1.5vw, 19px)",
+                  color: selectedIdx === idx ? "#fff" : "#1a5ce0",
+                  textShadow: selectedIdx === idx
+                    ? "1px 1px 0 #003399, -1px -1px 0 #003399, 0 0 8px rgba(255,255,100,0.4)"
+                    : "1px 1px 0 rgba(255,255,255,0.8), -1px -1px 0 rgba(255,255,255,0.5)",
+                  fontWeight: 700,
+                  transition: "color 0.15s, text-shadow 0.15s",
                 }}
-                aria-hidden
-              >▶</span>
-              <span>{item.label}</span>
-            </Link>
+              >
+                <RetroArrow active={selectedIdx === idx} />
+                <span>{item.label}</span>
+              </Link>
+            </motion.div>
           ))}
         </nav>
       </div>
