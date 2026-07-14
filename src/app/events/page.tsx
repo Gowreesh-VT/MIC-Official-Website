@@ -72,6 +72,50 @@ const events = [
 		startDate: new Date("2025-10-27"),
 		endDate: new Date("2025-10-27"),
 	},
+	{
+		title: "ByteCraft Hackathon",
+		desc: "A 12-hour micro-hackathon focused on building utility tools and automating developer workflows.",
+		details: "ByteCraft Hackathon was a rapid prototyping event where participants developed extensions, CLI tools, and automation scripts. The focus was entirely on developer productivity, clean code, and practical usability.",
+		bg: "bg-[#FFF0F5]",
+		border: "border-[#FFB6C1]",
+		text: "text-[#8B008B]",
+		borderColor: "#FFB6C1",
+		startDate: new Date("2025-11-15"),
+		endDate: new Date("2025-11-15"),
+	},
+	{
+		title: "DevShowcase",
+		desc: "An open exhibition platform for students to present their semester projects and open-source contributions.",
+		details: "DevShowcase brought together student developers, designers, and tech enthusiasts to exhibit their work. Projects were evaluated by industry mentors, providing valuable feedback on deployment, UX, and scalability.",
+		bg: "bg-[#F0FFFF]",
+		border: "border-[#AFEEEE]",
+		text: "text-[#008B8B]",
+		borderColor: "#AFEEEE",
+		startDate: new Date("2025-12-05"),
+		endDate: new Date("2025-12-05"),
+	},
+	{
+		title: "Algorithmic Arena",
+		desc: "An intense individual coding contest featuring complex data structures and algorithmic puzzles.",
+		details: "Algorithmic Arena tested core programming efficiency and problem-solving. Competitors solved multiple levels of difficulty under optimized runtime constraints, separating the top algorithmic minds.",
+		bg: "bg-[#FFF5EE]",
+		border: "border-[#FFDAB9]",
+		text: "text-[#D2691E]",
+		borderColor: "#FFDAB9",
+		startDate: new Date("2026-03-12"),
+		endDate: new Date("2026-03-12"),
+	},
+	{
+		title: "Web3 Summit",
+		desc: "A masterclass and hands-on bootcamp on smart contracts, decentralized apps, and blockchain fundamentals.",
+		details: "The Web3 Summit introduced participants to decentralized technologies. Mentors guided students through writing and deploying smart contracts on testnets, building basic dApps, and security audits.",
+		bg: "bg-[#F5F5DC]",
+		border: "border-[#F0E68C]",
+		text: "text-[#8B8B00]",
+		borderColor: "#F0E68C",
+		startDate: new Date("2026-04-20"),
+		endDate: new Date("2026-04-21"),
+	},
 ];
 
 // Helper function to format date
@@ -123,12 +167,12 @@ function useCloudFloat({
   };
 }
 
-/* ─── Cloud configs (2 left, 2 right, upper sky only) ─────────────────── */
+/* ─── Cloud configs (2 left, 2 right, upper sky only, using cloud_pixel.svg) ─── */
 const CLOUD_CONFIGS = [
-  { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
-  { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
-  { src: "/images/cloud1.png", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
-  { src: "/images/cloud2.png", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
+  { src: "/cloud_pixel.svg", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
+  { src: "/cloud_pixel.svg", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
+  { src: "/cloud_pixel.svg", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
+  { src: "/cloud_pixel.svg", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
 ] as const;
 
 function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
@@ -200,13 +244,12 @@ const EventsPage = () => {
 			<div
 				className="fixed left-0 right-0 pointer-events-none select-none"
 				style={{
-					bottom: "70px",
-					height: "16vh",
+					bottom: "60px",
+					height: "20vh",
 					backgroundImage: "url('/pixel_bushes.svg')",
 					backgroundRepeat: "repeat-x",
 					backgroundPosition: "bottom",
 					backgroundSize: "auto 100%",
-					backgroundColor: "#589B00",
 					zIndex: 4,
 				}}
 			/>
