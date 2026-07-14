@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -91,22 +91,57 @@ const isUpcoming = (date: Date): boolean => {
 	return date >= now;
 };
 
+/* ─── Floating cloud hook ──────────────────────────────────────────────── */
+interface CloudFloatOptions {
+  baseTopVh: number;
+  baseLeftVw: number;
+  amplitude?: number;
+  speed?: number;
+  phase?: number;
+}
+
+function useCloudFloat({
+  baseTopVh, baseLeftVw, amplitude = 10, speed = 0.4, phase = 0,
+}: CloudFloatOptions) {
+  const [offset, setOffset] = useState(0);
+  const frameRef = useRef(0);
+
+  useEffect(() => {
+    let running = true;
+    const animate = () => {
+      frameRef.current += 1;
+      setOffset(Math.sin((frameRef.current / 60) * speed + phase) * amplitude);
+      if (running) requestAnimationFrame(animate);
+    };
+    animate();
+    return () => { running = false; };
+  }, [amplitude, speed, phase]);
+
+  return {
+    top: `calc(${baseTopVh}vh + ${offset}px)`,
+    left: `${baseLeftVw}vw`,
+  };
+}
+
+/* ─── Cloud configs (2 left, 2 right, upper sky only) ─────────────────── */
+const CLOUD_CONFIGS = [
+  { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
+  { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
+  { src: "/images/cloud1.png", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
+  { src: "/images/cloud2.png", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
+] as const;
+
+function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
+  const pos = useCloudFloat(floatOpts);
+  return (
+    <div className="absolute pointer-events-none select-none" style={{ top: pos.top, left: pos.left, zIndex: 6 }}>
+      <Image src={src} alt="Cloud" width={w} height={h} priority style={{ height: "auto" }} />
+    </div>
+  );
+}
+
 const EventsPage = () => {
 	const [openCard, setOpenCard] = useState<number | null>(null);
-	const [isDarkMode, setIsDarkMode] = useState(false);
-
-	// Detect system theme preference
-	useEffect(() => {
-		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		setIsDarkMode(mediaQuery.matches);
-
-		const handleChange = (e: MediaQueryListEvent) => {
-			setIsDarkMode(e.matches);
-		};
-
-		mediaQuery.addEventListener("change", handleChange);
-		return () => mediaQuery.removeEventListener("change", handleChange);
-	}, []);
 
 	// Lock body scroll when modal is open
 	useEffect(() => {
@@ -120,22 +155,14 @@ const EventsPage = () => {
 		};
 	}, [openCard]);
 
-	// Theme-specific sky background gradient
-	const getSkyBackground = () => {
-		if (isDarkMode) {
-			return "linear-gradient(180deg, #00040D 0%, #001229 24.52%, #001B3B 35.07%, #00224D 45.67%, #002E66 52.35%, #003B80 56.04%, #004799 59.73%, #005EBF 64.76%, #0077F2 81.25%)";
-		}
-		return "linear-gradient(180deg, #1188EE 0%, #0E8AEA 24.52%, #1093EB 35.07%, #1197EC 45.67%, #16B6F4 52.35%, #10CBF1 56.04%, #0FC6F1 59.73%, #15DEF0 64.76%, #15DEF0 81.25%)";
-	};
-
 	return (
 		<div
 			className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden flex flex-col items-center select-none"
 			style={{
-				background: getSkyBackground(),
+				background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 24.52%, #1093EB 35.07%, #1197EC 45.67%, #16B6F4 52.35%, #10CBF1 56.04%, #0FC6F1 59.73%, #15DEF0 64.76%, #15DEF0 81.25%)",
 			}}
 		>
-			{/* ─── Subtle grid overlay ──────────────────────────────────────── */}
+			{/* ─── Faint grid overlay ────────────────────────────────────────── */}
 			<div
 				className="absolute inset-0 pointer-events-none"
 				style={{
@@ -146,7 +173,11 @@ const EventsPage = () => {
 					backgroundSize: "30px 30px",
 				}}
 			/>
-			{/* ─── FIXED BACKDROP LAYERS ────────────────────────────────────── */}
+
+			{/* Floating small clouds (matches home page) */}
+			{CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
+
+			{/* ─── FIXED BACKDROP LAYERS (Matching Landing / Main Page) ─────── */}
 			{/* Clouds backdrop */}
 			<div
 				className="fixed left-0 right-0 pointer-events-none select-none"
@@ -158,20 +189,6 @@ const EventsPage = () => {
 					backgroundPosition: "bottom",
 					backgroundSize: "auto 100%",
 					zIndex: 2,
-				}}
-			/>
-
-			{/* Cityscape backdrop */}
-			<div
-				className="fixed left-0 right-0 pointer-events-none select-none"
-				style={{
-					bottom: "72px",
-					height: "28vh",
-					backgroundImage: "url('/cityscape.svg')",
-					backgroundRepeat: "repeat-x",
-					backgroundPosition: "bottom",
-					backgroundSize: "auto 100%",
-					zIndex: 3,
 				}}
 			/>
 
@@ -262,13 +279,12 @@ const EventsPage = () => {
 					<span className="font-press-start text-black text-xl font-bold" style={{ textShadow: "none" }}>X</span>
 				</Link>
 
-				{/* Title Heading */}
+				{/* Title Heading — static events page title */}
 				<h1
-					className="font-press-start text-black text-center mb-16 tracking-wider select-none animate-bounce"
+					className="font-press-start text-black text-center mb-16 tracking-wider select-none"
 					style={{
-						fontSize: "clamp(2rem, 5vw, 3.5rem)",
+						fontSize: "clamp(2.2rem, 5.5vw, 3.8rem)",
 						textShadow: "4px 4px 0px #FFFFFF",
-						animationDuration: "3s"
 					}}
 				>
 					Events
