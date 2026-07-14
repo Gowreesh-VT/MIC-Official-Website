@@ -1,28 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// --- Interfaces ---
 interface CloudFloatOptions {
-  baseTop: number;
-  baseLeft: number;
+  baseTopVh: number;
+  baseLeftVw: number;
   amplitude?: number;
   speed?: number;
   phase?: number;
-  width: number;
-  height: number;
-  src: string;
-  alt: string;
-}
-
-interface ThemeColors {
-  background: string;
-  lineColor: string;
-  borderColor: string;
-  textColor: string;
-  gridOpacity: string;
 }
 
 interface Project {
@@ -33,331 +21,583 @@ interface Project {
   techStack: string[];
   codeUrl?: string;
   demoUrl?: string;
-  cardImage: string;
-  previewImage: string;
+  previewImage?: string;
+  ballImage: string;
 }
 
-// --- Hooks & Components ---
-
-function useCloudFloat({ baseTop, baseLeft, amplitude = 30, speed = 1, phase = 0 }: CloudFloatOptions) {
-  const [top, setTop] = useState(baseTop);
-  const frame = useRef(0);
+function useCloudFloat({
+  baseTopVh,
+  baseLeftVw,
+  amplitude = 10,
+  speed = 0.4,
+  phase = 0,
+}: CloudFloatOptions) {
+  const [offset, setOffset] = useState(0);
+  const frameRef = useRef(0);
 
   useEffect(() => {
     let running = true;
     const animate = () => {
-      frame.current += 1;
-      const t = frame.current / 60;
-      setTop(baseTop + Math.sin(t * speed + phase) * amplitude);
-      if (running) requestAnimationFrame(animate);
+      frameRef.current += 1;
+      setOffset(Math.sin((frameRef.current / 60) * speed + phase) * amplitude);
+      if (running) {
+        requestAnimationFrame(animate);
+      }
     };
     animate();
+
     return () => {
       running = false;
     };
-  }, [baseTop, amplitude, speed, phase]);
+  }, [amplitude, speed, phase]);
 
-  return { top, left: baseLeft };
+  return {
+    top: `calc(${baseTopVh}vh + ${offset}px)`,
+    left: `${baseLeftVw}vw`,
+  };
 }
 
-const cloudConfig: CloudFloatOptions[] = [
-  { baseTop: 150, baseLeft: 50, amplitude: 25, speed: 0.8, phase: 0, width: 355, height: 228, src: '/images/cloud1.png', alt: 'Cloud 1' },
-  { baseTop: 460, baseLeft: 100, amplitude: 35, speed: 1.1, phase: 1, width: 367, height: 219, src: '/images/cloud2.png', alt: 'Cloud 2' },
-  { baseTop: 700, baseLeft: 230, amplitude: 30, speed: 0.9, phase: 2, width: 355, height: 228, src: '/images/cloud1.png', alt: 'Cloud 3' },
-  { baseTop: 100, baseLeft: 1200, amplitude: 28, speed: 1.2, phase: 3, width: 204, height: 125, src: '/images/cloud3.png', alt: 'Cloud 4' },
-  { baseTop: 600, baseLeft: 1400, amplitude: 32, speed: 1.0, phase: 4, width: 204, height: 125, src: '/images/cloud3.png', alt: 'Cloud 5' },
-];
+const CLOUD_CONFIGS = [
+  {
+    src: '/images/cloud1.png',
+    w: 270,
+    h: 174,
+    floatOpts: { baseTopVh: 4, baseLeftVw: 1, amplitude: 8, speed: 0.4, phase: 0 },
+  },
+  {
+    src: '/images/cloud2.png',
+    w: 320,
+    h: 192,
+    floatOpts: { baseTopVh: 19, baseLeftVw: 4, amplitude: 12, speed: 0.5, phase: 1.5 },
+  },
+  {
+    src: '/images/cloud1.png',
+    w: 250,
+    h: 160,
+    floatOpts: { baseTopVh: 5, baseLeftVw: 66, amplitude: 8, speed: 0.35, phase: 3 },
+  },
+  {
+    src: '/images/cloud2.png',
+    w: 300,
+    h: 180,
+    floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 },
+  },
+] as const;
 
-const Cloud = memo(({ config }: { config: CloudFloatOptions }) => {
-  const { top, left } = useCloudFloat(config);
-  const [imageError, setImageError] = useState(false);
+function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
+  const pos = useCloudFloat(floatOpts);
 
   return (
-    <Image
-      src={imageError ? '/images/fallback-cloud.png' : config.src}
-      alt={config.alt}
-      width={config.width}
-      height={config.height}
-      className="absolute z-10 opacity-80 pointer-events-none"
-      style={{
-        top: `${top}px`,
-        left: `${left}px`,
-        transform: 'translateZ(0)',
-        willChange: 'transform',
-      }}
-      onError={() => setImageError(true)}
-    />
+    <div
+      className="absolute pointer-events-none select-none"
+      style={{ top: pos.top, left: pos.left, zIndex: 6 }}
+    >
+      <Image src={src} alt="Cloud" width={w} height={h} priority style={{ height: 'auto' }} />
+    </div>
   );
-});
-
-Cloud.displayName = 'Cloud';
+}
 
 const projects: Project[] = [
   {
     id: 1,
     title: 'AI Academic Assistant',
     status: 'Pending',
-    description: 'AI Academic Assistant is a personalized exam-preparation platform that transforms a student\'s syllabus, notes, and past papers into a clear study strategy. It predicts topic weightage, highlights high-risk areas, explains concepts in exam-writing format, solves numericals step-by-step, and simulates mock tests, labs, and viva — helping students know what to study, how to write, and how to revise.',
-    techStack: ['Python', 'FastAPI', 'OpenAI', 'Next.js', 'TypeScript', 'Supabase', 'Docker', 'Tailwind CSS'],
+    description:
+      "AI Academic Assistant converts syllabus, notes, and past papers into a personalized exam strategy with predicted topic weightage and targeted revision.",
+    techStack: ['Python', 'FastAPI', 'OpenAI', 'Next.js', 'TypeScript'],
     codeUrl: 'https://github.com/micvitc/acad-assistant',
     demoUrl: 'https://drive.google.com/file/d/1p9uNLFISlp8mbNnNjeEWquToglu_Vn-A/view?usp=sharing',
-    cardImage: '/images/imageno1.png',
     previewImage: '/project/AI_Academic_Assistant_Combined.png',
+    ballImage: '/images/projects_page_new/Pokeball (1).png',
   },
   {
     id: 2,
     title: 'Autonomous Vision Warehouse Rover',
     status: 'Pending',
-    description: 'Vision-Based Autonomous Warehouse Robot is a low-cost, physical AI platform that transforms raw camera feeds, depth sensor readings, and target coordinates into intelligent indoor navigation. It detects dynamic obstacles using Tiny-YOLO, fuses multi-sensor data, and executes real-time pathfinding using a pre-trained Reinforcement Learning agent fully on-board.',
-    techStack: ['Python', 'C++', 'PyTorch', 'Tiny-YOLO', 'OpenCV', 'ROS 2', 'Raspberry Pi', 'ESP32-CAM'],
+    description:
+      'A low-cost AI rover for warehouses that fuses vision and depth data to detect obstacles and navigate indoors in real time.',
+    techStack: ['Python', 'C++', 'OpenCV', 'ROS 2', 'PyTorch'],
     codeUrl: 'https://github.com/Vision-based-Rover/Autonomous-Rover',
-    cardImage: '/images/imageno2.png',
     previewImage: '/images/imageno2.png',
+    ballImage: '/images/projects_page_new/Pokeball (2).png',
   },
   {
     id: 3,
     title: 'TASA CodeCraft',
     status: 'Pending',
-    description: 'TASA CodeCraft is built to guide students step by step toward their dream job. Instead of random preparation, it provides a clear path covering DSA, System Design, Aptitude, and Core CS along with company-specific practice and daily challenges. A smart dashboard tracks strengths, weaknesses, and progress — turning placement prep into a focused, goal-driven journey.',
-    techStack: ['Java', 'Spring Boot', 'React', 'MySQL', 'Redis', 'Docker', 'JWT'],
+    description:
+      'A guided placement preparation system covering DSA, system design, aptitude, and core CS with adaptive progress tracking.',
+    techStack: ['Java', 'Spring Boot', 'React', 'MySQL', 'Redis'],
     codeUrl: 'https://github.com/TASA-Code-Craft/frontend',
     demoUrl: 'https://drive.google.com/file/d/1G1erMBSeZ0qpF-bgSSPyXWx0wLnjMlpq/view?usp=sharing',
-    cardImage: '/images/imageno3.png',
     previewImage: '/project/TASA_CodeCraft.png',
+    ballImage: '/images/projects_page_new/Pokeball (3).png',
+  },
+  {
+    id: 4,
+    title: 'Project Slot 04',
+    status: 'In Progress',
+    description: 'Upcoming project showcase slot for the current tenure.',
+    techStack: ['Coming Soon'],
+    ballImage: '/images/projects_page_new/Pokeball (4).png',
+  },
+  {
+    id: 5,
+    title: 'Project Slot 05',
+    status: 'In Progress',
+    description: 'Upcoming project showcase slot for the current tenure.',
+    techStack: ['Coming Soon'],
+    ballImage: '/images/projects_page_new/Pokeball (5).png',
+  },
+  {
+    id: 6,
+    title: 'Project Slot 06',
+    status: 'Pending',
+    description: 'Upcoming project showcase slot for the current tenure.',
+    techStack: ['Coming Soon'],
+    ballImage: '/images/projects_page_new/Pokeball (6).png',
   },
 ];
 
-const ProjectsPage: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
+const ProjectsPage = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [animatingProjectId, setAnimatingProjectId] = useState<number | null>(null);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(mediaQuery.matches);
-    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-      clearTimeout(timer);
-    };
-  }, []);
+  const handleProjectClick = (project: Project) => {
+    if (animatingProjectId !== null) return;
+    setAnimatingProjectId(project.id);
+    setTimeout(() => {
+      setSelectedProject(project);
+      setAnimatingProjectId(null);
+    }, 700);
+  };
 
-  const getThemeColors = (): ThemeColors => ({
-    background: isDarkMode
-      ? 'linear-gradient(to bottom, #00040d 0%, #002855 100%)'
-      : 'linear-gradient(to bottom, #e0f2fe 0%, #87ceeb 100%)',
-    lineColor: isDarkMode ? '#0B3A79' : '#1e88e5',
-    borderColor: isDarkMode ? '#1e40af' : '#3b82f6',
-    textColor: isDarkMode ? 'text-white' : 'text-gray-900',
-    gridOpacity: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.3)',
-  });
+  const nextProject = () => {
+    if (!selectedProject) return;
+    const currentIndex = projects.findIndex((p) => p.id === selectedProject.id);
+    const nextIdx = (currentIndex + 1) % projects.length;
+    setSelectedProject(projects[nextIdx]);
+  };
 
-  const themeColors = getThemeColors();
-  const activeProject = projects[activeIndex];
+  const prevProject = () => {
+    if (!selectedProject) return;
+    const currentIndex = projects.findIndex((p) => p.id === selectedProject.id);
+    const prevIdx = (currentIndex - 1 + projects.length) % projects.length;
+    setSelectedProject(projects[prevIdx]);
+  };
 
   return (
     <div
-      className="w-screen relative overflow-hidden flex flex-col"
+      className="w-full h-screen relative overflow-hidden select-none"
       style={{
-        height: '100dvh',
-        backgroundImage: `
-          linear-gradient(to right, ${themeColors.gridOpacity} 1px, transparent 1px),
-          linear-gradient(to bottom, ${themeColors.gridOpacity} 1px, transparent 1px),
-          ${themeColors.background}
-        `,
-        backgroundSize: '30px 30px, 30px 30px, 100% 100%',
-        userSelect: 'none',
+        background:
+          'linear-gradient(180deg,#1188EE 0%,#0E8AEA 24.52%,#1093EB 35.07%,#1197EC 45.67%,#16B6F4 52.35%,#10CBF1 56.04%,#0FC6F1 59.73%,#15DEF0 64.76%,#15DEF0 81.25%)',
       }}
     >
-      {isLoading ? (
-        <div className="animate-pulse text-center z-20 absolute inset-0 flex flex-col items-center justify-center">
-          <div className={`h-8 w-48 ${themeColors.textColor} bg-opacity-20 bg-current rounded mb-4`} />
-          <div className={`h-6 w-64 ${themeColors.textColor} bg-opacity-20 bg-current rounded`} />
-        </div>
+      {/* Subtle grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 0,
+          opacity: 0.08,
+          backgroundImage:
+            'linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)',
+          backgroundSize: '30px 30px',
+        }}
+      />
+
+      {CLOUD_CONFIGS.map((cfg, i) => (
+        <FloatingCloud key={i} {...cfg} />
+      ))}
+
+      <div
+        className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{
+          bottom: '72px',
+          height: '40vh',
+          backgroundImage: "url('/big_cloud.svg')",
+          backgroundRepeat: 'repeat-x',
+          backgroundPosition: 'bottom',
+          backgroundSize: 'auto 100%',
+          zIndex: 2,
+        }}
+      />
+
+      <div
+        className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{
+          bottom: '72px',
+          height: '28vh',
+          backgroundImage: "url('/cityscape.svg')",
+          backgroundRepeat: 'repeat-x',
+          backgroundPosition: 'bottom',
+          backgroundSize: 'auto 100%',
+          zIndex: 3,
+        }}
+      />
+
+      <div
+        className="absolute left-0 right-0 pointer-events-none select-none"
+        style={{
+          bottom: '62px',
+          height: '16vh',
+          backgroundImage: "url('/pixel_bushes.svg')",
+          backgroundRepeat: 'repeat-x',
+          backgroundPosition: 'bottom',
+          backgroundSize: 'auto 100%',
+          zIndex: 4,
+        }}
+      />
+
+
+
+      {/* Dynamic Top-Right Close Button */}
+      {selectedProject ? (
+        <button
+          onClick={() => setSelectedProject(null)}
+          className="absolute right-6 top-6 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
+          aria-label="Close project details"
+          type="button"
+        >
+          X
+        </button>
       ) : (
+        <Link
+          href="/main"
+          className="absolute right-6 top-6 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
+          aria-label="Close and return to home"
+        >
+          X
+        </Link>
+      )}
+
+      {/* Closed State Only Elements */}
+      {!selectedProject && (
         <>
-          {/* Clouds */}
-          <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
-            {cloudConfig.map((config, index) => (
-              <Cloud key={index} config={config} />
-            ))}
+          {/* Pikachu Sprite with Bobbing (Increased size) */}
+          <motion.div
+            className="absolute left-[6vw] bottom-[15vh] md:bottom-[22vh] z-30 w-28 md:w-36 pointer-events-none"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/25.png"
+              alt="Pikachu"
+              className="w-full h-auto object-contain animate-bobbing"
+              style={{ imageRendering: 'pixelated', transform: 'scaleX(-1)' }}
+            />
+          </motion.div>
+
+          {/* Wigglytuff Sprite (Increased size) */}
+          <div className="absolute right-[6vw] bottom-[9vh] md:bottom-[11vh] z-30 w-28 md:w-36 pointer-events-none">
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/40.png"
+              alt="Wigglytuff"
+              className="w-full h-auto object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
           </div>
 
-          {/* ── Header ── */}
-          <div className="w-full px-6 pt-5 pb-3 z-30 pointer-events-none text-center flex-shrink-0">
-            <h1
-              className={`${themeColors.textColor} font-press-start`}
-              style={{ fontSize: 'clamp(1.2rem, 4vw, 3rem)' }}
-            >
-              Projects
-            </h1>
-          </div>
+          {/* Pidgeot Sprite */}
+          <motion.div
+            className="absolute right-[22vw] top-[14vh] z-20 w-16 md:w-24 pointer-events-none"
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img
+              src="/pixel_bird.svg"
+              alt="Pidgeot"
+              className="w-full h-auto object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </motion.div>
+        </>
+      )}
 
-          {/* ── Body row: content | sidebar right ── */}
-          <div className="flex-1 min-h-0 flex flex-row z-20" style={{ paddingLeft: 'clamp(8px, 2vw, 24px)', paddingBottom: 'clamp(8px, 2vh, 24px)' }}>
+      {/* Open State Only Elements */}
+      {selectedProject && (
+        <>
+          {/* Flappy Bird Sprite */}
+          <motion.div
+            className="absolute right-[10vw] top-[14vh] z-20 w-12 md:w-16 pointer-events-none"
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img
+              src="/images/bird.png"
+              alt="Flappy Bird"
+              className="w-full h-auto object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </motion.div>
+        </>
+      )}
 
-            {/* MAIN CONTENT: vertically centered */}
-            <div className="flex-1 min-w-0 flex items-center justify-center p-4 lg:px-8 xl:px-12">
-              <div
-                className="relative w-full max-w-4xl flex flex-col md:flex-row gap-6 lg:gap-10 items-center"
-                style={{ padding: 'clamp(16px, 3vw, 40px)', background: 'rgba(0,0,0,0.15)', borderRadius: 4 }}
+      {/* Closed State Grid View */}
+      {!selectedProject && (
+        <main
+          className="relative mx-auto flex w-full max-w-4xl flex-col items-center justify-center px-4"
+          style={{ zIndex: 20, height: 'calc(100vh - 72px)', paddingTop: '70px', paddingBottom: '16px' }}
+        >
+          <h1
+            className="font-press-start text-black select-none pointer-events-none"
+            style={{
+              fontSize: 'clamp(1.3rem, 4.2vw, 2.8rem)',
+              textShadow: '2px 2px 0 rgba(255,255,255,0.5)',
+            }}
+          >
+            Projects
+          </h1>
+
+          <div
+            className="mt-6 grid w-full grid-cols-2 gap-2 md:grid-cols-3 md:gap-5"
+            style={{ maxWidth: '760px' }}
+          >
+            {projects.map((project) => (
+              <button
+                key={project.id}
+                onClick={() => handleProjectClick(project)}
+                className="group relative mx-auto w-full max-w-[176px] transition-transform duration-150 hover:scale-[1.04] active:scale-[0.98]"
+                type="button"
+                aria-label={`Open ${project.title}`}
               >
-                {/* Corner borders */}
-                <div className="absolute -inset-2 pointer-events-none z-0 opacity-60 hidden lg:block">
-                  <Image src={'/images/borders/tt.png'} alt='' width={32} height={32} className='absolute top-0 left-0' />
-                  <Image src={'/images/borders/tr.png'} alt='' width={32} height={32} className='absolute top-0 right-0' />
-                  <Image src={'/images/borders/bl.png'} alt='' width={32} height={32} className='absolute bottom-0 left-0' />
-                  <Image src={'/images/borders/rb.png'} alt='' width={32} height={32} className='absolute bottom-0 right-0' />
-                </div>
-
-                {/* Project Preview Image — click to expand */}
-                <div
-                  className="relative z-10 hidden sm:flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-zoom-in group"
-                  style={{ width: 'clamp(200px, 28vw, 420px)', aspectRatio: '4/3' }}
-                  onClick={() => setLightboxOpen(true)}
-                  title="Click to expand"
-                >
-                  <div className="relative w-full h-full border-[6px] border-black overflow-hidden shadow-xl">
+                <div className="relative mx-auto aspect-[1/1.02] w-full">
+                  {/* Pokeball Image with Framer Motion Shake Animation */}
+                  <motion.div
+                    className="absolute left-1/2 top-[5%] w-[88%] h-auto -translate-x-1/2 origin-bottom"
+                    animate={
+                      animatingProjectId === project.id
+                        ? {
+                            rotate: [0, -15, 15, -10, 10, -5, 5, 0],
+                            y: [0, -4, 2, -2, 1, 0],
+                          }
+                        : {}
+                    }
+                    transition={{
+                      duration: 0.6,
+                      ease: 'easeInOut',
+                    }}
+                  >
                     <Image
-                      src={activeProject.previewImage}
-                      alt={activeProject.title}
-                      fill
-                      className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                      src={project.ballImage}
+                      alt={project.title}
+                      width={150}
+                      height={124}
+                      className="w-full h-auto"
                       priority
                     />
-                    {/* Expand hint overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center pointer-events-none">
-                      <svg className="w-10 h-10 text-white opacity-0 group-hover:opacity-90 transition-opacity duration-200 drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                      </svg>
-                    </div>
-                  </div>
+                  </motion.div>
+
+                  {/* Release Flash Pulse */}
+                  <AnimatePresence>
+                    {animatingProjectId === project.id && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0.95 }}
+                        animate={{ scale: 2.8, opacity: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6, ease: 'easeOut' }}
+                        className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-[100]"
+                        style={{
+                          width: 150,
+                          height: 150,
+                          background:
+                            'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(142,214,255,0.95) 45%, rgba(255,255,255,0) 70%)',
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  <Image
+                    src="/images/projects_page_new/Podium.png"
+                    alt="Pokeball base"
+                    width={160}
+                    height={56}
+                    className="absolute bottom-[4%] left-1/2 w-[86%] h-auto -translate-x-1/2"
+                    priority
+                  />
                 </div>
+                <span
+                  className="absolute left-1/2 bottom-[14%] -translate-x-1/2 whitespace-nowrap bg-black/65 px-2 py-1 font-press-start text-[7px] text-white md:text-[8px]"
+                >
+                  {project.title}
+                </span>
+              </button>
+            ))}
+          </div>
+        </main>
+      )}
 
+      {/* Open State Modal View with Event Pass-Through (pointer-events-none) */}
+      {selectedProject && (
+        <div
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pointer-events-none"
+          style={{ paddingTop: '88px', paddingBottom: '136px' }}
+        >
+          {/* Main Frame Container - scaled up from max-w-[700px] to max-w-[920px] */}
+          <div className="relative w-full max-w-[920px] bg-[#FFEFE5] border-[6px] border-black rounded-[36px] p-4 md:p-5 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto">
+            
+            {/* Open Pokeball (Top-Left corner - scaled up) */}
+            <div className="absolute -left-11 -top-11 w-28 h-28 md:w-36 md:h-36 z-30 pointer-events-none select-none">
+              <Image
+                src="/images/projects_page_new/project_opened/pokeball-open.svg"
+                alt="Open Pokeball"
+                width={144}
+                height={144}
+                className="w-full h-auto object-contain"
+                priority
+              />
+            </div>
 
+            {/* Wartortle Sprite (Bottom-Right corner - scaled up) */}
+            <div className="absolute -right-10 -bottom-8 w-32 h-32 md:w-44 md:h-44 z-30 pointer-events-none select-none">
+              <Image
+                src="/images/projects_page_new/project_opened/Wartortle.svg"
+                alt="Wartortle"
+                width={176}
+                height={176}
+                className="w-full h-auto object-contain"
+                priority
+              />
+            </div>
 
-                {/* Text Info */}
-                <div className="flex-1 flex flex-col justify-center gap-4 lg:gap-5 z-10 min-w-0">
-                  {/* Title + Status */}
-                  <div>
-                    <h2 className="font-press-start text-white leading-tight mb-3"
-                      style={{ fontSize: 'clamp(14px, 2vw, 28px)' }}>
-                      {activeProject.title}
-                    </h2>
-                    <span className="px-3 py-1 text-[10px] font-press-start bg-pink-200 text-black border-2 border-black whitespace-nowrap">
-                      {activeProject.status}
+            {/* Left Navigation Arrow */}
+            <button
+              onClick={prevProject}
+              className="absolute left-2 md:-left-20 top-1/2 -translate-y-1/2 z-40 flex h-11 w-11 md:h-14 md:w-14 items-center justify-center border-4 border-black bg-[#CCCCCC] rounded-full hover:bg-[#BBBBBB] active:scale-95 transition-transform"
+              aria-label="Previous project"
+              type="button"
+            >
+              <svg className="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none">
+                <polygon points="16,6 8,12 16,18" fill="#555555" />
+              </svg>
+            </button>
+            
+            {/* Right Navigation Arrow */}
+            <button
+              onClick={nextProject}
+              className="absolute right-2 md:-right-20 top-1/2 -translate-y-1/2 z-40 flex h-11 w-11 md:h-14 md:w-14 items-center justify-center border-4 border-black bg-[#CCCCCC] rounded-full hover:bg-[#BBBBBB] active:scale-95 transition-transform"
+              aria-label="Next project"
+              type="button"
+            >
+              <svg className="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none">
+                <polygon points="8,6 16,12 8,18" fill="#555555" />
+              </svg>
+            </button>
+
+            {/* Orange/Brown Title Bar */}
+            <div className="mx-auto -mt-2 md:-mt-3 mb-3 bg-[#CC5229] border-4 border-black rounded-full px-6 py-1.5 md:py-2 max-w-[85%] text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+              <span className="font-press-start text-[9px] md:text-xs text-black uppercase tracking-wider block whitespace-nowrap overflow-hidden text-ellipsis">
+                {selectedProject.title}
+              </span>
+            </div>
+
+            {/* Inner White Body Card (Increased min-height) */}
+            <div className="relative bg-white border-4 border-black rounded-2xl p-4 md:p-6 flex-1 min-h-[320px] md:min-h-[380px] flex flex-col justify-between">
+              
+              <div className="grid gap-5 md:grid-cols-[1.3fr_1fr] flex-1 overflow-y-auto px-6 md:px-0 pb-1">
+                {/* Details (Left Side) */}
+                <div className="flex flex-col justify-start">
+                  <h2 className="font-press-start text-black text-xs md:text-sm tracking-wide leading-tight">
+                    {selectedProject.title}
+                  </h2>
+                  
+                  {/* Status */}
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <span className="font-press-start text-[7px] md:text-[8px] text-black/50">STATUS:</span>
+                    <span className={`border-2 border-black px-2 py-0.5 font-press-start text-[6px] md:text-[7px] text-black ${
+                      selectedProject.status === 'Completed' ? 'bg-[#4ade80]' :
+                      selectedProject.status === 'In Progress' ? 'bg-[#facc15]' :
+                      'bg-[#fb923c]'
+                    }`}>
+                      {selectedProject.status.toUpperCase()}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p className="leading-relaxed text-slate-100 font-mono"
-                    style={{ fontSize: 'clamp(11px, 1.1vw, 15px)' }}>
-                    {activeProject.description}
+                  <p className="mt-3.5 font-mono text-[11px] md:text-[12.5px] leading-relaxed text-black/80 max-h-[120px] md:max-h-[140px] overflow-y-auto pr-1">
+                    {selectedProject.description}
                   </p>
 
                   {/* Tech Stack */}
-                  <div>
-                    <p className="font-press-start tracking-wide text-white mb-2"
-                      style={{ fontSize: 'clamp(9px, 0.9vw, 12px)' }}>
-                      Tech Stack:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {activeProject.techStack.map((tech) => (
-                        <span key={tech}
-                          className="px-2 py-1 font-mono bg-black text-white border border-white/40 uppercase"
-                          style={{ fontSize: 'clamp(9px, 0.85vw, 12px)' }}>
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA Buttons */}
-                  <div className="flex flex-wrap gap-3 mt-1">
-                    {activeProject.codeUrl && (
-                      <Link href={activeProject.codeUrl} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 font-press-start bg-black text-white border-2 border-white hover:translate-y-[-2px] active:translate-y-[0px] transition-transform shadow-lg"
-                        style={{ fontSize: 'clamp(9px, 0.9vw, 12px)' }}>
-                        <svg className="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-                        <span>CODE</span>
-                      </Link>
-                    )}
-                    {activeProject.demoUrl && (
-                      <Link href={activeProject.demoUrl} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 font-press-start bg-pink-200 text-black border-2 border-black hover:translate-y-[-2px] active:translate-y-[0px] transition-transform shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                        style={{ fontSize: 'clamp(9px, 0.9vw, 12px)' }}>
-                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                        <span>DEMO</span>
-                      </Link>
-                    )}
+                  <div className="mt-3 flex flex-wrap gap-1 md:gap-1.5">
+                    {selectedProject.techStack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="border-2 border-black bg-gray-100 px-1.5 py-0.5 font-press-start text-[6px] md:text-[7px] text-black"
+                      >
+                        {tech}
+                      </span>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* RIGHT SIDEBAR: project selector cards — no right padding, flush to edge */}
-            <div
-              className="flex-shrink-0 z-20 flex flex-col"
-              style={{ width: 'clamp(155px, 19vw, 320px)', pointerEvents: 'none' }}
-            >
-              {projects.map((project, index) => (
-                <button
-                  key={project.id}
-                  onClick={() => setActiveIndex(index)}
-                  style={{ pointerEvents: 'auto' }}
-                  className={`relative flex-1 w-full group outline-none transition-transform duration-300 ease-out ${activeIndex === index ? 'translate-x-[-12px]' : 'translate-x-[0px] hover:translate-x-[-8px]'}`}
-                >
-                  <div className="relative w-full h-full">
+                {/* Preview Image (Right Side) */}
+                <div className="relative min-h-[140px] md:min-h-full border-4 border-black rounded-lg bg-gray-50 overflow-hidden flex items-center justify-center">
+                  {selectedProject.previewImage ? (
                     <Image
-                      src={project.cardImage}
-                      alt={`Select ${project.title}`}
+                      src={selectedProject.previewImage}
+                      alt={selectedProject.title}
                       fill
-                      className="object-contain object-right"
-                      sizes="240px"
-                      priority
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 30vw"
                     />
-                  </div>
-                </button>
-              ))}
+                  ) : (
+                    <div className="p-4 text-center font-press-start text-[8px] md:text-[9px] text-gray-400 leading-normal">
+                      Preview coming soon
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-4 pt-3 border-t border-gray-100 flex flex-wrap gap-3 px-6 md:px-0">
+                {selectedProject.codeUrl && (
+                  <Link
+                    href={selectedProject.codeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border-4 border-black bg-[#0e8aea] px-4 py-2 font-press-start text-[8px] md:text-[9px] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all"
+                  >
+                    VIEW CODE
+                  </Link>
+                )}
+                {selectedProject.demoUrl && (
+                  <Link
+                    href={selectedProject.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border-4 border-black bg-[#f5c14f] px-4 py-2 font-press-start text-[8px] md:text-[9px] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all"
+                  >
+                    VIEW DEMO
+                  </Link>
+                )}
+              </div>
+
             </div>
           </div>
-          {/* Lightbox - Moved outside constrained containers for higher z-index stacking context */}
-          {lightboxOpen && (
-            <div
-              className="fixed inset-0 z-40 flex items-center justify-center bg-black/80"
-              style={{ backdropFilter: 'blur(4px)' }}
-              onClick={() => setLightboxOpen(false)}
-            >
-              <div
-                className="relative max-w-[90vw] max-h-[90vh] shadow-2xl border-4 border-white/30"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Image
-                  src={activeProject.previewImage}
-                  alt={activeProject.title}
-                  width={1280}
-                  height={800}
-                  className="object-contain max-h-[88vh] w-auto"
-                  style={{ display: 'block' }}
-                  priority
-                />
-                <button
-                  onClick={() => setLightboxOpen(false)}
-                  className="absolute top-3 right-3 w-9 h-9 bg-black/70 text-white rounded-full flex items-center justify-center text-lg font-bold hover:bg-red-500 transition-colors"
-                  aria-label="Close"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          )}
-        </>
+        </div>
       )}
+
+      {/* Footer Ground Marquee */}
+      <div
+        className="absolute bottom-0 left-0 right-0 flex items-center overflow-hidden"
+        style={{ height: '72px', background: '#CC9339', borderTop: '8px solid #589B00', zIndex: 40 }}
+      >
+        <div className="relative flex w-full overflow-x-hidden pointer-events-none">
+          <div
+            className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
+            style={{ color: '#5E3A00', fontSize: 'clamp(10px,1.3vw,14px)' }}
+          >
+            {Array.from({ length: 10 }).map((_, index) => (
+              <span key={index} className="mx-8">
+                MICROSOFT INNOVATIONS CLUB TENURE 2026-2027
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default memo(ProjectsPage);
+export default ProjectsPage;
