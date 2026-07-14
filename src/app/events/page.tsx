@@ -321,7 +321,7 @@ const EventsPage = () => {
 				</h1>
 
 				{/* Scrollable Grid Container */}
-				<div className="flex-1 w-full overflow-y-auto pr-2 custom-scrollbar" style={{ zIndex: 12 }}>
+				<div className="flex-1 w-full overflow-y-auto no-scrollbar" style={{ zIndex: 12 }}>
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center w-full pt-4 px-2 pb-8">
 						{events.map((event, idx) => (
 							<motion.div
