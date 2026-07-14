@@ -147,11 +147,6 @@ const LandingPage = () => {
         background: "linear-gradient(180deg,#1188EE 0%,#0E8AEA 24.52%,#1093EB 35.07%,#1197EC 45.67%,#16B6F4 52.35%,#10CBF1 56.04%,#0FC6F1 59.73%,#15DEF0 64.76%,#15DEF0 81.25%)",
       }}
     >
-      {/* Subtle grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: 0, opacity: 0.08, backgroundImage: "linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)", backgroundSize: "30px 30px" }}
-      />
 
       {/* Social icons */}
       <div className="absolute top-4 right-5 z-50 flex items-center gap-2">
