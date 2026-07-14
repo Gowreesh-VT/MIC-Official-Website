@@ -301,14 +301,21 @@ const EventsPage = () => {
 				{/* Top-Right: Close Button */}
 				<Link
 					href="/main"
-					className="absolute top-6 right-6 md:right-12 z-50 flex items-center justify-center bg-[#E54A19] border-4 border-black hover:bg-red-700 transition-colors shadow-[4px_4px_0px_#000000] cursor-pointer hover:scale-105"
+					className="absolute top-6 right-6 md:right-12 z-50 hover:scale-105 transition-transform duration-200"
 					style={{
 						width: "clamp(38px, 4.5vw, 48px)",
 						height: "clamp(38px, 4.5vw, 48px)",
-						borderRadius: "0px",
 					}}
 				>
-					<span className="font-press-start text-black text-xl font-bold" style={{ textShadow: "none" }}>X</span>
+					<Image
+						src="/close_button.svg"
+						alt="Close"
+						width={48}
+						height={48}
+						className="object-contain"
+						priority
+						style={{ height: "auto" }}
+					/>
 				</Link>
 
 				<h1
