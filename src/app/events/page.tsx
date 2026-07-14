@@ -377,7 +377,7 @@ const EventsPage = () => {
 						onClick={() => setOpenCard(null)}
 					>
 						<motion.div
-							className="bg-[#FFB59F] border-4 border-black rounded-[12px] p-[6px] relative w-full max-w-[550px] shadow-2xl flex flex-col"
+							className="bg-[#FFB59F] border-4 border-black rounded-[12px] p-[6px] relative w-full max-w-[720px] shadow-2xl flex flex-col"
 							initial={{ scale: 0.9, y: 20 }}
 							animate={{ scale: 1, y: 0 }}
 							exit={{ scale: 0.9, y: 20 }}
