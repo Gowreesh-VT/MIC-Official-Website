@@ -162,17 +162,7 @@ const EventsPage = () => {
 				background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 24.52%, #1093EB 35.07%, #1197EC 45.67%, #16B6F4 52.35%, #10CBF1 56.04%, #0FC6F1 59.73%, #15DEF0 64.76%, #15DEF0 81.25%)",
 			}}
 		>
-			{/* ─── Faint grid overlay ────────────────────────────────────────── */}
-			<div
-				className="absolute inset-0 pointer-events-none"
-				style={{
-					zIndex: 0,
-					opacity: 0.08,
-					backgroundImage:
-						"linear-gradient(to right,rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,1) 1px,transparent 1px)",
-					backgroundSize: "30px 30px",
-				}}
-			/>
+
 
 			{/* Floating small clouds (matches home page) */}
 			{CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
@@ -247,8 +237,6 @@ const EventsPage = () => {
 
 			{/* ─── PAGE CONTENT (Viewport-locked wrapper, flex layout) ─────── */}
 			<div className="relative w-full h-full z-10 flex flex-col items-center pt-24 pb-28 px-4 md:px-8 max-w-7xl mx-auto">
-				
-				{/* Top-left honeycomb logo is rendered globally by ConditionalNavbar */}
 
 				{/* Center Sky: Bobbing Retro Bird */}
 				<motion.div
@@ -280,7 +268,6 @@ const EventsPage = () => {
 					<span className="font-press-start text-black text-xl font-bold" style={{ textShadow: "none" }}>X</span>
 				</Link>
 
-				{/* Title Heading — static events page title, no white shadow */}
 				<h1
 					className="font-press-start text-black text-center mb-10 tracking-wider select-none shrink-0"
 					style={{
@@ -292,7 +279,7 @@ const EventsPage = () => {
 
 				{/* Scrollable Grid Container */}
 				<div className="flex-1 w-full overflow-y-auto pr-2 custom-scrollbar" style={{ zIndex: 12 }}>
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center w-full pb-8">
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center w-full pt-4 px-2 pb-8">
 						{events.map((event, idx) => (
 							<motion.div
 								key={idx}
