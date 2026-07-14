@@ -249,23 +249,13 @@ const ProjectsPage = () => {
         }}
       />
 
-      {/* Top Left Logo (Visible in both states) */}
-      <div className="absolute left-4 top-4 z-40 pointer-events-auto">
-        <Image
-          src="/mic_logo_pixel.svg"
-          alt="MIC Logo"
-          width={56}
-          height={56}
-          className="h-auto w-12 md:w-16 object-contain cursor-pointer"
-          priority
-        />
-      </div>
+
 
       {/* Dynamic Top-Right Close Button */}
       {selectedProject ? (
         <button
           onClick={() => setSelectedProject(null)}
-          className="absolute right-4 top-4 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
+          className="absolute right-6 top-6 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
           aria-label="Close project details"
           type="button"
         >
@@ -274,7 +264,7 @@ const ProjectsPage = () => {
       ) : (
         <Link
           href="/main"
-          className="absolute right-4 top-4 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
+          className="absolute right-6 top-6 z-40 flex h-12 w-12 items-center justify-center border-4 border-black bg-[#ff4b4b] text-black font-press-start text-xl leading-none hover:brightness-95 active:scale-95 transition-transform"
           aria-label="Close and return to home"
         >
           X
@@ -284,9 +274,9 @@ const ProjectsPage = () => {
       {/* Closed State Only Elements */}
       {!selectedProject && (
         <>
-          {/* Pikachu Sprite with Bobbing */}
+          {/* Pikachu Sprite with Bobbing (Increased size) */}
           <motion.div
-            className="absolute left-[6vw] bottom-[15vh] md:bottom-[22vh] z-30 w-16 md:w-24 pointer-events-none"
+            className="absolute left-[6vw] bottom-[15vh] md:bottom-[22vh] z-30 w-28 md:w-36 pointer-events-none"
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           >
@@ -298,8 +288,8 @@ const ProjectsPage = () => {
             />
           </motion.div>
 
-          {/* Wigglytuff Sprite */}
-          <div className="absolute right-[6vw] bottom-[9vh] md:bottom-[11vh] z-30 w-16 md:w-24 pointer-events-none">
+          {/* Wigglytuff Sprite (Increased size) */}
+          <div className="absolute right-[6vw] bottom-[9vh] md:bottom-[11vh] z-30 w-28 md:w-36 pointer-events-none">
             <img
               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/40.png"
               alt="Wigglytuff"
@@ -441,30 +431,30 @@ const ProjectsPage = () => {
       {selectedProject && (
         <div
           className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pointer-events-none"
-          style={{ paddingTop: '80px', paddingBottom: '80px' }}
+          style={{ paddingTop: '88px', paddingBottom: '136px' }}
         >
-          {/* Main Frame Container - pointer-events-auto lets interactive elements work */}
-          <div className="relative w-full max-w-[700px] bg-[#FFEFE5] border-[6px] border-black rounded-[36px] p-3 md:p-4 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto">
+          {/* Main Frame Container - scaled up from max-w-[700px] to max-w-[920px] */}
+          <div className="relative w-full max-w-[920px] bg-[#FFEFE5] border-[6px] border-black rounded-[36px] p-4 md:p-5 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto">
             
-            {/* Open Pokeball (Top-Left corner) */}
-            <div className="absolute -left-9 -top-9 w-24 h-24 md:w-28 md:h-28 z-30 pointer-events-none select-none">
+            {/* Open Pokeball (Top-Left corner - scaled up) */}
+            <div className="absolute -left-11 -top-11 w-28 h-28 md:w-36 md:h-36 z-30 pointer-events-none select-none">
               <Image
                 src="/images/projects_page_new/project_opened/pokeball-open.svg"
                 alt="Open Pokeball"
-                width={112}
-                height={112}
+                width={144}
+                height={144}
                 className="w-full h-auto object-contain"
                 priority
               />
             </div>
 
-            {/* Wartortle Sprite (Bottom-Right corner) */}
-            <div className="absolute -right-8 -bottom-7 w-28 h-28 md:w-36 md:h-36 z-30 pointer-events-none select-none">
+            {/* Wartortle Sprite (Bottom-Right corner - scaled up) */}
+            <div className="absolute -right-10 -bottom-8 w-32 h-32 md:w-44 md:h-44 z-30 pointer-events-none select-none">
               <Image
                 src="/images/projects_page_new/project_opened/Wartortle.svg"
                 alt="Wartortle"
-                width={144}
-                height={144}
+                width={176}
+                height={176}
                 className="w-full h-auto object-contain"
                 priority
               />
@@ -501,8 +491,8 @@ const ProjectsPage = () => {
               </span>
             </div>
 
-            {/* Inner White Body Card */}
-            <div className="relative bg-white border-4 border-black rounded-2xl p-4 md:p-6 flex-1 min-h-[280px] md:min-h-[320px] flex flex-col justify-between">
+            {/* Inner White Body Card (Increased min-height) */}
+            <div className="relative bg-white border-4 border-black rounded-2xl p-4 md:p-6 flex-1 min-h-[320px] md:min-h-[380px] flex flex-col justify-between">
               
               <div className="grid gap-5 md:grid-cols-[1.3fr_1fr] flex-1 overflow-y-auto px-6 md:px-0 pb-1">
                 {/* Details (Left Side) */}
