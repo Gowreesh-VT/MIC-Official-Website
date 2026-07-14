@@ -95,6 +95,7 @@ const LandingPage = () => {
 
   // Measure a single item's rendered height so the scroll animation is pixel-perfect
   const firstItemRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
   const [itemH, setItemH] = useState(36); // fallback px
 
   useEffect(() => {
@@ -136,6 +137,24 @@ const LandingPage = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  /* ── Mouse wheel navigation ──────────────────────────────────────────── */
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        setSelectedIdx(i => (i + 1) % MENU_ITEMS.length);
+      } else if (e.deltaY < 0) {
+        setSelectedIdx(i => (i - 1 + MENU_ITEMS.length) % MENU_ITEMS.length);
+      }
+    };
+
+    nav.addEventListener("wheel", handleWheel, { passive: false });
+    return () => nav.removeEventListener("wheel", handleWheel);
+  }, []);
 
   const canScrollUp   = windowStart > 0;
   const canScrollDown = windowStart + VISIBLE < MENU_ITEMS.length;
@@ -233,22 +252,23 @@ const LandingPage = () => {
             Shows VISIBLE=5 items. Slides when cursor moves beyond range.
         ─────────────────────────────────────────────────────────────── */}
         <nav
+          ref={navRef}
           aria-label="Main navigation"
           className="font-press-start pointer-events-auto w-full flex flex-col items-center"
           style={{ marginTop: "clamp(6px, 1vh, 16px)" }}
         >
-          {/* Up scroll indicator — only shown when items above are hidden */}
+          {/* Up scroll indicator — clickable to scroll up */}
           <motion.div
+            onClick={() => setSelectedIdx(i => (i - 1 + MENU_ITEMS.length) % MENU_ITEMS.length)}
             animate={{ opacity: canScrollUp ? 1 : 0 }}
             transition={{ duration: 0.15 }}
-            className="font-press-start text-center"
+            className="font-press-start text-center cursor-pointer pointer-events-auto"
             style={{
               fontSize: "clamp(8px, 1vw, 12px)",
               color: "#fff",
               textShadow: "1px 1px 0 #003399",
               marginBottom: "2px",
               userSelect: "none",
-              pointerEvents: "none",
               height: "1.2em",
               lineHeight: 1,
             }}
@@ -312,18 +332,18 @@ const LandingPage = () => {
             </motion.div>
           </div>
 
-          {/* Down scroll indicator — only shown when items below are hidden */}
+          {/* Down scroll indicator — clickable to scroll down */}
           <motion.div
+            onClick={() => setSelectedIdx(i => (i + 1) % MENU_ITEMS.length)}
             animate={{ opacity: canScrollDown ? 1 : 0 }}
             transition={{ duration: 0.15 }}
-            className="font-press-start text-center"
+            className="font-press-start text-center cursor-pointer pointer-events-auto"
             style={{
               fontSize: "clamp(8px, 1vw, 12px)",
               color: "#fff",
               textShadow: "1px 1px 0 #003399",
               marginTop: "2px",
               userSelect: "none",
-              pointerEvents: "none",
               height: "1.2em",
               lineHeight: 1,
             }}
