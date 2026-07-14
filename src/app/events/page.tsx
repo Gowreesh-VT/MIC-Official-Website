@@ -244,7 +244,7 @@ const EventsPage = () => {
 						alt="Pixel Bird"
 						fill
 						className="object-contain"
-						style={{ imageRendering: "pixelated", height: "auto" }}
+						style={{ imageRendering: "pixelated" }}
 						priority
 					/>
 				</motion.div>
