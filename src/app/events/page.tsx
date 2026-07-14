@@ -157,7 +157,7 @@ const EventsPage = () => {
 
 	return (
 		<div
-			className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden flex flex-col items-center select-none"
+			className="relative w-full h-screen overflow-hidden flex flex-col items-center select-none"
 			style={{
 				background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 24.52%, #1093EB 35.07%, #1197EC 45.67%, #16B6F4 52.35%, #10CBF1 56.04%, #0FC6F1 59.73%, #15DEF0 64.76%, #15DEF0 81.25%)",
 			}}
@@ -231,23 +231,10 @@ const EventsPage = () => {
 				</div>
 			</div>
 
-			{/* ─── SCROLLABLE PAGE CONTENT ─────────────────────────────────── */}
-			<div className="relative w-full min-h-screen z-10 flex flex-col items-center pt-28 pb-80 px-4 md:px-8">
+			{/* ─── PAGE CONTENT (Viewport-locked wrapper, flex layout) ─────── */}
+			<div className="relative w-full h-full z-10 flex flex-col items-center pt-24 pb-28 px-4 md:px-8 max-w-7xl mx-auto">
 				
-				{/* Top-Left: MIC Logo (Linked to Dashboard) */}
-				<div className="absolute top-6 left-6 md:left-12 z-50">
-					<Link href="/main">
-						<Image
-							src="/images/mic-logo.png"
-							alt="MIC Logo"
-							width={72}
-							height={72}
-							className="object-contain hover:scale-105 transition-transform duration-200"
-							priority
-							style={{ height: "auto" }}
-						/>
-					</Link>
-				</div>
+				{/* Top-left honeycomb logo is rendered globally by ConditionalNavbar */}
 
 				{/* Center Sky: Bobbing Retro Bird */}
 				<motion.div
@@ -279,27 +266,27 @@ const EventsPage = () => {
 					<span className="font-press-start text-black text-xl font-bold" style={{ textShadow: "none" }}>X</span>
 				</Link>
 
-				{/* Title Heading — static events page title */}
+				{/* Title Heading — static events page title, no white shadow */}
 				<h1
-					className="font-press-start text-black text-center mb-16 tracking-wider select-none"
+					className="font-press-start text-black text-center mb-10 tracking-wider select-none shrink-0"
 					style={{
-						fontSize: "clamp(2.2rem, 5.5vw, 3.8rem)",
-						textShadow: "4px 4px 0px #FFFFFF",
+						fontSize: "clamp(2rem, 5vw, 3.5rem)",
 					}}
 				>
 					Events
 				</h1>
 
-				{/* Cards Responsive Grid */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl w-full mx-auto justify-items-center">
-					{events.map((event, idx) => (
-						<motion.div
-							key={idx}
-							className="flex flex-col bg-[#FFB59F] border-4 border-black rounded-[10px] p-[4px] cursor-pointer w-full max-w-[290px] h-[200px] select-none"
-							whileHover={{ scale: 1.03, y: -4 }}
-							whileTap={{ scale: 0.98 }}
-							onClick={() => setOpenCard(idx)}
-						>
+				{/* Scrollable Grid Container */}
+				<div className="flex-1 w-full overflow-y-auto pr-2 custom-scrollbar" style={{ zIndex: 12 }}>
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center w-full pb-8">
+						{events.map((event, idx) => (
+							<motion.div
+								key={idx}
+								className="flex flex-col bg-[#FFB59F] border-4 border-black rounded-[10px] p-[4px] cursor-pointer w-full max-w-[290px] h-[200px] select-none"
+								whileHover={{ scale: 1.03, y: -4 }}
+								whileTap={{ scale: 0.98 }}
+								onClick={() => setOpenCard(idx)}
+							>
 							{/* Card Header tab */}
 							<div className="h-[36px] flex items-center justify-center bg-[#A93710] border-b-4 border-black rounded-t-[6px] rounded-b-[10px] w-full">
 								<span className="font-press-start text-[11px] md:text-[12px] text-black font-bold uppercase tracking-wider">
@@ -330,6 +317,7 @@ const EventsPage = () => {
 							</div>
 						</motion.div>
 					))}
+					</div>
 				</div>
 			</div>
 
