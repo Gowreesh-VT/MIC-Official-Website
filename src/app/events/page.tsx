@@ -192,6 +192,20 @@ const EventsPage = () => {
 				}}
 			/>
 
+			{/* Cityscape backdrop */}
+			<div
+				className="fixed left-0 right-0 pointer-events-none select-none"
+				style={{
+					bottom: "72px",
+					height: "28vh",
+					backgroundImage: "url('/cityscape.svg')",
+					backgroundRepeat: "repeat-x",
+					backgroundPosition: "bottom",
+					backgroundSize: "auto 100%",
+					zIndex: 3,
+				}}
+			/>
+
 			{/* Bushes backdrop */}
 			<div
 				className="fixed left-0 right-0 pointer-events-none select-none"

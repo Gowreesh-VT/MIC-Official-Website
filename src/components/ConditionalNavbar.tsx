@@ -33,8 +33,8 @@ export default function ConditionalNavbar() {
     };
   }, [pathname]);
 
-  // Don't render navbar on home page
-  if (pathname === '/' || pathname === '/mobile') {
+  // Don't render navbar on home page or events page
+  if (pathname === '/' || pathname === '/mobile' || pathname === '/events') {
     return <Logo />;
   }
 
