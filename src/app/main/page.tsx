@@ -223,7 +223,7 @@ const LandingPage = () => {
                 letterSpacing: "0.05em",
               }}
             >
-              M!CROSOFT<br />!NNOVAT!ONS<br />CLUB.
+              M!CROSOFT<br />!NNOVAT!ONS<br />CLUB
             </h1>
           </div>
         </div>
