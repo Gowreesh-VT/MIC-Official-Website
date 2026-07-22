@@ -805,14 +805,7 @@ const GalleryPage: React.FC = () => {
           Gallery Wall
         </h1>
 
-        {/* Score display (Only when playing/dead/victory) */}
-        {gameStatus !== "idle" && (
-          <div className="absolute right-[160px] top-[40px] z-30 bg-black/80 border-4 border-black p-3 text-[12px] text-yellow-400 font-press-start shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
-            SCORE: {score} / 4
-          </div>
-        )}
-
-        {/* Green Mario Pipes */}
+        {/* Green Mario Pipes (Tubes) */}
         {layout.pipes.map((pipe, idx) => (
           <RetroPipe
             key={`pipe-${idx}`}
@@ -832,9 +825,7 @@ const GalleryPage: React.FC = () => {
             <div
               key={event.id}
               onClick={() => handleFrameClick(event)}
-              className={`absolute z-20 flex flex-col bg-[#FFE4D6] border-4 border-black rounded-[6px] shadow-[6px_6px_0px_rgba(0,0,0,0.2)] overflow-hidden ${
-                gameStatus === "playing" ? "cursor-not-allowed opacity-90" : "cursor-pointer hover:-translate-y-1 hover:rotate-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,0.3)]"
-              } transition-all duration-200`}
+              className="absolute z-20 flex flex-col bg-[#FFE4D6] border-4 border-black rounded-[6px] shadow-[6px_6px_0px_rgba(0,0,0,0.2)] overflow-hidden cursor-pointer hover:-translate-y-1 hover:rotate-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,0.3)] transition-all duration-200"
               style={{
                 left: frame.left,
                 top: frame.top,
@@ -862,31 +853,6 @@ const GalleryPage: React.FC = () => {
             </div>
           );
         })}
-
-        {/* Flappy Bird Character */}
-        <div
-          ref={birdContainerRef}
-          onClick={handleBirdClick}
-          className="absolute z-25 cursor-pointer will-change-transform select-none"
-          style={{ top: 0, left: 0, width: 72, height: 72 }}
-        >
-          <div className="relative w-full h-full">
-            <Image
-              src="/pixel_bird.svg"
-              alt="Flappy Bird"
-              fill
-              className={`pixelated drop-shadow-[3px_3px_0px_rgba(0,0,0,0.3)] select-none pointer-events-none ${
-                gameStatus === "dead" ? "grayscale brightness-50" : "hover:scale-110 active:scale-95"
-              }`}
-              style={{ imageRendering: "pixelated" }}
-            />
-          </div>
-          {gameStatus === "idle" && (
-            <div className="absolute top-[80px] left-1/2 -translate-x-1/2 bg-black/80 text-[7px] text-white px-2 py-1 border border-black rounded-sm text-center animate-pulse whitespace-nowrap uppercase select-none pointer-events-none font-press-start">
-              SPACE OR CLICK BIRD TO PLAY
-            </div>
-          )}
-        </div>
 
         {/* Ground & Scrolling Marquee */}
         <div
@@ -930,38 +896,6 @@ const GalleryPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Game End Banner (Game Over or Victory) */}
-        {gameStatus === "dead" && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-center justify-center">
-            <div className="bg-[#FFE4D6] border-4 border-black p-8 rounded-[8px] max-w-sm w-[90%] text-center shadow-[8px_8px_0px_rgba(0,0,0,0.5)]">
-              <h2 className="font-press-start text-[#A93710] text-xl mb-4">GAME OVER</h2>
-              <p className="font-press-start text-[10px] text-black mb-6">SCORE: {score} / 4</p>
-              <button
-                onClick={() => triggerFlap()}
-                className="w-full bg-white hover:bg-slate-100 text-black border-4 border-black py-3 px-4 font-press-start text-xs shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-transform"
-              >
-                TRY AGAIN
-              </button>
-            </div>
-          </div>
-        )}
-
-        {gameStatus === "victory" && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-center justify-center">
-            <div className="bg-[#FFE4D6] border-4 border-black p-8 rounded-[8px] max-w-md w-[90%] text-center shadow-[8px_8px_0px_rgba(0,0,0,0.5)]">
-              <h2 className="font-press-start text-[#52AE26] text-xl mb-2">★ VICTORY ★</h2>
-              <p className="font-press-start text-[10px] text-black mb-4">YOU CONQUERED THE WALL!</p>
-              <p className="font-press-start text-[8px] text-gray-700 mb-6">SCORE: {score} / 4</p>
-              <button
-                onClick={() => triggerFlap()}
-                className="w-full bg-[#52AE26] hover:bg-[#72F418] text-white border-4 border-black py-3 px-4 font-press-start text-xs shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-transform"
-              >
-                PLAY AGAIN
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Retro Event Details Modal Popup */}
