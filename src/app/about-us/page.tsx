@@ -73,298 +73,269 @@ function getThemeColors(isDarkMode: boolean) {
     };
 }
 
-const MysteryCard = ({
-  frameColor,
-  innerColor,
-  dotColor,
-  title,
-  desc,
-  style,
-  cardTextColor,
-}: {
-  frameColor: string;
-  innerColor: string;
-  dotColor: string;
-  title: string;
-  desc: string;
-  style?: React.CSSProperties;
-  cardTextColor?: string;
-}) => (
-  <div
-    className="mystery-card group"
-    style={{
-      background: frameColor,
-      borderColor: frameColor,
-      boxShadow: `0 0 0 4px ${dotColor}50`,
-      ...style,
-    }}
-  >
-    <div className="inner-panel" style={{ background: innerColor }} />
-    <div className="corner-dot top-left" style={{ background: dotColor }} />
-    <div className="corner-dot top-right" style={{ background: dotColor }} />
-    <div className="corner-dot bottom-left" style={{ background: dotColor }} />
-    <div className="corner-dot bottom-right" style={{ background: dotColor }} />
-    <div className="fixed-title" style={{ color: dotColor }}>
-      <h3>{title}</h3>
+const AboutSection = () => (
+  <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 10 }}>
+    {/* Blue/Cyan Card - bluebox.png image background */}
+    <div
+      style={{
+        position: "absolute",
+        left: 120,
+        top: 160,
+        width: 330,
+        height: 330,
+        backgroundImage: "url('/images/bluebox.png')",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        zIndex: 10,
+      }}
+    />
+    <Image
+      src="/images/cherry.png"
+      alt="Cherry"
+      width={44}
+      height={44}
+      style={{
+        position: "absolute",
+        left: 102,
+        top: 155,
+        zIndex: 20,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    />
+
+    {/* Yellow Card - yellowbox.png image background */}
+    <div
+      style={{
+        position: "absolute",
+        left: 640,
+        top: 160,
+        width: 330,
+        height: 330,
+        backgroundImage: "url('/images/yellowbox.png')",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        zIndex: 10,
+      }}
+    />
+    <Image
+      src="/images/cherry.png"
+      alt="Cherry"
+      width={44}
+      height={44}
+      style={{
+        position: "absolute",
+        left: 622,
+        top: 155,
+        zIndex: 20,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    />
+
+    {/* Pink Card - pinkbox.png image background */}
+    <div
+      style={{
+        position: "absolute",
+        left: 1160,
+        top: 160,
+        width: 330,
+        height: 330,
+        backgroundImage: "url('/images/pinkbox.png')",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        zIndex: 10,
+      }}
+    />
+    <Image
+      src="/images/cherry.png"
+      alt="Cherry"
+      width={44}
+      height={44}
+      style={{
+        position: "absolute",
+        left: 1142,
+        top: 155,
+        zIndex: 20,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    />
+
+    {/* Decorative Sprites - Resized & repositioned outside card boundaries */}
+    <Image
+      src="/images/ghost-blue.png"
+      alt="Blue Ghost"
+      width={48}
+      height={50}
+      style={{ position: "absolute", left: 60, top: 420, width: 56, height: 58, zIndex: 15, pointerEvents: "none" }}
+    />
+    <Image
+      src="/images/ghost-orange.png"
+      alt="Orange Ghost"
+      width={48}
+      height={50}
+      style={{ position: "absolute", left: 1000, top: 280, width: 56, height: 58, zIndex: 15, pointerEvents: "none" }}
+    />
+    <Image
+      src="/images/ghost-red.png"
+      alt="Red Ghost"
+      width={48}
+      height={50}
+      style={{ position: "absolute", left: 1520, top: 480, width: 56, height: 58, zIndex: 15, pointerEvents: "none" }}
+    />
+    <Image
+      src="/images/ghost-pink.png"
+      alt="Pink Ghost"
+      width={48}
+      height={50}
+      style={{ position: "absolute", left: 150, top: 600, width: 56, height: 58, zIndex: 15, pointerEvents: "none" }}
+    />
+    <Image
+      src="/images/pacman.png"
+      alt="Pacman"
+      width={75}
+      height={75}
+      style={{ position: "absolute", left: 753, top: 540, width: 75, height: 75, transform: "rotate(-180deg)", zIndex: 15, pointerEvents: "none" }}
+    />
+    <Image
+      src="/images/close-button.png"
+      alt="Close Button"
+      width={74}
+      height={78}
+      style={{ position: "absolute", right: 40, top: 36, width: 74, height: 78, zIndex: 15, pointerEvents: "none" }}
+    />
+
+    {/* Contact Us Bar - contact_details.png image background (h2 removed — text is baked into image) */}
+    <div
+      style={{
+        position: "absolute",
+        left: 276,
+        top: 650,
+        width: 1028,
+        height: 140,
+        backgroundImage: "url('/images/contact_details.png')",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        zIndex: 10,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+
+      <div style={{ display: "flex", gap: "180px", alignItems: "center", justifyContent: "center", marginTop: "30px" }}>
+        {/* Instagram button */}
+        <a
+          href="https://www.instagram.com/microsoft.innovations.vitc/?hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            width: 54,
+            height: 54,
+            background: "#A8F4F9",
+            border: "5px solid #000000",
+            boxShadow: "5px 5px 0px #000000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Image src="/images/instagram.png" alt="Instagram" width={32} height={32} style={{ pointerEvents: "none" }} />
+        </a>
+
+        {/* LinkedIn button */}
+        <a
+          href="https://www.linkedin.com/company/microsoft-innovations-club-vitc/?originalSubdomain=in"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            width: 54,
+            height: 54,
+            background: "#FBC0D0",
+            border: "5px solid #000000",
+            boxShadow: "5px 5px 0px #000000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Image src="/images/linkedin.png" alt="LinkedIn" width={32} height={32} style={{ pointerEvents: "none" }} />
+        </a>
+
+        {/* Medium/M button */}
+        <a
+          href="mailto:micvitcc@gmail.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            width: 54,
+            height: 54,
+            background: "#E6C4F4",
+            border: "5px solid #000000",
+            boxShadow: "5px 5px 0px #000000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: '"Press Start 2P", monospace',
+              fontSize: "24px",
+              color: "#000000",
+              fontWeight: "bold",
+              lineHeight: 1,
+            }}
+          >
+            M
+          </span>
+        </a>
+      </div>
     </div>
-    <div className="scrollable-content" style={{ color: dotColor }}>
-      <p style={{ color: cardTextColor || "#444" }}>{desc}</p>
-    </div>
-    <div className="hover-question">
-      <span style={{ color: dotColor }}>?</span>
-    </div>
-    <div className="scroll-down-arrow" aria-hidden>
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+
+    {/* Footer - Solid light orange banner with scrolling tenure text (right-to-left) */}
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        width: "100%",
+        height: 70,
+        background: "#e0a458",
+        zIndex: 10,
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: "100%",
+          fontFamily: '"Press Start 2P", monospace',
+          fontSize: "13px",
+          color: "#8a5a2b",
+          fontWeight: "bold",
+          letterSpacing: "2px",
+          whiteSpace: "nowrap",
+          animation: "scrollTicker 28s linear infinite",
+          willChange: "transform",
+        }}
       >
-        <path
-          d="M12 5V19M12 19L5 12M12 19L19 12"
-          stroke={dotColor}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+        MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp; MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp; MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp; MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp; MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp; MICROSOFT INNOVATIONS CLUB TENURE 2026-2027 &nbsp;&bull;&nbsp;
+      </div>
     </div>
-
-    <style jsx>{`
-      .mystery-card {
- issue-10-Improve-Scroll-Indication-and-Box-Sizing-on-About-Us-Page
-        width: 314.1363220214844px;
-        height: 292.04864501953125px;
-        border: 8px solid;
-        border-radius: 6.95px;
-
-        width: 320px;
-        height: 290px;
-        border: 10px solid;
-        border-radius: 7px;
-        il: 0;
-
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        opacity: 1;
-        cursor: default;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        margin: 0;
-        flex: 0 0 auto;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      }
-      .inner-panel {
-        position: absolute;
-        left: 8px;
-        top: 8px;
-        right: 8px;
-        bottom: 8px;
-        border-radius: 4px;
-        left: 8px; top: 8px; right: 8px; bottom: 8px;
-        border-radius: 4px;
-        z-index: 8;
-      }
-
-      /* single, circular corner dot definition */
-      .corner-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        position: absolute;
-        z-index: 12;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
-        border: 2px solid rgba(0, 0, 0, 0.12);
-        background-clip: padding-box;
-      }
-      .top-left {
-        top: 8px;
-        left: 8px;
-      }
-
-      .top-right {
-        top: 8px;
-        right: 8px;
-      }
-
-      .bottom-left {
-        bottom: 8px;
-        left: 8px;
-      }
-
-      .bottom-right {
-        bottom: 8px;
-        right: 8px;
-      }
-
-      .fixed-title {
-        position: absolute;
-        top: 22px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        z-index: 25;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .fixed-title h3 {
-        font-family: "Press Start 2P", monospace;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: capitalize;
-        text-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;
-        margin: 0;
-        letter-spacing: 1px;
-      }
-      .scrollable-content {
-        position: absolute;
-        top: 60px;
-        left: 24px;
-        right: 24px;
-        bottom: 40px;
-        z-index: 25;
-        overflow-y: auto;
-        pointer-events: auto;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        scrollbar-width: none;
-        padding-right: 8px;
-      }
-      .scrollable-content::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollable-content p {
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 1.07rem;
-        color: #444;
-        line-height: 1.62;
-        margin: 0;
-        text-align: center;
-      }
-      .hover-question {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 4.2rem;
-        font-weight: 900;
-        font-family: "Press Start 2P", monospace;
-        letter-spacing: 2px;
-        user-select: none;
-        margin-top: 10px;
-        transition: opacity 0.3s ease;
-        z-index: 20;
-        pointer-events: none;
-        opacity: 1;
-      }
-      .scroll-down-arrow {
-        position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 25;
-        animation: bounceDown 2s infinite;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-      }
-      @keyframes bounceDown {
-        0%,
-        20%,
-        50%,
-        80%,
-        100% {
-          transform: translateX(-50%) translateY(0);
-        }
-        40% {
-          transform: translateX(-50%) translateY(-8px);
-        }
-        60% {
-          transform: translateX(-50%) translateY(-4px);
-        }
-      }
-
-      .group:hover .hover-question {
-        opacity: 0;
-      }
-      .group:hover .scroll-down-arrow {
-        opacity: 1;
-      }
-      .group:hover .fixed-title {
-        opacity: 1;
-      }
-      .group:hover .scrollable-content {
-        opacity: 1;
-      }
-
-      @media (max-width: 900px) {
-        .mystery-card {
-          width: 245px;
-          height: 205px;
-        }
-        .corner-dot {
-          width: 16px;
-          height: 16px;
-        }
-        .top-left {
-          top: 13px;
-          left: 13px;
-        }
-        .top-right {
-          top: 13px;
-          right: 13px;
-        }
-        .bottom-left {
-          bottom: 13px;
-          left: 13px;
-        }
-        .bottom-right {
-          bottom: 13px;
-          right: 13px;
-        }
-        .fixed-title h3 {
-          font-size: 1.07rem;
-        }
-        .fixed-title {
-          top: 10px;
-        }
-        .scrollable-content {
-          top: 42px;
-          left: 12px;
-          right: 12px;
-          bottom: 12px;
-        }
-        .scrollable-content p {
-          font-size: 0.92rem;
-          line-height: 1.24;
-        }
-      }
-      @media (max-width: 600px) {
-        .cards-container {
-          flex-direction: column;
-          align-items: center;
-          gap: 18px;
-        }
-        .mystery-card {
-          width: 100% !important;
-          max-width: 320px !important;
-          height: auto !important;
-        }
-        .fixed-title h3 {
-          font-size: 1rem;
-        }
-        .scrollable-content {
-          top: 56px;
-        }
-        .scrollable-content p {
-          font-size: 0.86rem;
-        }
-      }
-    `}</style>
   </div>
 );
 
@@ -410,60 +381,34 @@ const AboutUsPage: React.FC = () => {
       <div
         className="page-container"
         style={{
-          backgroundImage: `
-            linear-gradient(to right, ${themeColors.gridOpacity1} 1px, transparent 1px),
-            linear-gradient(to bottom, ${themeColors.gridOpacity2} 1px, transparent 1px),
-            ${themeColors.background}
-          `,
-          backgroundSize: "30px 30px, 30px 30px, 100% 100%",
-          backgroundRepeat: "repeat, repeat, no-repeat",
-          backgroundPosition: "top left, top left, center",
+          background: "linear-gradient(to bottom, #1a7fd4 0%, #1ec8e8 100%)",
           userSelect: "none",
           touchAction: "none",
-          overflow: "hidden",
+          overflowX: "hidden",
+          overflowY: "hidden",
+          height: "100vh",
           minHeight: "100vh",
-          paddingBottom: "172px",
           position: "relative",
-          transition: "background 0.5s ease",
         }}
       >
-        {/* Stars scattered across the background */}
-        {STAR_POSITIONS.map((star, i) => (
-          <Image
-            key={`star-${i}`}
-            src="/images/dot.png"
-            alt=""
-            width={star.size}
-            height={star.size}
-            style={{
-              position: "absolute",
-              top: `${star.top}vh`,
-              left: `${star.left}vw`,
-              zIndex: 1,
-              pointerEvents: "none",
-              userSelect: "none",
-              opacity: themeColors.starOpacity,
-              transition: "opacity 0.5s ease",
-            }}
-          />
-        ))}
+        {/* No stars or grid on light blue sky */}
 
-        {/* Animated Clouds */}
+        {/* Animated Clouds - Made ~15-20% larger (280x182) */}
         {cloudPositions.map((pos, i) => (
           <Image
             key={i}
             src={cloudImages[i % cloudImages.length]}
             alt={`Cloud ${i + 1}`}
-            width={240}
-            height={156}
+            width={280}
+            height={182}
             style={{
               position: "absolute",
               top: pos.top,
               left: pos.left,
-              zIndex: 0,
+              zIndex: 2,
               pointerEvents: "none",
               userSelect: "none",
-              opacity: 0.98,
+              opacity: 0.9,
               transition: "top 0.18s linear",
             }}
             priority
@@ -473,56 +418,16 @@ const AboutUsPage: React.FC = () => {
         <div className="about-heading">
           <h1
             style={{
-              color: themeColors.headingColor, // Use theme color
-              textShadow: themeColors.headingTextShadow, // Use theme shadow
-              transition: "color 0.5s ease, text-shadow 0.5s ease", // Add transition
+              color: "#000000",
+              textShadow: "3px 3px 0px rgba(255,255,255,0.6)",
             }}
           >
             About us
           </h1>
         </div>
 
-        <div className="cards-container">
-          <MysteryCard
-            frameColor="#ffdd67"
-            innerColor="#fff6de"
-            dotColor="#8f6200"
-            title="About MIC"
-            desc="The MIC at VIT Chennai is a student-led tech community under the (MLSA) program. It's a space where students explore and innovate with technologies like AI, Azure, and GitHub. Whether you're a beginner or a builder, we offer an inclusive platform for collaboration, curiosity, and hands-on learning through real-world experiences."
-            style={{ marginTop: 0 }}
-            cardTextColor={themeColors.cardTextColor}
-          />
-          <MysteryCard
-            frameColor="#f7a8a8"
-            innerColor="#ffe5ed"
-            dotColor="#a13b48"
-            title="What we do!"
-            desc="We host hands-on workshops, speaker sessions, and hackathons focused on Microsoft technologies like Azure, Power Platform, and Copilot. These events help students build skills, explore emerging tech, and grow into confident, well-rounded tech leaders."
-            style={{ marginTop: lift }}
-            cardTextColor={themeColors.cardTextColor}
-          />
-          <MysteryCard
-            frameColor="#7faee3"
-            innerColor="#d1f1ff"
-            dotColor="#294771"
-            title="What you get!"
-            desc="We focus on leadership, teamwork, and communication alongside coding. Our club supports personal and professional growth, helping members build confidence and strong networks. No matter your background, you'll find a welcoming community that learns, creates, and grows together."
-            style={{ marginTop: 0 }}
-            cardTextColor={themeColors.cardTextColor}
-          />
-        </div>
-      </div>
-
-      {/* Mario Footer */}
-      <div className="mario-footer">
-        <Image
-          src="/images/Mario.png"
-          alt="Mario Footer"
-          width={1512}
-          height={172}
-          className="mario-footer-image"
-          priority
-        />
+        {/* Static Pixel-Perfect Recreation of About Us layout matching Retro Arcade theme */}
+        <AboutSection />
       </div>
 
       <style jsx>{`
@@ -530,13 +435,15 @@ const AboutUsPage: React.FC = () => {
           position: relative;
           width: 100vw;
           max-width: 100vw;
-          overflow: hidden;
+          overflow-x: hidden;
+          overflow-y: auto;
+          min-height: 100vh;
         }
         .about-heading {
           position: relative;
           width: 90%;
           max-width: 650px;
-          margin: 110px auto 36px auto;
+          margin: 50px auto 36px auto;
           text-align: center;
           user-select: none;
           pointer-events: none;
@@ -549,110 +456,16 @@ const AboutUsPage: React.FC = () => {
           margin: 0;
           line-height: 1;
         }
-        .cards-container {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          justify-content: center;
-          align-items: flex-start;
-          gap: clamp(16px, 4vw, 32px);
-          width: 100%;
-          margin: 0 auto;
-          padding: 0 clamp(8px, 3vw, 10px);
-          overflow: visible;
-        }
-        .mario-footer {
-          position: fixed;
-          left: 0;
-          bottom: 0;
-          width: 100vw;
-          height: clamp(120px, 15vh, 172px);
-          pointer-events: none;
-          user-select: none;
-          z-index: 10;
-          overflow: hidden;
-        }
-        :global(.mario-footer-image) {
-          width: 100vw !important;
-          height: clamp(120px, 15vh, 172px) !important;
-          display: block !important;
-          object-fit: cover !important;
-          object-position: center !important;
-          pointer-events: none !important;
-          user-select: none !important;
-        }
 
-        @media (min-width: 601px) and (max-width: 900px) and (orientation: portrait) {
-          .mario-footer {
-            height: clamp(80px, 8vh, 120px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(80px, 8vh, 120px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(80px, 8vh, 120px) !important;
-          }
-        }
-
-        @media (min-width: 901px) and (max-width: 1200px) and (orientation: landscape) {
-          .mario-footer {
-            height: clamp(90px, 12vh, 140px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(90px, 12vh, 140px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(90px, 12vh, 140px) !important;
-          }
-        }
-
-        @media (min-width: 1024px) and (max-width: 1366px) {
-          .mario-footer {
-            height: clamp(100px, 10vh, 150px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(100px, 10vh, 150px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(100px, 10vh, 150px) !important;
-          }
-        }
-
-        @media (min-width: 601px) and (max-width: 1366px) {
-          .page-container {
-            padding-bottom: clamp(80px, 10vh, 150px) !important;
-            min-height: 100vh;
-          }
-        }
-
-        @media (max-width: 900px) {
-          .cards-container {
-            gap: clamp(12px, 3vw, 28px);
-          }
-        }
-
-        @media (max-width: 600px) {
-          .cards-container {
-            flex-direction: column;
-            align-items: center;
-            gap: clamp(14px, 4vw, 18px);
-            padding: 0 clamp(6px, 2vw, 10px);
-          }
-          .page-container {
-            padding-bottom: clamp(120px, 15vh, 172px) !important;
-          }
-          .about-heading {
-            margin: clamp(50px, 10vw, 80px) auto clamp(20px, 5vw, 36px) auto;
-          }
+        @keyframes scrollTicker {
+          0%   { transform: translateX(100vw); }
+          100% { transform: translateX(-100%); }
         }
 
         @media (max-width: 480px) {
           .about-heading h1 {
             font-size: clamp(1.2rem, 4.5vw, 2rem);
             letter-spacing: clamp(0.5px, 0.3vw, 1px);
-          }
-          .cards-container {
-            gap: clamp(12px, 3.5vw, 16px);
           }
         }
       `}</style>

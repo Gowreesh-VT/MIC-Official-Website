@@ -10,8 +10,8 @@ const Logo = () => (
   <Image
     src="/images/mic-logo.png"
     alt="MIC Logo"
-    width={72}
-    height={72}
+    width={84}
+    height={84}
     style={{ position: 'fixed', top: 20, left: 27, zIndex: 50, cursor: 'pointer', height: 'auto' }}
     priority
   />
@@ -33,7 +33,14 @@ export default function ConditionalNavbar() {
     };
   }, [pathname]);
 
-  // Don't render navbar on home page or events page
+  // Don't render navbar on home page, events page, or leaderboard page
+  if (pathname === '/leaderboard') {
+    return (
+      <Link href="/main">
+        <Logo />
+      </Link>
+    );
+  }
   if (pathname === '/' || pathname === '/mobile' || pathname === '/events') {
     return <Logo />;
   }
