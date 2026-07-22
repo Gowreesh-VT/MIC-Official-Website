@@ -209,10 +209,21 @@ const getLayout = (width: number) => {
   return { frames, pipes };
 };
 
+const getInitialGalleryState = () => {
+  if (typeof window !== "undefined") {
+    const mobile = window.innerWidth < 1024;
+    const s = mobile ? 1 : window.innerHeight / 1024;
+    const w = mobile ? 1440 : window.innerWidth / s;
+    return { mobile, scale: s, width: w };
+  }
+  return { mobile: false, scale: 1, width: 1440 };
+};
+
 const GalleryPage: React.FC = () => {
-  const [scale, setScale] = useState(1);
-  const [canvasWidth, setCanvasWidth] = useState(1440);
-  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(() => getInitialGalleryState().scale);
+  const [canvasWidth, setCanvasWidth] = useState(() => getInitialGalleryState().width);
+  const [isMobile, setIsMobile] = useState(() => getInitialGalleryState().mobile);
+  const [mounted, setMounted] = useState(false);
   const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
 
   // Game state
@@ -355,6 +366,7 @@ const GalleryPage: React.FC = () => {
       }
     };
     handleResize();
+    setMounted(true);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -494,6 +506,17 @@ const GalleryPage: React.FC = () => {
 
   // Get dynamic coordinates
   const layout = getLayout(canvasWidth);
+
+  if (!mounted) {
+    return (
+      <div
+        className="w-full h-screen"
+        style={{
+          background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%)",
+        }}
+      />
+    );
+  }
 
   if (isMobile) {
     return (

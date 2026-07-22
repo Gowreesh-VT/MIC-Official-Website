@@ -172,10 +172,21 @@ const PacmanIcon: React.FC<{ style?: React.CSSProperties }> = ({ style }) => {
   );
 };
 
+const getInitialAboutUsState = () => {
+  if (typeof window !== "undefined") {
+    const mobile = window.innerWidth < 900;
+    const s = mobile ? 1 : window.innerHeight / 1024;
+    const w = mobile ? window.innerWidth : window.innerWidth / s;
+    return { mobile, scale: s, width: w };
+  }
+  return { mobile: false, scale: 1, width: 1440 };
+};
+
 const AboutUsPage: React.FC = () => {
-  const [scale, setScale]           = useState(1);
-  const [canvasWidth, setCanvasWidth] = useState(1440);
-  const [isMobile, setIsMobile]     = useState(false);
+  const [scale, setScale]           = useState(() => getInitialAboutUsState().scale);
+  const [canvasWidth, setCanvasWidth] = useState(() => getInitialAboutUsState().width);
+  const [isMobile, setIsMobile]     = useState(() => getInitialAboutUsState().mobile);
+  const [mounted, setMounted]       = useState(false);
 
   useEffect(() => {
     const onResize = () => {
@@ -192,9 +203,21 @@ const AboutUsPage: React.FC = () => {
       }
     };
     onResize();
+    setMounted(true);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div
+        className="w-full h-screen"
+        style={{
+          background: "linear-gradient(180deg,#1188EE 0%,#0E8AEA 25%,#1093EB 35%,#1197EC 46%,#16B6F4 52%,#10CBF1 56%,#0FC6F1 60%,#15DEF0 65%,#15DEF0 81%)",
+        }}
+      />
+    );
+  }
 
   /* ───────── layout geometry (1024px-tall canvas) ───────── */
   const groupW    = 3 * CARD_W + 2 * CARD_GAP;
