@@ -196,8 +196,8 @@ const getLayout = (width: number) => {
   
   const pipes = [
     { left: g1 - 26, top: 0, height: 380, isTop: true },
-    { left: g2 - 26, top: 0, height: 350, isTop: true },
-    { left: g3 - 26, top: 0, height: 360, isTop: true },
+    { left: g2 - 26, top: 125, height: 225, isTop: true },
+    { left: g3 - 26, top: 125, height: 235, isTop: true },
     { left: g4 - 26, top: 0, height: 370, isTop: true },
     
     { left: g1 - 26, bottom: 99, height: 350, isTop: false },
