@@ -41,7 +41,7 @@ export default function ConditionalNavbar() {
       </Link>
     );
   }
-  if (pathname === '/' || pathname === '/mobile' || pathname === '/events') {
+  if (pathname === '/' || pathname === '/events') {
     return <Logo />;
   }
 

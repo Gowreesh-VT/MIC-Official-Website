@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
-import RedirectWrapper from "@/components/RedirectWrapper";
 
 const pressStart2P = Press_Start_2P({
   weight: "400",
@@ -76,10 +75,8 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${pressStart2P.variable} antialiased`}>
-        <RedirectWrapper>
-          {children}
-          <ConditionalNavbar />
-        </RedirectWrapper>
+        {children}
+        <ConditionalNavbar />
       </body>
     </html>
   );
