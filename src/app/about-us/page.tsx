@@ -1,662 +1,371 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import { useDarkMode } from "@/hooks/useDarkMode";
+'use client';
 
-// Larger cloud images & new variety
-const cloudImages = [
-  "/images/cloud1.png",
-  "/images/cloud2.png",
-  "/images/cloud1.png",
-  "/images/cloud3.png",
-  "/images/cloud3.png",
-  "/images/cloud2.png",
-  "/images/cloud1.png",
-  "/images/cloud3.png",
-  "/images/cloud2.png",
-  "/images/cloud1.png",
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+
+const CARDS = [
+  {
+    id: 1,
+    title: "About MIC",
+    desc: "The MIC at VIT Chennai is a student-led tech community under the (MLSA) program. It's a space where students explore and innovate with technologies like AI, Azure, and GitHub. Whether you're a beginner or a builder, we offer an inclusive platform for collaboration, curiosity, and hands-on learning through real-world experiences.",
+    bg: "/images/about_us_assets/aboutusaqua.png",
+  },
+  {
+    id: 2,
+    title: "What we do!",
+    desc: "We host hands-on workshops, speaker sessions, and hackathons focused on Microsoft technologies like Azure, Power Platform, and Copilot. These events help students build skills, explore emerging tech, and grow into confident, well-rounded tech leaders.",
+    bg: "/images/about_us_assets/aboutusyellow.png",
+  },
+  {
+    id: 3,
+    title: "What you get!",
+    desc: "We focus on leadership, teamwork, and communication alongside coding. Our club supports personal and professional growth, helping members build confidence and strong networks. No matter your background, you'll find a welcoming community that learns, creates, and grows together.",
+    bg: "/images/about_us_assets/aboutuspink.png",
+  },
 ];
 
-interface CloudFloatOptions {
-  baseTop: number;
-  baseLeft: number;
-  amplitude?: number;
-  speed?: number;
-  phase?: number;
-}
+// Fixed card dimensions in 1024-tall canvas units — all cards sit at the SAME top (parallel)
+const CARD_W      = 305;
+const CARD_H      = 345;
+const CARD_GAP    = 82;
+const CARD_TOP    = 155;   // same for all three cards — no stagger
 
-// Floating cloud animation hook
-function useCloudFloat({
-  baseTop,
-  baseLeft,
-  amplitude = 35,
-  speed = 1,
-  phase = 0,
-}: CloudFloatOptions) {
-  const [top, setTop] = useState(baseTop);
-  const frame = useRef(0);
-  useEffect(() => {
-    let running = true;
-    function animate() {
-      frame.current += 1;
-      const t = frame.current / 60;
-      setTop(baseTop + Math.sin(t * speed + phase) * amplitude);
-      if (running) requestAnimationFrame(animate);
-    }
-    animate();
-    return () => {
-      running = false;
-    };
-  }, [baseTop, amplitude, speed, phase]);
-  return { top, left: baseLeft };
-}
-
-function getThemeColors(isDarkMode: boolean) {
-  return isDarkMode
-    ? {
-      background: "linear-gradient(to bottom, #00040d 0%, #002855 100%)",
-      gridOpacity1: "rgba(255,255,255,0.09)",
-      gridOpacity2: "rgba(255,255,255,0.07)",
-      headingColor: "#fff",
-      headingTextShadow: "4px 4px 0 #000, 0 2px 8px #000",
-      starOpacity: 0.85,
-      cardTextColor: "#444",
-    }
-    : {
-      background: "linear-gradient(to bottom, #e0f2fe 0%, #87ceeb 100%)",
-      gridOpacity1: "rgba(255,255,255,0.3)",
-      gridOpacity2: "rgba(255,255,255,0.3)",
-      headingColor: "#1e293b",
-      headingTextShadow: "2px 2px 0 rgba(255,255,255,0.7), 0 1px 4px rgba(0,0,0,0.15)",
-      starOpacity: 0.4,
-      cardTextColor: "#333",
-    };
-}
-
-const MysteryCard = ({
-  frameColor,
-  innerColor,
-  dotColor,
-  title,
-  desc,
-  style,
-  cardTextColor,
+function MysteryCard({
+  title, desc, bg, left,
 }: {
-  frameColor: string;
-  innerColor: string;
-  dotColor: string;
-  title: string;
-  desc: string;
-  style?: React.CSSProperties;
-  cardTextColor?: string;
-}) => (
-  <div
-    className="mystery-card group"
-    style={{
-      background: frameColor,
-      borderColor: frameColor,
-      boxShadow: `0 0 0 4px ${dotColor}50`,
-      ...style,
-    }}
-  >
-    <div className="inner-panel" style={{ background: innerColor }} />
-    <div className="corner-dot top-left" style={{ background: dotColor }} />
-    <div className="corner-dot top-right" style={{ background: dotColor }} />
-    <div className="corner-dot bottom-left" style={{ background: dotColor }} />
-    <div className="corner-dot bottom-right" style={{ background: dotColor }} />
-    <div className="fixed-title" style={{ color: dotColor }}>
-      <h3>{title}</h3>
-    </div>
-    <div className="scrollable-content" style={{ color: dotColor }}>
-      <p style={{ color: cardTextColor || "#444" }}>{desc}</p>
-    </div>
-    <div className="hover-question">
-      <span style={{ color: dotColor }}>?</span>
-    </div>
-    <div className="scroll-down-arrow" aria-hidden>
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 5V19M12 19L5 12M12 19L19 12"
-          stroke={dotColor}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-
-    <style jsx>{`
-      .mystery-card {
- issue-10-Improve-Scroll-Indication-and-Box-Sizing-on-About-Us-Page
-        width: 314.1363220214844px;
-        height: 292.04864501953125px;
-        border: 8px solid;
-        border-radius: 6.95px;
-
-        width: 320px;
-        height: 290px;
-        border: 10px solid;
-        border-radius: 7px;
-        il: 0;
-
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        opacity: 1;
-        cursor: default;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        margin: 0;
-        flex: 0 0 auto;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      }
-      .inner-panel {
-        position: absolute;
-        left: 8px;
-        top: 8px;
-        right: 8px;
-        bottom: 8px;
-        border-radius: 4px;
-        left: 8px; top: 8px; right: 8px; bottom: 8px;
-        border-radius: 4px;
-        z-index: 8;
-      }
-
-      /* single, circular corner dot definition */
-      .corner-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        position: absolute;
-        z-index: 12;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
-        border: 2px solid rgba(0, 0, 0, 0.12);
-        background-clip: padding-box;
-      }
-      .top-left {
-        top: 8px;
-        left: 8px;
-      }
-
-      .top-right {
-        top: 8px;
-        right: 8px;
-      }
-
-      .bottom-left {
-        bottom: 8px;
-        left: 8px;
-      }
-
-      .bottom-right {
-        bottom: 8px;
-        right: 8px;
-      }
-
-      .fixed-title {
-        position: absolute;
-        top: 22px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        z-index: 25;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .fixed-title h3 {
-        font-family: "Press Start 2P", monospace;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: capitalize;
-        text-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;
-        margin: 0;
-        letter-spacing: 1px;
-      }
-      .scrollable-content {
-        position: absolute;
-        top: 60px;
-        left: 24px;
-        right: 24px;
-        bottom: 40px;
-        z-index: 25;
-        overflow-y: auto;
-        pointer-events: auto;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        scrollbar-width: none;
-        padding-right: 8px;
-      }
-      .scrollable-content::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollable-content p {
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 1.07rem;
-        color: #444;
-        line-height: 1.62;
-        margin: 0;
-        text-align: center;
-      }
-      .hover-question {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 4.2rem;
-        font-weight: 900;
-        font-family: "Press Start 2P", monospace;
-        letter-spacing: 2px;
-        user-select: none;
-        margin-top: 10px;
-        transition: opacity 0.3s ease;
-        z-index: 20;
-        pointer-events: none;
-        opacity: 1;
-      }
-      .scroll-down-arrow {
-        position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 25;
-        animation: bounceDown 2s infinite;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-      }
-      @keyframes bounceDown {
-        0%,
-        20%,
-        50%,
-        80%,
-        100% {
-          transform: translateX(-50%) translateY(0);
-        }
-        40% {
-          transform: translateX(-50%) translateY(-8px);
-        }
-        60% {
-          transform: translateX(-50%) translateY(-4px);
-        }
-      }
-
-      .group:hover .hover-question {
-        opacity: 0;
-      }
-      .group:hover .scroll-down-arrow {
-        opacity: 1;
-      }
-      .group:hover .fixed-title {
-        opacity: 1;
-      }
-      .group:hover .scrollable-content {
-        opacity: 1;
-      }
-
-      @media (max-width: 900px) {
-        .mystery-card {
-          width: 245px;
-          height: 205px;
-        }
-        .corner-dot {
-          width: 16px;
-          height: 16px;
-        }
-        .top-left {
-          top: 13px;
-          left: 13px;
-        }
-        .top-right {
-          top: 13px;
-          right: 13px;
-        }
-        .bottom-left {
-          bottom: 13px;
-          left: 13px;
-        }
-        .bottom-right {
-          bottom: 13px;
-          right: 13px;
-        }
-        .fixed-title h3 {
-          font-size: 1.07rem;
-        }
-        .fixed-title {
-          top: 10px;
-        }
-        .scrollable-content {
-          top: 42px;
-          left: 12px;
-          right: 12px;
-          bottom: 12px;
-        }
-        .scrollable-content p {
-          font-size: 0.92rem;
-          line-height: 1.24;
-        }
-      }
-      @media (max-width: 600px) {
-        .cards-container {
-          flex-direction: column;
-          align-items: center;
-          gap: 18px;
-        }
-        .mystery-card {
-          width: 100% !important;
-          max-width: 320px !important;
-          height: auto !important;
-        }
-        .fixed-title h3 {
-          font-size: 1rem;
-        }
-        .scrollable-content {
-          top: 56px;
-        }
-        .scrollable-content p {
-          font-size: 0.86rem;
-        }
-      }
-    `}</style>
-  </div>
-);
-
-// Star positions - scattered across the background
-const STAR_COUNT = 7;
-const STAR_POSITIONS = [
-  { top: 12, left: 8 },
-  { top: 10, left: 25 },
-  { top: 18, left: 42 },
-  { top: 14, left: 58 },
-  { top: 20, left: 72 },
-  { top: 8, left: 85 },
-  { top: 16, left: 95 },
-].map((pos) => ({ ...pos, size: Math.random() * 2 + 3 }));
-
-const AboutUsPage: React.FC = () => {
-  const isDarkMode = useDarkMode();
-  const cloudPositions = [
-    useCloudFloat({ baseTop: 130, baseLeft: -12, amplitude: 25, speed: 0.8, phase: 0 }),
-    useCloudFloat({ baseTop: 440, baseLeft: 22, amplitude: 35, speed: 1.1, phase: 1 }),
-    useCloudFloat({ baseTop: 655, baseLeft: 232, amplitude: 30, speed: 0.9, phase: 2 }),
-    useCloudFloat({ baseTop: 730, baseLeft: 1003, amplitude: 28, speed: 1.2, phase: 3 }),
-    useCloudFloat({ baseTop: 560, baseLeft: 1331, amplitude: 32, speed: 1.0, phase: 4 }),
-    useCloudFloat({ baseTop: 100, baseLeft: 1142, amplitude: 27, speed: 1.3, phase: 5 }),
-    useCloudFloat({ baseTop: -10, baseLeft: 1500, amplitude: 22, speed: 1.05, phase: 6 }),
-    useCloudFloat({ baseTop: 560, baseLeft: 1400, amplitude: 32, speed: 1.0, phase: 4 }),
-    useCloudFloat({ baseTop: 100, baseLeft: 1600, amplitude: 27, speed: 1.3, phase: 5 }),
-    useCloudFloat({ baseTop: 560, baseLeft: 1600, amplitude: 22, speed: 1.05, phase: 6 }),
-  ];
-
-  useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    document.body.style.minHeight = "100vh";
-    document.documentElement.style.minHeight = "100vh";
-  }, []);
-
-  const lift = 80;
-  const themeColors = getThemeColors(isDarkMode);
+  title: string; desc: string; bg: string; left: number;
+}) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <>
+    <div
+      className="absolute cursor-pointer"
+      style={{ left, top: CARD_TOP, width: CARD_W, height: CARD_H }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Pixel card background */}
+      <img
+        src={bg} alt=""
+        className="absolute inset-0 w-full h-full"
+        style={{ imageRendering: "pixelated" }}
+        draggable={false}
+      />
+
+      {/* Cherry decoration (top-left, slightly outside card) */}
+      <img
+        src="/images/about_us_assets/cherry.svg" alt="Cherry"
+        className="absolute pointer-events-none"
+        style={{ width: 68, height: 68, top: -28, left: -20, imageRendering: "pixelated" }}
+        draggable={false}
+      />
+
+      {/* Question mark — shown when NOT hovered */}
       <div
-        className="page-container"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, ${themeColors.gridOpacity1} 1px, transparent 1px),
-            linear-gradient(to bottom, ${themeColors.gridOpacity2} 1px, transparent 1px),
-            ${themeColors.background}
-          `,
-          backgroundSize: "30px 30px, 30px 30px, 100% 100%",
-          backgroundRepeat: "repeat, repeat, no-repeat",
-          backgroundPosition: "top left, top left, center",
-          userSelect: "none",
-          touchAction: "none",
-          overflow: "hidden",
-          minHeight: "100vh",
-          paddingBottom: "172px",
-          position: "relative",
-          transition: "background 0.5s ease",
-        }}
+        className="absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300 pointer-events-none"
+        style={{ opacity: hovered ? 0 : 1 }}
       >
-        {/* Stars scattered across the background */}
-        {STAR_POSITIONS.map((star, i) => (
-          <Image
-            key={`star-${i}`}
-            src="/images/dot.png"
-            alt=""
-            width={star.size}
-            height={star.size}
-            style={{
-              position: "absolute",
-              top: `${star.top}vh`,
-              left: `${star.left}vw`,
-              zIndex: 1,
-              pointerEvents: "none",
-              userSelect: "none",
-              opacity: themeColors.starOpacity,
-              transition: "opacity 0.5s ease",
-            }}
-          />
-        ))}
+        <span
+          className="font-press-start font-extrabold text-white select-none"
+          style={{ fontSize: 80, lineHeight: 1, textShadow: "4px 4px 0 rgba(0,0,0,0.25)" }}
+        >
+          ?
+        </span>
+      </div>
 
-        {/* Animated Clouds */}
-        {cloudPositions.map((pos, i) => (
-          <Image
-            key={i}
-            src={cloudImages[i % cloudImages.length]}
-            alt={`Cloud ${i + 1}`}
-            width={240}
-            height={156}
-            style={{
-              position: "absolute",
-              top: pos.top,
-              left: pos.left,
-              zIndex: 0,
-              pointerEvents: "none",
-              userSelect: "none",
-              opacity: 0.98,
-              transition: "top 0.18s linear",
-            }}
-            priority
-          />
-        ))}
-
-        <div className="about-heading">
-          <h1
-            style={{
-              color: themeColors.headingColor, // Use theme color
-              textShadow: themeColors.headingTextShadow, // Use theme shadow
-              transition: "color 0.5s ease, text-shadow 0.5s ease", // Add transition
-            }}
+      {/* Content — revealed on hover */}
+      <div
+        className="absolute z-10 flex flex-col items-center transition-opacity duration-300"
+        style={{ opacity: hovered ? 1 : 0, inset: 0, padding: "22px 18px 16px" }}
+      >
+        <h2
+          className="font-press-start text-black font-extrabold tracking-wide uppercase text-center mb-3"
+          style={{ fontSize: 13, lineHeight: 1.4 }}
+        >
+          {title}
+        </h2>
+        <div className="flex-grow overflow-y-auto w-full" style={{ scrollbarWidth: "none" }}>
+          <p
+            className="font-ibm-plex-mono text-black font-semibold text-center"
+            style={{ fontSize: 11.5, lineHeight: 1.6 }}
           >
-            About us
-          </h1>
-        </div>
-
-        <div className="cards-container">
-          <MysteryCard
-            frameColor="#ffdd67"
-            innerColor="#fff6de"
-            dotColor="#8f6200"
-            title="About MIC"
-            desc="The MIC at VIT Chennai is a student-led tech community under the (MLSA) program. It's a space where students explore and innovate with technologies like AI, Azure, and GitHub. Whether you're a beginner or a builder, we offer an inclusive platform for collaboration, curiosity, and hands-on learning through real-world experiences."
-            style={{ marginTop: 0 }}
-            cardTextColor={themeColors.cardTextColor}
-          />
-          <MysteryCard
-            frameColor="#f7a8a8"
-            innerColor="#ffe5ed"
-            dotColor="#a13b48"
-            title="What we do!"
-            desc="We host hands-on workshops, speaker sessions, and hackathons focused on Microsoft technologies like Azure, Power Platform, and Copilot. These events help students build skills, explore emerging tech, and grow into confident, well-rounded tech leaders."
-            style={{ marginTop: lift }}
-            cardTextColor={themeColors.cardTextColor}
-          />
-          <MysteryCard
-            frameColor="#7faee3"
-            innerColor="#d1f1ff"
-            dotColor="#294771"
-            title="What you get!"
-            desc="We focus on leadership, teamwork, and communication alongside coding. Our club supports personal and professional growth, helping members build confidence and strong networks. No matter your background, you'll find a welcoming community that learns, creates, and grows together."
-            style={{ marginTop: 0 }}
-            cardTextColor={themeColors.cardTextColor}
-          />
+            {desc}
+          </p>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Mario Footer */}
-      <div className="mario-footer">
-        <Image
-          src="/images/Mario.png"
-          alt="Mario Footer"
-          width={1512}
-          height={172}
-          className="mario-footer-image"
-          priority
-        />
+const AboutUsPage: React.FC = () => {
+  const [scale, setScale]           = useState(1);
+  const [canvasWidth, setCanvasWidth] = useState(1440);
+  const [isMobile, setIsMobile]     = useState(false);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (typeof window === "undefined") return;
+      const mobile = window.innerWidth < 900;
+      setIsMobile(mobile);
+      if (!mobile) {
+        const s = window.innerHeight / 1024;
+        setScale(s);
+        setCanvasWidth(window.innerWidth / s);
+      } else {
+        setScale(1);
+        setCanvasWidth(window.innerWidth);
+      }
+    };
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* ───────── layout geometry (1024px-tall canvas) ───────── */
+  const groupW    = 3 * CARD_W + 2 * CARD_GAP;
+  const groupLeft = (canvasWidth - groupW) / 2;
+
+  const cardLefts = [
+    groupLeft,
+    groupLeft + CARD_W + CARD_GAP,
+    groupLeft + 2 * (CARD_W + CARD_GAP),
+  ];
+
+  // Animation strip between cards bottom and contact banner
+  const cardsBottom = CARD_TOP + CARD_H;          // e.g. 500
+  const ANIM_Y      = cardsBottom + 45;            // y for running characters ≈ 545
+
+  // Contact banner: smaller, hugging the scrolling ground
+  const GROUND_TOP  = 920;
+  const bannerW     = Math.min(700, canvasWidth * 0.48);
+  const bannerH     = bannerW * (177 / 871);
+  const bannerLeft  = (canvasWidth - bannerW) / 2;
+  const bannerTop   = GROUND_TOP - bannerH - 20;  // sit just above the ground
+
+  /* ───────── mobile ───────── */
+  if (isMobile) {
+    return (
+      <div
+        className="w-full min-h-[100dvh] overflow-x-hidden overflow-y-auto flex flex-col items-center py-8 px-4 gap-6 select-none"
+        style={{ background: "linear-gradient(180deg,#1188EE 0%,#0E8AEA 25%,#1093EB 35%,#1197EC 46%,#16B6F4 52%,#10CBF1 56%,#0FC6F1 60%,#15DEF0 65%,#15DEF0 81%)" }}
+      >
+        <style>{`
+          body { background:linear-gradient(180deg,#1188EE 0%,#0E8AEA 25%,#1093EB 35%,#1197EC 46%,#16B6F4 52%,#10CBF1 56%,#0FC6F1 60%,#15DEF0 65%,#15DEF0 81%) !important; overflow-y:auto !important; }
+          img[alt="MIC Logo"],img[src*="mic-logo"]{ display:none !important; }
+          button[aria-label="Open navigation"],.z-\[60\]{ display:none !important; }
+        `}</style>
+        <div className="w-full flex justify-between items-center z-40 px-2 shrink-0">
+          <Link href="/main"><img src="/mic_logo_pixel.svg" alt="MIC Pixel Logo" className="w-12 h-12" style={{ imageRendering:"pixelated" }} /></Link>
+          <Link href="/main"><img src="/close_button.svg" alt="Close" className="w-10 h-10" /></Link>
+        </div>
+        <h1 className="font-press-start text-2xl text-black tracking-wider text-center drop-shadow-[3px_3px_0px_rgba(255,255,255,0.4)]">About Us</h1>
+        {CARDS.map(card => (
+          <div key={card.id} className="relative flex flex-col items-center justify-start text-center shrink-0 w-full max-w-[305px]"
+            style={{ height:300, backgroundImage:`url(${card.bg})`, backgroundSize:"100% 100%", backgroundRepeat:"no-repeat", imageRendering:"pixelated", padding:"22px 16px 14px" }}
+          >
+            <img src="/images/about_us_assets/cherry.svg" alt="Cherry" className="absolute" style={{ width:58,height:58,top:-20,left:-14,imageRendering:"pixelated" }} />
+            <h2 className="font-press-start text-black font-extrabold uppercase text-center mb-2" style={{ fontSize:12, lineHeight:1.5 }}>{card.title}</h2>
+            <div className="flex-grow overflow-y-auto w-full" style={{ scrollbarWidth:"none" }}>
+              <p className="font-ibm-plex-mono text-black font-semibold text-center" style={{ fontSize:10.5, lineHeight:1.55 }}>{card.desc}</p>
+            </div>
+          </div>
+        ))}
+        <div className="relative w-full max-w-[320px] shrink-0 mb-2">
+          <img src="/images/about_us_assets/contact_details.svg" alt="Contact Us" className="w-full h-auto" />
+          <div className="absolute flex items-center justify-center gap-5" style={{ top:"54%", left:"50%", transform:"translate(-50%,0)" }}>
+            {[
+              { href:"https://www.instagram.com/microsoft.innovations.vitc/?hl=en", src:"/images/about_us_assets/Frame 112.svg", alt:"Instagram" },
+              { href:"https://www.linkedin.com/company/microsoft-innovations-club-vitc/?originalSubdomain=in", src:"/images/about_us_assets/Frame 114.svg", alt:"LinkedIn" },
+              { href:"mailto:micvitcc@gmail.com", src:"/images/about_us_assets/Frame 116.svg", alt:"Mail" },
+            ].map(icon => (
+              <a key={icon.alt} href={icon.href} target={icon.href.startsWith("http")?"_blank":undefined} rel={icon.href.startsWith("http")?"noopener noreferrer":undefined}
+                className="w-11 h-11 hover:scale-110 transition-transform">
+                <img src={icon.src} alt={icon.alt} className="w-full h-full object-contain" style={{ imageRendering:"pixelated" }} />
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="w-full h-14 border-t-4 border-black bg-[#DD9955] overflow-hidden flex items-center shrink-0">
+          <div className="flex whitespace-nowrap animate-marquee">
+            {[0,1].map(r => (
+              <span key={r} className="inline-flex items-center shrink-0 text-[11px] text-[#CC7700] uppercase font-bold font-press-start">
+                {Array(4).fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027").map((t,i) => (
+                  <React.Fragment key={i}><span>{t}</span><img src="/images/about_us_assets/cherry.svg" alt="" className="w-3.5 h-3.5 mx-3" style={{ imageRendering:"pixelated" }} /></React.Fragment>
+                ))}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      <style jsx>{`
-        .page-container {
-          position: relative;
-          width: 100vw;
-          max-width: 100vw;
-          overflow: hidden;
-        }
-        .about-heading {
-          position: relative;
-          width: 90%;
-          max-width: 650px;
-          margin: 110px auto 36px auto;
-          text-align: center;
-          user-select: none;
-          pointer-events: none;
-        }
-        .about-heading h1 {
-          font-family: "Press Start 2P", monospace;
-          font-size: clamp(2.1rem, 6vw, 3.3rem);
-          letter-spacing: 2px;
-          text-transform: capitalize;
-          margin: 0;
-          line-height: 1;
-        }
-        .cards-container {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          justify-content: center;
-          align-items: flex-start;
-          gap: clamp(16px, 4vw, 32px);
-          width: 100%;
-          margin: 0 auto;
-          padding: 0 clamp(8px, 3vw, 10px);
-          overflow: visible;
-        }
-        .mario-footer {
-          position: fixed;
-          left: 0;
-          bottom: 0;
-          width: 100vw;
-          height: clamp(120px, 15vh, 172px);
-          pointer-events: none;
-          user-select: none;
-          z-index: 10;
-          overflow: hidden;
-        }
-        :global(.mario-footer-image) {
-          width: 100vw !important;
-          height: clamp(120px, 15vh, 172px) !important;
-          display: block !important;
-          object-fit: cover !important;
-          object-position: center !important;
-          pointer-events: none !important;
-          user-select: none !important;
-        }
-
-        @media (min-width: 601px) and (max-width: 900px) and (orientation: portrait) {
-          .mario-footer {
-            height: clamp(80px, 8vh, 120px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(80px, 8vh, 120px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(80px, 8vh, 120px) !important;
-          }
-        }
-
-        @media (min-width: 901px) and (max-width: 1200px) and (orientation: landscape) {
-          .mario-footer {
-            height: clamp(90px, 12vh, 140px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(90px, 12vh, 140px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(90px, 12vh, 140px) !important;
-          }
-        }
-
-        @media (min-width: 1024px) and (max-width: 1366px) {
-          .mario-footer {
-            height: clamp(100px, 10vh, 150px) !important;
-          }
-          :global(.mario-footer-image) {
-            height: clamp(100px, 10vh, 150px) !important;
-          }
-          .page-container {
-            padding-bottom: clamp(100px, 10vh, 150px) !important;
-          }
-        }
-
-        @media (min-width: 601px) and (max-width: 1366px) {
-          .page-container {
-            padding-bottom: clamp(80px, 10vh, 150px) !important;
-            min-height: 100vh;
-          }
-        }
-
-        @media (max-width: 900px) {
-          .cards-container {
-            gap: clamp(12px, 3vw, 28px);
-          }
-        }
-
-        @media (max-width: 600px) {
-          .cards-container {
-            flex-direction: column;
-            align-items: center;
-            gap: clamp(14px, 4vw, 18px);
-            padding: 0 clamp(6px, 2vw, 10px);
-          }
-          .page-container {
-            padding-bottom: clamp(120px, 15vh, 172px) !important;
-          }
-          .about-heading {
-            margin: clamp(50px, 10vw, 80px) auto clamp(20px, 5vw, 36px) auto;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .about-heading h1 {
-            font-size: clamp(1.2rem, 4.5vw, 2rem);
-            letter-spacing: clamp(0.5px, 0.3vw, 1px);
-          }
-          .cards-container {
-            gap: clamp(12px, 3.5vw, 16px);
-          }
-        }
+  /* ───────── DESKTOP ───────── */
+  return (
+    <div
+      className="h-[100dvh] w-full relative overflow-hidden select-none"
+      style={{ background: "linear-gradient(180deg,#1188EE 0%,#0E8AEA 25%,#1093EB 35%,#1197EC 46%,#16B6F4 52%,#10CBF1 56%,#0FC6F1 60%,#15DEF0 65%,#15DEF0 81%)" }}
+    >
+      <style>{`
+        body { background:linear-gradient(180deg,#1188EE 0%,#0E8AEA 25%,#1093EB 35%,#1197EC 46%,#16B6F4 52%,#10CBF1 56%,#0FC6F1 60%,#15DEF0 65%,#15DEF0 81%) !important; overflow:hidden !important; }
+        img[alt="MIC Logo"],img[src*="mic-logo"]{ display:none !important; }
+        button[aria-label="Open navigation"],.z-\[60\]{ display:none !important; }
       `}</style>
-    </>
+
+      {/* Canvas scaled to fill viewport */}
+      <div
+        className="absolute top-0 left-0"
+        style={{ width: canvasWidth, height: 1024, transform: `scale(${scale})`, transformOrigin: "top left" }}
+      >
+        {/* Clouds */}
+        {[
+          { pct:0.03, top:55, w:170, delay:"0s" },
+          { pct:0.79, top:48, w:185, delay:"0.8s" },
+          { pct:0.56, top:530, w:155, delay:"1.5s" },
+          { pct:0.88, top:630, w:165, delay:"0.3s" },
+          { pct:0.06, top:710, w:140, delay:"2s" },
+        ].map((c,i) => (
+          <img key={i} src="/cloud_pixel.svg" alt="" draggable={false}
+            className="absolute pointer-events-none z-0 opacity-70 animate-retro-float"
+            style={{ left:canvasWidth*c.pct, top:c.top, width:c.w, imageRendering:"pixelated", animationDelay:c.delay }}
+          />
+        ))}
+
+        {/* Nav */}
+        <Link href="/main" className="absolute top-8 left-8 z-40 hover:scale-105 transition-transform">
+          <img src="/mic_logo_pixel.svg" alt="MIC Pixel Logo" className="w-16 h-16" style={{ imageRendering:"pixelated" }} draggable={false} />
+        </Link>
+        <Link href="/main" className="absolute top-8 right-8 z-40 hover:scale-105 transition-transform">
+          <img src="/close_button.svg" alt="Close" className="w-12 h-12" draggable={false} />
+        </Link>
+
+        {/* Title */}
+        <h1
+          className="absolute left-1/2 -translate-x-1/2 font-press-start text-black text-center select-none z-30 whitespace-nowrap"
+          style={{ top:40, fontSize:46, textShadow:"3px 3px 0 rgba(255,255,255,0.4)" }}
+        >
+          About Us
+        </h1>
+
+        {/* ── Three parallel Mystery Cards ── */}
+        {CARDS.map((card, i) => (
+          <MysteryCard
+            key={card.id}
+            title={card.title}
+            desc={card.desc}
+            bg={card.bg}
+            left={cardLefts[i]}
+          />
+        ))}
+
+        {/* ── Pac-Man running left → right, looping ── */}
+        <motion.img
+          src="/images/about_us_assets/pacman.svg"
+          alt="Pacman"
+          draggable={false}
+          className="absolute z-15 pointer-events-none"
+          style={{ top: ANIM_Y, width: 72, height: 72, imageRendering: "pixelated" }}
+          animate={{ x: [-90, canvasWidth + 90] }}
+          transition={{ repeat: Infinity, duration: 9, ease: "linear", repeatDelay: 0 }}
+        />
+
+        {/* ── Ghosts chasing Pac-Man with staggered delays ── */}
+        {/* Red ghost — closest chaser */}
+        <motion.img
+          src="/images/about_us_assets/ghostr.svg"
+          alt="Blinky"
+          draggable={false}
+          className="absolute z-14 pointer-events-none"
+          style={{ top: ANIM_Y + 1, width: 70, height: 74, imageRendering: "pixelated" }}
+          animate={{ x: [-90, canvasWidth + 90] }}
+          transition={{ repeat: Infinity, duration: 9, ease: "linear", delay: 1.1, repeatDelay: 0 }}
+        />
+        {/* Orange ghost */}
+        <motion.img
+          src="/images/about_us_assets/ghosto.svg"
+          alt="Clyde"
+          draggable={false}
+          className="absolute z-14 pointer-events-none"
+          style={{ top: ANIM_Y + 1, width: 70, height: 74, imageRendering: "pixelated" }}
+          animate={{ x: [-90, canvasWidth + 90] }}
+          transition={{ repeat: Infinity, duration: 9, ease: "linear", delay: 2.1, repeatDelay: 0 }}
+        />
+        {/* Blue ghost — scattering (moves right→left, opposite direction) */}
+        <motion.img
+          src="/images/about_us_assets/ghostb.png"
+          alt="Inky"
+          draggable={false}
+          className="absolute z-14 pointer-events-none"
+          style={{ top: ANIM_Y - 5, width: 70, height: 74, imageRendering: "pixelated" }}
+          animate={{ x: [canvasWidth + 90, -90] }}
+          transition={{ repeat: Infinity, duration: 11, ease: "linear", delay: 0.5, repeatDelay: 0 }}
+        />
+        {/* Pink ghost — slower, also right→left */}
+        <motion.img
+          src="/images/about_us_assets/ghost.svg"
+          alt="Pinky"
+          draggable={false}
+          className="absolute z-14 pointer-events-none"
+          style={{ top: ANIM_Y + 2, width: 70, height: 74, imageRendering: "pixelated" }}
+          animate={{ x: [canvasWidth + 90, -90] }}
+          transition={{ repeat: Infinity, duration: 13, ease: "linear", delay: 1.8, repeatDelay: 0 }}
+        />
+
+        {/* ── Contact Us Banner — small, close to ground ── */}
+        <div
+          className="absolute z-20"
+          style={{ left: bannerLeft, top: bannerTop, width: bannerW, height: bannerH }}
+        >
+          <img
+            src="/images/about_us_assets/contact_details.svg"
+            alt="Contact Us"
+            className="w-full h-full"
+            style={{ objectFit: "fill" }}
+            draggable={false}
+          />
+          {/* Social icons in lower half */}
+          <div
+            className="absolute flex items-center justify-center gap-6"
+            style={{ top: "50%", left: "50%", transform: "translate(-50%, 0)", height: bannerH * 0.5 }}
+          >
+            {[
+              { href:"https://www.instagram.com/microsoft.innovations.vitc/?hl=en", src:"/images/about_us_assets/Frame 112.svg", alt:"Instagram" },
+              { href:"https://www.linkedin.com/company/microsoft-innovations-club-vitc/?originalSubdomain=in", src:"/images/about_us_assets/Frame 114.svg", alt:"LinkedIn" },
+              { href:"mailto:micvitcc@gmail.com", src:"/images/about_us_assets/Frame 116.svg", alt:"Mail" },
+            ].map(icon => (
+              <a key={icon.alt} href={icon.href}
+                target={icon.href.startsWith("http")?"_blank":undefined}
+                rel={icon.href.startsWith("http")?"noopener noreferrer":undefined}
+                className="hover:scale-110 hover:-translate-y-1 transition-all duration-200"
+                style={{ display:"flex", alignItems:"center", justifyContent:"center", width:bannerH*0.44, height:bannerH*0.44 }}
+              >
+                <img src={icon.src} alt={icon.alt} className="w-full h-full object-contain" style={{ imageRendering:"pixelated" }} draggable={false} />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Ground + Marquee ── */}
+        <div
+          className="absolute z-30 pointer-events-none select-none border-t-4 border-black bg-[#DD9955] overflow-hidden flex items-center"
+          style={{ top: GROUND_TOP, left: 0, width: canvasWidth, height: 1024 - GROUND_TOP }}
+        >
+          <div className="flex whitespace-nowrap animate-marquee">
+            {[0, 1].map(r => (
+              <span key={r} className="inline-flex items-center shrink-0 text-[18px] text-[#CC7700] tracking-wider uppercase font-bold font-press-start">
+                {Array(Math.max(5, Math.ceil(canvasWidth / 295))).fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027").map((t, i) => (
+                  <React.Fragment key={i}>
+                    <span>{t}</span>
+                    <img src="/images/about_us_assets/cherry.svg" alt="" className="w-6 h-6 mx-8" style={{ imageRendering:"pixelated" }} draggable={false} />
+                  </React.Fragment>
+                ))}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
