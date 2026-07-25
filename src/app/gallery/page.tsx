@@ -1,588 +1,977 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface CloudFloatOptions {
-  baseTop: string | number;
-  baseLeft: string | number;
-  amplitude?: number;
-  speed?: number;
-  phase?: number;
+interface EventData {
+  id: number;
+  title: string;
+  desc: string;
+  date: string;
+  image: string;
+  // Fallbacks
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 }
 
-const page1Images = {
-  left: {
-    pink: '/images/gallery/cysec.jpeg',
-    green: '/images/gallery/expo2024.jpeg',
-    blue: '/images/gallery/technical-writing.jpeg',
-    yellow: '/images/gallery/story.jpeg',
+const EVENTS: EventData[] = [
+  {
+    id: 1,
+    title: "Cybersecurity Workshop",
+    desc: "An intensive training session on ethical hacking, network defense, and security fundamentals. Students engaged in hands-on capture-the-flag (CTF) challenges.",
+    date: "October 2024",
+    image: "/images/gallery/cysec.jpeg",
+    left: 100,
+    top: 180,
+    width: 220,
+    height: 180,
   },
-  right: {
-    top: '/images/gallery/clubcon1.jpeg',
-    collage: [
-      '/images/gallery/cysec.jpeg',
-      '/images/gallery/expo2024.jpeg',
-      '/images/gallery/technical-writing.jpeg',
-      '/images/gallery/story.jpeg',
-    ],
+  {
+    id: 2,
+    title: "Expo 2024",
+    desc: "Microsoft Innovations Club's annual project expo showcasing cutting-edge student innovations, development projects, and research prototypes to industry experts and peers.",
+    date: "April 2024",
+    image: "/images/gallery/expo2024.jpeg",
+    left: 360,
+    top: 150,
+    width: 250,
+    height: 200,
   },
-  filmStrip: [
-    '/images/gallery/expo2024.jpeg',
-    '/images/gallery/technical-writing.jpeg',
-    '/images/gallery/story.jpeg',
-    '/images/gallery/clubcon1.jpeg',
-  ],
-};
+  {
+    id: 3,
+    title: "Technical Writing Seminar",
+    desc: "A comprehensive seminar on professional technical communication, documentation standards, API reference guide writing, and markdown formatting.",
+    date: "September 2024",
+    image: "/images/gallery/technical-writing.jpeg",
+    left: 650,
+    top: 160,
+    width: 220,
+    height: 180,
+  },
+  {
+    id: 4,
+    title: "Story Telling Sprint",
+    desc: "A unique event exploring the intersection of creative narrative, product pitching, and user journey mapping to design compelling software solutions.",
+    date: "November 2024",
+    image: "/images/gallery/story.jpeg",
+    left: 910,
+    top: 140,
+    width: 240,
+    height: 190,
+  },
+  {
+    id: 5,
+    title: "Clubcon 2025",
+    desc: "The flagship annual conference of MIC, bringing together developers, designers, and tech enthusiasts for panels, keynotes, and collaborative networking.",
+    date: "January 2025",
+    image: "/images/gallery/clubcon1.jpeg",
+    left: 1180,
+    top: 170,
+    width: 230,
+    height: 200,
+  },
+  {
+    id: 6,
+    title: "Clubcon 2025",
+    desc: "The flagship annual conference of MIC, bringing together developers, designers, and tech enthusiasts for panels, keynotes, and collaborative networking.",
+    date: "January 2025",
+    image: "/images/gallery/clubcon1.jpeg",
+    left: 80,
+    top: 560,
+    width: 240,
+    height: 200,
+  },
+  {
+    id: 7,
+    title: "Story Telling Sprint",
+    desc: "A unique event exploring the intersection of creative narrative, product pitching, and user journey mapping to design compelling software solutions.",
+    date: "November 2024",
+    image: "/images/gallery/story.jpeg",
+    left: 350,
+    top: 570,
+    width: 220,
+    height: 180,
+  },
+  {
+    id: 8,
+    title: "Expo 2024",
+    desc: "Microsoft Innovations Club's annual project expo showcasing cutting-edge student innovations, development projects, and research prototypes to industry experts and peers.",
+    date: "April 2024",
+    image: "/images/gallery/expo2024.jpeg",
+    left: 620,
+    top: 550,
+    width: 250,
+    height: 200,
+  },
+  {
+    id: 9,
+    title: "Cybersecurity Workshop",
+    desc: "An intensive training session on ethical hacking, network defense, and security fundamentals. Students engaged in hands-on capture-the-flag (CTF) challenges.",
+    date: "October 2024",
+    image: "/images/gallery/cysec.jpeg",
+    left: 900,
+    top: 580,
+    width: 230,
+    height: 180,
+  },
+  {
+    id: 10,
+    title: "Technical Writing Seminar",
+    desc: "A comprehensive seminar on professional technical communication, documentation standards, API reference guide writing, and markdown formatting.",
+    date: "September 2024",
+    image: "/images/gallery/technical-writing.jpeg",
+    left: 1170,
+    top: 560,
+    width: 240,
+    height: 200,
+  },
+];
 
-const page2Images = {
-  left: {
-    top: '/images/gallery/expo2024.jpeg',
-  },
-  right: {
-    vertical: [
-      '/images/gallery/cysec.jpeg',
-      '/images/gallery/technical-writing.jpeg',
-    ],
-    bottom: [
-      '/images/gallery/story.jpeg',
-      '/images/gallery/clubcon1.jpeg',
-    ],
-  },
-};
-
-const page3Images = {
-  left: {
-    grid: [
-      '/images/gallery/cysec.jpeg',
-      '/images/gallery/expo2024.jpeg',
-      '/images/gallery/technical-writing.jpeg',
-      '/images/gallery/story.jpeg',
-    ],
-    polaroids: [
-      '/images/gallery/clubcon1.jpeg',
-      '/images/gallery/cysec.jpeg',
-      '/images/gallery/expo2024.jpeg',
-      '/images/gallery/technical-writing.jpeg',
-    ],
-  },
-  right: {
-    top: '/images/gallery/story.jpeg',
-    bottom: '/images/gallery/clubcon1.jpeg',
-    strip: [
-      '/images/gallery/cysec.jpeg',
-      '/images/gallery/expo2024.jpeg',
-      '/images/gallery/technical-writing.jpeg',
-      '/images/gallery/story.jpeg',
-    ],
-  },
-};
-
-function useCloudFloat({ baseTop, baseLeft, amplitude = 30, speed = 1, phase = 0 }: CloudFloatOptions) {
-  const [top, setTop] = useState(baseTop);
-  const frame = useRef(0);
-
-  useEffect(() => {
-    let running = true;
-    function animate() {
-      frame.current += 1;
-      const t = frame.current / 60;
-      setTop(Number(baseTop) + Math.sin(t * speed + phase) * amplitude);
-      if (running) requestAnimationFrame(animate);
-    }
-    animate();
-    return () => { running = false; };
-  }, [baseTop, amplitude, speed, phase]);
-
-  return { top, left: baseLeft };
+interface RetroPipeProps {
+  height: number;
+  top?: string;
+  bottom?: string;
+  left: string;
+  isTop: boolean;
 }
+
+function RetroPipe({ height, top, bottom, left, isTop }: RetroPipeProps) {
+  return (
+    <div
+      className="absolute select-none pointer-events-none z-10 w-[52px]"
+      style={{
+        left,
+        top,
+        bottom,
+        height: `${height}px`,
+        transform: isTop ? "none" : "scaleY(-1)",
+        borderStyle: "solid",
+        borderWidth: "0 0 24px 0",
+        borderColor: "transparent",
+        borderImageSource: "url(/green_pipe.png)",
+        borderImageSlice: "0 0 64 0 fill",
+        borderImageRepeat: "stretch",
+        imageRendering: "pixelated",
+      }}
+    />
+  );
+}
+
+const getLayout = (width: number) => {
+  const startX = 210;
+  const endX = width - 145;
+  const rangeX = endX - startX;
+  
+  const centers = Array.from({ length: 5 }).map((_, i) => startX + (rangeX * i) / 4);
+  
+  const c1 = centers[0];
+  const c2 = centers[1];
+  const c3 = centers[2];
+  const c4 = centers[3];
+  const c5 = centers[4];
+
+  const frames = [
+    // Top Row
+    { id: 1, left: c1 - 110, top: 180, width: 220, height: 180 },
+    { id: 2, left: c2 - 125, top: 150, width: 250, height: 200 },
+    { id: 3, left: c3 - 110, top: 160, width: 220, height: 180 },
+    { id: 4, left: c4 - 120, top: 140, width: 240, height: 190 },
+    { id: 5, left: c5 - 115, top: 170, width: 230, height: 200 },
+    // Bottom Row
+    { id: 6, left: c1 - 120, top: 560, width: 240, height: 200 },
+    { id: 7, left: c2 - 110, top: 570, width: 220, height: 180 },
+    { id: 8, left: c3 - 125, top: 550, width: 250, height: 200 },
+    { id: 9, left: c4 - 115, top: 580, width: 230, height: 180 },
+    { id: 10, left: c5 - 120, top: 560, width: 240, height: 200 }
+  ];
+  
+  const g1 = (c1 + c2) / 2;
+  const g2 = (c2 + c3) / 2;
+  const g3 = (c3 + c4) / 2;
+  const g4 = (c4 + c5) / 2;
+  
+  const pipes = [
+    { left: g1 - 26, top: 0, height: 380, isTop: true },
+    { left: g2 - 26, top: 125, height: 225, isTop: true },
+    { left: g3 - 26, top: 125, height: 235, isTop: true },
+    { left: g4 - 26, top: 0, height: 370, isTop: true },
+    
+    { left: g1 - 26, bottom: 99, height: 350, isTop: false },
+    { left: g2 - 26, bottom: 99, height: 380, isTop: false },
+    { left: g3 - 26, bottom: 99, height: 350, isTop: false },
+    { left: g4 - 26, bottom: 99, height: 370, isTop: false }
+  ];
+  
+  return { frames, pipes };
+};
+
+const getInitialGalleryState = () => {
+  if (typeof window !== "undefined") {
+    const mobile = window.innerWidth < 1024;
+    const s = mobile ? 1 : window.innerHeight / 1024;
+    const w = mobile ? 1440 : window.innerWidth / s;
+    return { mobile, scale: s, width: w };
+  }
+  return { mobile: false, scale: 1, width: 1440 };
+};
 
 const GalleryPage: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = 3;
+  const [scale, setScale] = useState(() => getInitialGalleryState().scale);
+  const [canvasWidth, setCanvasWidth] = useState(() => getInitialGalleryState().width);
+  const [isMobile, setIsMobile] = useState(() => getInitialGalleryState().mobile);
+  const [mounted, setMounted] = useState(false);
+  const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
 
-  const cloudPositions = [
-    useCloudFloat({ baseTop: 100, baseLeft: -50, amplitude: 25, speed: 0.8, phase: 0 }),
-    useCloudFloat({ baseTop: 300, baseLeft: 1200, amplitude: 30, speed: 1.1, phase: 1 }),
-    useCloudFloat({ baseTop: 600, baseLeft: 100, amplitude: 35, speed: 0.9, phase: 2 }),
-  ];
+  // Game state
+  const [gameStatus, setGameStatusState] = useState<"idle" | "playing" | "dead" | "victory">("idle");
+  const [score, setScore] = useState(0);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(mediaQuery.matches);
-    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+  const birdContainerRef = useRef<HTMLDivElement>(null);
+  const gameStatusRef = useRef(gameStatus);
+  const passedPipesRef = useRef<Set<number>>(new Set());
+
+  const birdPhysicsRef = useRef({
+    x: 100,
+    y: 480,
+    velocityY: 0,
+    rotation: 0,
+    time: 0,
+    isDead: false,
+  });
+
+  const canvasWidthRef = useRef(canvasWidth);
+
+  const setGameStatus = (status: "idle" | "playing" | "dead" | "victory") => {
+    gameStatusRef.current = status;
+    setGameStatusState(status);
+  };
+
+  const playRetroSound = (type: "select" | "open" | "flap" | "point" | "die" | "victory") => {
+    if (typeof window === "undefined") return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === "select") {
+        osc.type = "square";
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.setValueAtTime(900, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
+      } else if (type === "open") {
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } else if (type === "flap") {
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(400, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      } else if (type === "point") {
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // E5
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
+      } else if (type === "die") {
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+      } else if (type === "victory") {
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, idx) => {
+          const oscN = ctx.createOscillator();
+          const gainN = ctx.createGain();
+          oscN.connect(gainN);
+          gainN.connect(ctx.destination);
+          oscN.type = "square";
+          oscN.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+          gainN.gain.setValueAtTime(0.05, ctx.currentTime + idx * 0.1);
+          gainN.gain.linearRampToValueAtTime(0.01, ctx.currentTime + idx * 0.1 + 0.15);
+          oscN.start(ctx.currentTime + idx * 0.1);
+          oscN.stop(ctx.currentTime + idx * 0.1 + 0.15);
+        });
+      }
+    } catch (e) {
+      console.warn("Audio Context failed", e);
+    }
+  };
+
+  const triggerFlap = useCallback(() => {
+    const p = birdPhysicsRef.current;
+    if (gameStatusRef.current === "idle") {
+      passedPipesRef.current.clear();
+      p.x = 100;
+      p.y = 480;
+      p.velocityY = -8;
+      p.isDead = false;
+      setGameStatus("playing");
+      setScore(0);
+      playRetroSound("flap");
+    } else if (gameStatusRef.current === "playing") {
+      p.velocityY = -8.5;
+      playRetroSound("flap");
+    } else if (gameStatusRef.current === "dead" || gameStatusRef.current === "victory") {
+      passedPipesRef.current.clear();
+      p.x = 100;
+      p.y = 480;
+      p.velocityY = 0;
+      p.isDead = false;
+      setGameStatus("idle");
+      setScore(0);
+    }
   }, []);
 
-  const pageVariants = {
-    initial: {
-      rotateY: -90,
-      opacity: 0,
-      transformOrigin: "center left",
-    },
-    animate: {
-      rotateY: 0,
-      opacity: 1,
-      transition: { duration: 0.6, type: "spring" as const, stiffness: 50 }
-    },
-    exit: {
-      rotateY: 90,
-      opacity: 0,
-      transition: { duration: 0.4 }
-    }
+  // Window Resize & Dynamic Scaling
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined") {
+        const mobile = window.innerWidth < 1024;
+        setIsMobile(mobile);
+        if (!mobile) {
+          const newScale = window.innerHeight / 1024;
+          setScale(newScale);
+          const computedWidth = window.innerWidth / newScale;
+          setCanvasWidth(computedWidth);
+          canvasWidthRef.current = computedWidth;
+        } else {
+          setScale(1);
+          setCanvasWidth(1440);
+          canvasWidthRef.current = 1440;
+        }
+      }
+    };
+    handleResize();
+    setMounted(true);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Keyboard controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        triggerFlap();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [triggerFlap]);
+
+  // Main game physics loop
+  useEffect(() => {
+    let animationFrameId: number;
+
+    const renderLoop = () => {
+      const p = birdPhysicsRef.current;
+      p.time += 0.045;
+
+      if (gameStatusRef.current === "playing") {
+        p.x += 3.5;
+        p.y += p.velocityY;
+        p.velocityY += 0.55;
+        p.rotation = Math.max(-20, Math.min(45, p.velocityY * 3));
+
+        // Canvas Boundary Collision
+        if (p.y < 0) {
+          p.isDead = true;
+          setGameStatus("dead");
+          playRetroSound("die");
+        }
+        const groundLevel = 925 - 72; // bird height is 72px
+        if (p.y >= groundLevel) {
+          p.y = groundLevel;
+          p.isDead = true;
+          setGameStatus("dead");
+          playRetroSound("die");
+        }
+
+        // Pipe Collisions based on dynamic layout
+        const layout = getLayout(canvasWidthRef.current);
+        const pipes = layout.pipes;
+
+        const birdWidth = 55;
+        const birdHeight = 45;
+        const bLeft = p.x + 8;
+        const bRight = bLeft + birdWidth;
+        const bTop = p.y + 13;
+        const bBottom = bTop + birdHeight;
+
+        for (let i = 0; i < pipes.length; i++) {
+          const pipe = pipes[i];
+          const pLeft = pipe.left;
+          const pRight = pipe.left + 52; // pipe width
+
+          if (bRight > pLeft && bLeft < pRight) {
+            if (pipe.isTop) {
+              if (bTop < pipe.height) {
+                p.isDead = true;
+                setGameStatus("dead");
+                playRetroSound("die");
+                break;
+              }
+            } else {
+              if (bBottom > (1024 - 99 - pipe.height)) {
+                p.isDead = true;
+                setGameStatus("dead");
+                playRetroSound("die");
+                break;
+              }
+            }
+          }
+        }
+
+        // Score Update Check
+        const uniquePipeLefts = Array.from(new Set(pipes.map(pipe => pipe.left))).sort((a, b) => a - b);
+        uniquePipeLefts.forEach((leftVal, index) => {
+          if (p.x + 36 > leftVal + 26 && !passedPipesRef.current.has(index)) {
+            passedPipesRef.current.add(index);
+            setScore((prev) => {
+              const newScore = prev + 1;
+              playRetroSound("point");
+              return newScore;
+            });
+          }
+        });
+
+        // Victory Check
+        if (p.x >= canvasWidthRef.current - 100) {
+          setGameStatus("victory");
+          playRetroSound("victory");
+        }
+      } else if (gameStatusRef.current === "dead") {
+        const groundLevel = 925 - 72;
+        if (p.y < groundLevel) {
+          p.y += p.velocityY;
+          p.velocityY += 1.2;
+          p.rotation += 15;
+          if (p.y >= groundLevel) {
+            p.y = groundLevel;
+            p.velocityY = 0;
+          }
+        }
+      } else if (gameStatusRef.current === "idle") {
+        p.x = 100;
+        p.y = 480 + Math.sin(p.time) * 12;
+        p.rotation = 0;
+      }
+
+      // Apply transform directly to avoid React rendering cycles lag
+      if (birdContainerRef.current) {
+        birdContainerRef.current.style.transform = `translate3d(${p.x}px, ${p.y}px, 0px) rotate(${p.rotation}deg)`;
+      }
+
+      animationFrameId = requestAnimationFrame(renderLoop);
+    };
+
+    animationFrameId = requestAnimationFrame(renderLoop);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  const handleBirdClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerFlap();
   };
 
-  const renderDoublePageSpread = () => {
-    switch (currentPage) {
-      case 1:
-        return (
-          <div className="flex w-full h-full">
-            <div className="w-1/2 h-full relative p-4 flex flex-col items-center">
-              <h1 className="font-press-start text-3xl md:text-4xl text-center mb-4 tracking-widest text-gray-800 mt-4">
-                GALLERY
-              </h1>
-              <div className="relative w-full h-full">
-                <div className="absolute top-10 left-0 w-40 h-52 z-10 hover:z-50 hover:scale-105 transition-all duration-300 group">
-                  <div className="absolute inset-0 z-0 pointer-events-none">
-                    <Image src="/images/gallery/frame1.png" fill alt="frame" className="object-contain" />
-                  </div>
-                  <div className="absolute top-[8%] left-[10%] w-[80%] h-[65%] bg-gray-200 z-10 overflow-hidden">
-                    <Image src={page1Images.left.pink} fill alt="img" className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                </div>
+  const handleFrameClick = (event: EventData) => {
+    if (gameStatus === "playing") return; // don't open details during gameplay
+    playRetroSound("open");
+    setActiveEvent(event);
+  };
 
-                <div className="absolute top-12 right-16 w-40 h-52 z-10 hover:z-50 hover:scale-105 transition-all duration-300 group">
-                  <div className="absolute inset-0 z-0 pointer-events-none">
-                    <Image src="/images/gallery/frame2.png" fill alt="frame" className="object-contain" />
-                  </div>
-                  <div className="absolute top-[8%] left-[10%] w-[80%] h-[65%] bg-gray-200 z-10 overflow-hidden">
-                    <Image src={page1Images.left.green} fill alt="img" className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                </div>
+  // Get dynamic coordinates
+  const layout = getLayout(canvasWidth);
 
-                <div className="absolute bottom-12 left-4 w-44 h-56 z-20 hover:z-50 hover:scale-105 transition-all duration-300 group">
-                  <div className="absolute inset-0 z-0 pointer-events-none">
-                    <Image src="/images/gallery/frame3.png" fill alt="frame" className="object-contain" />
-                  </div>
-                  <div className="absolute top-[8%] left-[10%] w-[80%] h-[65%] bg-gray-200 z-10 overflow-hidden">
-                    <Image src={page1Images.left.blue} fill alt="img" className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                </div>
+  if (!mounted) {
+    return (
+      <div
+        className="w-full h-screen"
+        style={{
+          background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%)",
+        }}
+      />
+    );
+  }
 
-                <div className="absolute bottom-7 right-10 w-44 h-56 z-20 hover:z-50 hover:scale-105 transition-all duration-300 group">
-                  <div className="absolute inset-0 z-0 pointer-events-none">
-                    <Image src="/images/gallery/frame4.png" fill alt="frame" className="object-contain" />
-                  </div>
-                  <div className="absolute top-[8%] left-[10%] w-[80%] h-[65%] bg-gray-200 z-10 overflow-hidden">
-                    <Image src={page1Images.left.yellow} fill alt="img" className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                </div>
-                <div className="absolute top-[8%] right-[12%] w-16 h-8 z-20 hover:scale-110 transition-transform">
-                  <Image src="/images/gallery/flag.png" fill alt="flag" className="object-contain" />
-                </div>
+  if (isMobile) {
+    return (
+      <div
+        className="w-full min-h-[100dvh] overflow-x-hidden overflow-y-auto flex flex-col items-center py-6 px-4 gap-6 select-none"
+        style={{
+          background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%)",
+        }}
+      >
+        <style>{`
+          body {
+            background: linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%) !important;
+            overflow-y: auto !important;
+          }
+          img[alt="MIC Logo"], img[src*="mic-logo"] { display: none !important; }
+          button[aria-label="Open navigation"], .z-\[60\] { display: none !important; }
+        `}</style>
 
-                <div className="absolute bottom-[8%] right-[41%] w-10 h-10 z-20 hover:scale-110 transition-transform hover:rotate-12">
-                  <Image src="/images/gallery/heart.png" fill alt="heart" className="object-contain" />
-                </div>
+        {/* Top Bar */}
+        <div className="w-full flex justify-between items-center z-40 px-2 shrink-0">
+          <Link href="/main" onClick={() => playRetroSound("select")}>
+            <Image src="/mic_logo_pixel.svg" alt="MIC Pixel Logo" width={48} height={48} className="pixelated" priority />
+          </Link>
+          <Link href="/main" onClick={() => playRetroSound("select")}>
+            <Image src="/close_button.svg" alt="Close" width={40} height={40} priority />
+          </Link>
+        </div>
 
-                <div className="absolute top-[40%] left-[3%] w-12 h-12 z-20 hover:scale-110 transition-transform hover:-rotate-12">
-                  <Image src="/images/gallery/star.png" fill alt="star" className="object-contain" />
+        {/* Page Title */}
+        <h1 className="font-press-start text-2xl text-black tracking-wider text-center drop-shadow-[3px_3px_0px_rgba(255,255,255,0.4)]">
+          Gallery Wall
+        </h1>
+
+        {/* Vertical Event Cards Grid */}
+        <div className="w-full max-w-sm flex flex-col gap-6 items-center z-20 pb-8">
+          {EVENTS.map((event) => (
+            <div
+              key={event.id}
+              onClick={() => handleFrameClick(event)}
+              className="w-full flex flex-col bg-[#FFE4D6] border-4 border-black rounded-[8px] shadow-[6px_6px_0px_rgba(0,0,0,0.25)] overflow-hidden cursor-pointer hover:scale-[1.02] active:scale-95 transition-transform duration-200"
+            >
+              {/* Header */}
+              <div className="w-full bg-[#A93710] border-b-4 border-black py-2 flex items-center justify-center shrink-0">
+                <span className="font-press-start text-xs text-black tracking-widest font-extrabold">
+                  EVENT
+                </span>
+              </div>
+              {/* Image Box with explicit height */}
+              <div className="p-3 bg-[#FFE4D6]">
+                <div className="relative w-full h-[180px] bg-white border-4 border-black overflow-hidden rounded-[4px]">
+                  <Image
+                    src={event.image}
+                    fill
+                    alt={event.title}
+                    className="object-cover"
+                  />
+                </div>
+                <div className="mt-2.5 text-center">
+                  <span className="font-press-start text-[11px] text-black block mb-1">
+                    {event.title}
+                  </span>
+                  <span className="font-press-start text-[9px] text-[#A93710]">
+                    ★ {event.date} ★
+                  </span>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
 
-            <div className="w-1/2 h-full relative">
-              <div className="absolute top-[6%] left-[12%] w-[42%] aspect-square z-20">
-                <div className="absolute top-[3%] left-[73%] w-10 h-10 z-40 rotate-[-12deg] hover:scale-110 transition-transform">
-                  <Image
-                    src="/starIcon.png"
-                    fill
-                    alt="star"
-                    className="object-contain"
-                  />
+        {/* Marquee Ground Footer */}
+        <div className="w-full h-14 border-t-4 border-black bg-[#DD9955] overflow-hidden flex items-center shrink-0 mt-auto">
+          <div className="flex whitespace-nowrap animate-marquee">
+            {[0, 1].map((r) => (
+              <span key={r} className="inline-flex items-center shrink-0 text-[11px] text-[#CC7700] uppercase font-bold font-press-start">
+                {Array(4)
+                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
+                  .map((t, i) => (
+                    <React.Fragment key={i}>
+                      <span>{t}</span>
+                      <img src="/mic_logo_pixel.png" alt="" className="w-4 h-4 mx-4 pixelated" />
+                    </React.Fragment>
+                  ))}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Event Details Modal Popup */}
+        <AnimatePresence>
+          {activeEvent && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 select-none"
+              onClick={() => {
+                playRetroSound("select");
+                setActiveEvent(null);
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-[#FFE4D6] border-4 border-black rounded-[8px] max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.35)]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="bg-[#A93710] border-b-4 border-black py-3 px-4 flex justify-between items-center shrink-0">
+                  <span className="font-press-start text-xs md:text-sm text-black tracking-wider uppercase font-extrabold">
+                    Event Details
+                  </span>
+                  <button
+                    onClick={() => {
+                      playRetroSound("select");
+                      setActiveEvent(null);
+                    }}
+                    className="font-press-start text-xs text-black border-2 border-black bg-white px-2 py-0.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none hover:bg-slate-100"
+                  >
+                    X
+                  </button>
                 </div>
-                <div className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-black p-[8px] overflow-hidden cut-edges">
-                  <div className="relative w-full h-full overflow-hidden cut-edges">
+
+                {/* Modal Body */}
+                <div className="p-5 flex flex-col items-center overflow-y-auto flex-grow no-scrollbar">
+                  <div className="relative w-full h-[180px] sm:h-[240px] border-4 border-black bg-white overflow-hidden mb-4 shrink-0">
                     <Image
-                      src={page1Images.right.top}
+                      src={activeEvent.image}
                       fill
-                      alt="img"
-                      className="object-cover hover:scale-110 transition-transform duration-500"
+                      alt={activeEvent.title}
+                      className="object-cover"
                     />
                   </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-[6%] left-[15%] w-[68%] h-[38%] z-20">
-                <div className="absolute bottom-[4%] left-[93%] w-12 h-12 z-40 rotate-[8deg] hover:rotate-[14deg] transition-transform">
-                  <Image
-                    src="/mushroom.svg"
-                    fill
-                    alt="mushroom"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="w-full h-full bg-black p-[4px] overflow-hidden cut-edges">
-                  <div className="relative w-full h-full bg-black p-[3px] cut-edges">
-                    <div className="absolute top-0 left-0 w-[55%] h-[48%] bg-black p-[2px] cut-edges">
-                      <div className="relative w-full h-full overflow-hidden">
-                        <Image src={page1Images.right.collage[0]} fill className="object-cover" alt="" />
-                      </div>
-                    </div>
-                    <div className="absolute top-0 right-0 w-[42%] h-[48%] bg-black p-[2px] cut-edges">
-                      <div className="relative w-full h-full overflow-hidden">
-                        <Image src={page1Images.right.collage[1]} fill className="object-cover" alt="" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-black p-[2px] cut-edges">
-                      <div className="relative w-full h-full overflow-hidden">
-                        <Image src={page1Images.right.collage[2]} fill className="object-cover" alt="" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-[55%] h-[52%] bg-black p-[2px] cut-edges">
-                      <div className="relative w-full h-full overflow-hidden">
-                        <Image src={page1Images.right.collage[3]} fill className="object-cover" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -top-[25%] left-[65%] w-[42%] h-[115%] rotate-[6deg] z-30">
-                <div className="absolute top-[68%] right-[2%] w-16 h-16 z-40 rotate-[18deg] hover:translate-x-3 hover:-translate-y-2 transition-transform duration-700">
-                  <Image
-                    src="/plane.svg"
-                    fill
-                    alt="plane"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="absolute inset-0 pointer-events-none">
-                  <Image
-                    src="/images/gallery/static.png"
-                    fill
-                    alt="film strip"
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="flex w-full h-full">
-            <div className="w-1/2 h-full relative">
-              <div className="relative w-[80%] h-[55%] right-[5%]">
-                <div className="relative w-full h-full bg-black p-[4px] cut-edges">
-                  <div className="relative w-full h-full bg-gray-300 overflow-hidden cut-edges">
-                    <Image src={page2Images.left.top} fill alt="event-main" className="object-cover" />
-                  </div>
-                </div>
-                <div className="absolute -top-6 -left-6 w-14 h-14 z-40 rotate-[-12deg]">
-                  <Image src="/plane.svg" fill alt="plane" className="object-contain" />
-                </div>
-                <div className="absolute -bottom-6 -right-6 w-12 h-12 z-40 rotate-[8deg]">
-                  <Image src="/mushroom.svg" fill alt="mushroom" className="object-contain" />
-                </div>
-              </div>
-
-              <div className="relative mt-4 w-full h-[48%]">
-                <div className="absolute top-[7%] left-[40%] -translate-x-1/2 w-[150%] p-[4px] cut-edges">
-                  <div className="relative w-full overflow-hidden cut-edges aspect-[3/1]">
-                    <Image src="/images/gallery/static2.png" fill alt="event-collage" className="object-contain" />
-                  </div>
-                </div>
-                <div className="absolute bottom-[30px] right-[98%] w-16 h-10 z-40">
-                  <Image src="/flag.png" fill alt="flag" className="object-contain" />
-                </div>
-              </div>
-            </div>
-
-            <div className="w-1/2 h-full relative p-6">
-              <h1 className="font-press-start text-3xl text-center mb-6 tracking-widest text-black">
-                GALLERY
-              </h1>
-              <div className="relative w-full h-[52%] flex gap-6 left-[12%]">
-                <div className="w-[58%] h-full flex flex-col gap-4">
-                  <div className="relative flex-1 bg-black p-[4px] cut-edges">
-                    <div className="relative w-full h-full overflow-hidden cut-edges">
-                      <Image src={page2Images.right.vertical[0]} fill className="object-cover" alt="" />
-                    </div>
-                  </div>
-                  <div className="relative flex-1 bg-black p-[4px] cut-edges">
-                    <div className="relative w-full h-full overflow-hidden cut-edges">
-                      <Image src={page2Images.right.vertical[1]} fill className="object-cover" alt="" />
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute left-[-18px] top-[42%] w-10 h-10 z-40 rotate-[-8deg]">
-                  <Image
-                    src="/leafIcon.png"
-                    fill
-                    alt="clover"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="relative w-[38%] h-full z-30">
-                  <Image
-                    src="/images/gallery/filmstrip1.png"
-                    fill
-                    className="object-contain"
-                    alt="film"
-                  />
-                </div>
-              </div>
-
-              <div className="relative w-full h-[26%] mt-8 left-[12%]">
-                <div className="relative w-full h-full bg-black p-[4px] cut-edges flex gap-[4px]">
-                  <div className="relative w-1/2 h-full overflow-hidden cut-edges">
-                    <Image src={page2Images.right.bottom[0]} fill className="object-cover" alt="" />
-                  </div>
-                  <div className="relative w-1/2 h-full overflow-hidden cut-edges">
-                    <Image src={page2Images.right.bottom[1]} fill className="object-cover" alt="" />
-                  </div>
-                </div>
-                <div className="absolute -top-4 -right-4 w-10 h-10 z-40 rotate-[12deg]">
-                  <Image
-                    src="/starIcon.png"
-                    fill
-                    alt="star"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="absolute -bottom-4 -left-4 w-8 h-8 z-40">
-                  <Image src="/heart.svg" fill className="object-contain" alt="heart" />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="flex w-full h-full">
-            <div className="w-1/2 h-full relative p-6">
-              <h1 className="font-press-start text-3xl text-center mb-8 tracking-widest text-black translate-x-[-6%]">
-                GALLERY
-              </h1>
-              <div className="relative w-full h-[70%] grid grid-cols-2 grid-rows-2 gap-6 px-6 top-[6%] translate-x-[-10%]">
-                {page3Images.left.grid.map((src, i) => (
-                  <div key={i} className="relative bg-black p-[4px] cut-edges">
-                    <div className="relative w-full h-full overflow-hidden cut-edges">
-                      <Image
-                        src={src}
-                        fill
-                        alt={`gallery-${i}`}
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="absolute top-[18%] right-[9%] w-[26%] h-[80%]">
-                {page3Images.left.polaroids.map((src, i) => (
-                  <div
-                    key={i}
-                    className={`absolute rotate-[${[-8, 4, -6, 7][i]}deg]`}
-                    style={{ top: `${i * 18}%`, right: i % 2 === 0 ? '6%' : '-2%' }}
+                  <h3 className="font-press-start text-base text-[#A93710] text-center mb-1.5 leading-snug drop-shadow-[1px_1px_0px_#fff] uppercase font-bold">
+                    {activeEvent.title}
+                  </h3>
+                  <span className="font-ibm-plex-mono text-[11px] font-extrabold text-gray-700 uppercase tracking-widest mb-3">
+                    ★ {activeEvent.date} ★
+                  </span>
+                  <p className="font-ibm-plex-mono text-sm text-black text-center leading-relaxed font-semibold max-w-md mb-6">
+                    {activeEvent.desc}
+                  </p>
+                  <button
+                    onClick={() => {
+                      playRetroSound("select");
+                      setActiveEvent(null);
+                    }}
+                    className="px-6 py-2.5 bg-white hover:bg-slate-100 text-black border-4 border-black font-press-start text-xs shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:translate-x-0.5 active:shadow-none transition-transform shrink-0"
                   >
-                    <div className="bg-white p-2 pb-7 shadow-lg">
-                      <div className="relative w-[115px] aspect-square overflow-hidden">
-                        <Image
-                          src={src}
-                          fill
-                          alt={`polaroid-${i}`}
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="absolute left-[1%] w-12 h-12 z-40 hover:scale-110 transition-transform">
-                <Image
-                  src="/images/gallery/image.png"
-                  fill
-                  alt="camera"
-                  className="object-contain"
-                />
-              </div>
-            </div>
-
-            <div className="w-1/2 h-full relative p-6">
-              <div className="absolute top-[8%] left-[15%] w-[88%] h-[44%] bg-black p-[4px]">
-                <div className="relative w-full h-full overflow-hidden">
-                  <Image
-                    src={page3Images.right.top}
-                    fill
-                    alt="top-big"
-                    className="object-cover"
-                  />
+                    CLOSE WINDOW
+                  </button>
                 </div>
-              </div>
-              <div className="absolute bottom-[4%] left-[15%] w-[88%] h-[42%] bg-black p-[4px]">
-                <div className="relative w-full h-full overflow-hidden">
-                  <Image
-                    src={page3Images.right.bottom}
-                    fill
-                    alt="bottom-big"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="absolute top-[7%] left-[95%] w-12 h-8 z-40 hover:scale-110 transition-transform">
-                <Image
-                  src="/flag.png"
-                  fill
-                  alt="flag"
-                  className="object-contain"
-                />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none left-[16%]">
-                <div className="bg-white shadow-xl px-3 py-6">
-                  <div className="flex flex-col gap-3">
-                    {page3Images.right.strip.map((src, i) => (
-                      <div
-                        key={i}
-                        className="relative w-[180px] aspect-[2.6/1] overflow-hidden"
-                      >
-                        <Image
-                          src={src}
-                          fill
-                          alt={`center-${i}`}
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute bottom-[2%] left-[-5%] w-12 h-8 z-40 hover:scale-110 transition-transform">
-                  <Image
-                    src="/flag.png"
-                    fill
-                    alt="flag"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="absolute bottom-[4%] right-[-5%] w-12 h-12 z-40 rotate-[6deg] hover:rotate-[12deg] transition-transform">
-                  <Image
-                    src="/mushroom.svg"
-                    fill
-                    alt="mushroom"
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      default: return null;
-    }
-  };
-
-  const themeColors = isDarkMode
-    ? {
-      background: "linear-gradient(to bottom, #00040d 0%, #002855 100%)",
-      gridOpacity: "rgba(255, 255, 255, 0.1)",
-    }
-    : {
-      background: "linear-gradient(to bottom, #e0f2fe 0%, #87ceeb 100%)",
-      gridOpacity: "rgba(255, 255, 255, 0.3)",
-    };
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="h-screen w-full relative overflow-hidden"
+      className={`h-[100dvh] w-full relative overflow-y-hidden select-none ${
+        isMobile ? 'overflow-x-auto' : 'overflow-x-hidden'
+      }`}
       style={{
-        backgroundImage: `
-          linear-gradient(to right, ${themeColors.gridOpacity} 1px, transparent 1px),
-          linear-gradient(to bottom, ${themeColors.gridOpacity} 1px, transparent 1px),
-          ${themeColors.background}
-        `,
-        backgroundSize: "30px 30px, 30px 30px, 100% 100%",
-        backgroundRepeat: "repeat, repeat, no-repeat",
-        backgroundPosition: "top left, top left, center",
-        userSelect: "none",
+        background: "linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%)",
       }}
     >
+      <style>{`
+        /* Override body background to be the bright blue sky gradient and remove the grid */
+        body {
+          background: linear-gradient(180deg, #1188EE 0%, #0E8AEA 25%, #1093EB 35%, #1197EC 46%, #16B6F4 52%, #10CBF1 56%, #0FC6F1 60%, #15DEF0 65%, #15DEF0 81%) !important;
+          background-size: 100% 100% !important;
+          background-attachment: fixed !important;
+          overflow: hidden !important;
+        }
+        
+        /* Hide global navbar elements on the gallery page */
+        img[alt="MIC Logo"], img[src*="mic-logo"] {
+          display: none !important;
+        }
+        button[aria-label="Open navigation"], .z-\[60\] {
+          display: none !important;
+        }
+      `}</style>
 
-      {cloudPositions.map((pos, i) => (
-        <motion.div key={i} animate={{ y: [0, 10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'absolute', top: pos.top, left: pos.left, pointerEvents: 'none', zIndex: 5 }}>
-          <Image src="/images/cloud1.png" width={200} height={120} alt="cloud" className="opacity-80" />
-        </motion.div>
-      ))}
+      {/* Sized Canvas container that matches recruitment portal theme */}
+      <div
+        className="absolute top-0 left-0 shrink-0 select-none"
+        style={{
+          width: canvasWidth,
+          height: 1024,
+          transform: !isMobile ? `scale(${scale})` : 'none',
+          transformOrigin: 'top left',
+        }}
+      >
+        {/* Floating Clouds */}
+        <img
+          src="/cloud_pixel.svg"
+          alt="Cloud"
+          className="absolute top-[120px] pointer-events-none z-5 opacity-70 animate-retro-float pixelated"
+          style={{ left: `${canvasWidth * 0.1}px`, width: "200px", height: "auto" }}
+        />
+        <img
+          src="/cloud_pixel.svg"
+          alt="Cloud"
+          className="absolute top-[50px] pointer-events-none z-5 opacity-80 animate-retro-float pixelated"
+          style={{ left: `${canvasWidth * 0.55}px`, width: "280px", height: "auto", animationDelay: "1s" }}
+        />
+        <img
+          src="/cloud_pixel.svg"
+          alt="Cloud"
+          className="absolute top-[220px] pointer-events-none z-5 opacity-75 animate-retro-float pixelated"
+          style={{ left: `${canvasWidth * 0.8}px`, width: "220px", height: "auto", animationDelay: "1.5s" }}
+        />
 
-      <div className="relative z-10 flex items-center justify-center h-full w-full perspective-1000">
-        <div
-          className="
-            origin-center
-            transition-transform
-            duration-300
-            scale-[0.5]
-            sm:scale-[0.6]
-            md:scale-[0.7]
-            [@media(min-width:900px)]:scale-[0.9]
-            [@media(min-width:850px)]:scale-[0.8]
-            lg:scale-[1]
-            xl:scale-[1.05]
-            "
+        {/* Silhouettes & cityscape backgrounds */}
+        {Array.from({ length: Math.ceil(canvasWidth / 1440) + 1 }).map((_, idx) => (
+          <img
+            key={`silhouette-${idx}`}
+            src="/big_cloud.svg"
+            alt="Skyline Silhouette"
+            className="absolute top-[565px] h-[465px] object-cover opacity-25 pointer-events-none select-none z-1 pixelated"
+            style={{ left: `${idx * 1440}px`, width: "1500px" }}
+          />
+        ))}
+        
+        {Array.from({ length: Math.ceil(canvasWidth / 245) + 1 }).map((_, idx) => (
+          <img
+            key={`skyline-${idx}`}
+            src="/cityscape.svg"
+            alt="Skyline"
+            className="absolute top-[631px] w-[246px] h-[249px] opacity-40 pointer-events-none select-none z-2 pixelated"
+            style={{ left: `${idx * 245}px` }}
+          />
+        ))}
+
+        {Array.from({ length: Math.ceil(canvasWidth / 1409) + 1 }).map((_, idx) => (
+          <img
+            key={`bush-${idx}`}
+            src="/pixel_bushes.svg"
+            alt="Bushes"
+            className="absolute top-[739px] w-[1456px] h-[200px] z-3 pointer-events-none select-none pixelated"
+            style={{ left: `${idx * 1409}px` }}
+          />
+        ))}
+
+        {/* Top-Left: MIC Pixel Logo */}
+        <Link
+          href="/main"
+          onClick={() => playRetroSound("select")}
+          className="absolute top-8 left-8 z-40 hover:scale-105 transition-transform duration-200"
+          style={{ width: 63, height: 63 }}
         >
-          <div
-            className="relative"
-            style={{ width: 1000, height: 700 }}
-          >
-            <div className="absolute right-0 translate-x-[55%] top-[12%] flex flex-col gap-4 z-0">
-              {[1, 2, 3].map((pageNum) => (
-                <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`relative w-24 h-24 transition-transform duration-300 ${currentPage === pageNum ? 'translate-x-4' : 'hover:translate-x-2'
-                    }`}
-                >
+          <Image
+            src="/mic_logo_pixel.svg"
+            alt="MIC Pixel Logo"
+            width={63}
+            height={63}
+            className="object-contain pixelated"
+            priority
+          />
+        </Link>
+
+        {/* Top-Right: Close Button */}
+        <Link
+          href="/main"
+          onClick={() => playRetroSound("select")}
+          className="absolute top-8 right-8 z-40 hover:scale-105 transition-transform duration-200"
+          style={{ width: 48, height: 48 }}
+        >
+          <Image
+            src="/close_button.svg"
+            alt="Close"
+            width={48}
+            height={48}
+            className="object-contain"
+            priority
+          />
+        </Link>
+
+        {/* Centered Heading */}
+        <h1 className="absolute top-12 left-1/2 -translate-x-1/2 font-press-start text-3xl md:text-5xl text-black tracking-wider text-center select-none z-30 drop-shadow-[3px_3px_0px_rgba(255,255,255,0.4)]">
+          Gallery Wall
+        </h1>
+
+        {/* Green Mario Pipes (Tubes) */}
+        {layout.pipes.map((pipe, idx) => (
+          <RetroPipe
+            key={`pipe-${idx}`}
+            left={`${pipe.left}px`}
+            top={pipe.top !== undefined ? `${pipe.top}px` : undefined}
+            bottom={pipe.bottom !== undefined ? `${pipe.bottom}px` : undefined}
+            height={pipe.height}
+            isTop={pipe.isTop}
+          />
+        ))}
+
+        {/* Event Cards (Gallery Frames) */}
+        {layout.frames.map((frame) => {
+          const event = EVENTS.find(e => e.id === frame.id);
+          if (!event) return null;
+          return (
+            <div
+              key={event.id}
+              onClick={() => handleFrameClick(event)}
+              className="absolute z-20 flex flex-col bg-[#FFE4D6] border-4 border-black rounded-[6px] shadow-[6px_6px_0px_rgba(0,0,0,0.2)] overflow-hidden cursor-pointer hover:-translate-y-1 hover:rotate-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,0.3)] transition-all duration-200"
+              style={{
+                left: frame.left,
+                top: frame.top,
+                width: frame.width,
+                height: frame.height,
+              }}
+            >
+              {/* Header */}
+              <div className="w-full bg-[#A93710] border-b-4 border-black py-1.5 flex items-center justify-center shrink-0">
+                <span className="font-press-start text-[10px] text-black tracking-widest font-extrabold">
+                  EVENT
+                </span>
+              </div>
+              {/* Image Box */}
+              <div className="flex-1 flex flex-col min-h-0 p-2.5 bg-[#FFE4D6]">
+                <div className="relative flex-1 w-full min-h-0 bg-white border-4 border-black overflow-hidden group rounded-[3px]">
                   <Image
-                    src="/images/gallery/arrow.png"
+                    src={event.image}
                     fill
-                    alt={`Tab ${pageNum}`}
-                    className="object-contain"
+                    alt={event.title}
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                </button>
-              ))}
+                </div>
+              </div>
             </div>
+          );
+        })}
 
-            <div className="absolute inset-0 z-10 pointer-events-none">
-              <Image
-                src="/images/gallery/notebook.png"
-                fill
-                alt="Notebook Background"
-                className="object-contain drop-shadow-2xl"
-                priority
-              />
-            </div>
-
-            <div className="absolute inset-0 z-20 pt-[5%] pb-[5%] px-[6%]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentPage}
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full h-full"
-                >
-                  {renderDoublePageSpread()}
-                </motion.div>
-              </AnimatePresence>
+        {/* Ground & Scrolling Marquee */}
+        <div
+          className="absolute top-[925px] left-0 h-[150px] z-30 flex flex-col select-none pointer-events-none"
+          style={{ width: canvasWidth }}
+        >
+          <div className="w-full h-5 bg-[#52AE26] border-t-4 border-b-4 border-black flex flex-col justify-between shrink-0">
+            <div className="w-full h-[3px] bg-[#72F418]" />
+            <div className="w-full h-[3px] bg-[#3FA70E]" />
+          </div>
+          <div className="w-full flex-grow bg-[#DD9955] border-b-4 border-black relative overflow-hidden flex items-start pt-3">
+            <div className="flex whitespace-nowrap animate-marquee">
+              <span className="inline-flex items-center shrink-0 text-[18px] text-[#CC7700] tracking-wider uppercase font-bold font-press-start">
+                {Array(Math.max(6, Math.ceil(canvasWidth / 300)))
+                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
+                  .map((text, idx) => (
+                    <React.Fragment key={idx}>
+                      <span>{text}</span>
+                      <img
+                        src="/mic_logo_pixel.png"
+                        alt="MIC"
+                        className="w-6 h-6 mx-8 shrink-0 pixelated"
+                      />
+                    </React.Fragment>
+                  ))}
+              </span>
+              <span className="inline-flex items-center shrink-0 text-[18px] text-[#CC7700] tracking-wider uppercase font-bold font-press-start">
+                {Array(Math.max(6, Math.ceil(canvasWidth / 300)))
+                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
+                  .map((text, idx) => (
+                    <React.Fragment key={idx}>
+                      <span>{text}</span>
+                      <img
+                        src="/mic_logo_pixel.png"
+                        alt="MIC"
+                        className="w-6 h-6 mx-8 shrink-0 pixelated"
+                      />
+                    </React.Fragment>
+                  ))}
+              </span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Retro Event Details Modal Popup */}
+      <AnimatePresence>
+        {activeEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 select-none"
+            onClick={() => {
+              playRetroSound("select");
+              setActiveEvent(null);
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#FFE4D6] border-4 border-black rounded-[8px] max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.35)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="bg-[#A93710] border-b-4 border-black py-3 px-4 flex justify-between items-center shrink-0">
+                <span className="font-press-start text-xs md:text-sm text-black tracking-wider uppercase font-extrabold">
+                  Event Details
+                </span>
+                <button
+                  onClick={() => {
+                    playRetroSound("select");
+                    setActiveEvent(null);
+                  }}
+                  className="font-press-start text-xs text-black border-2 border-black bg-white px-2 py-0.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none hover:bg-slate-100"
+                >
+                  X
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-5 flex flex-col items-center overflow-y-auto flex-grow no-scrollbar">
+                {/* Event Photo View */}
+                <div className="relative w-full h-[180px] sm:h-[240px] border-4 border-black bg-white overflow-hidden mb-4 shrink-0">
+                  <Image
+                    src={activeEvent.image}
+                    fill
+                    alt={activeEvent.title}
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Event Details */}
+                <h3 className="font-press-start text-base text-[#A93710] text-center mb-1.5 leading-snug drop-shadow-[1px_1px_0px_#fff] uppercase font-bold">
+                  {activeEvent.title}
+                </h3>
+                <span className="font-ibm-plex-mono text-[11px] font-extrabold text-gray-700 uppercase tracking-widest mb-3">
+                  ★ {activeEvent.date} ★
+                </span>
+                <p className="font-ibm-plex-mono text-sm text-black text-center leading-relaxed font-semibold max-w-md mb-6">
+                  {activeEvent.desc}
+                </p>
+
+                {/* Close Button */}
+                <button
+                  onClick={() => {
+                    playRetroSound("select");
+                    setActiveEvent(null);
+                  }}
+                  className="px-6 py-2.5 bg-white hover:bg-slate-100 text-black border-4 border-black font-press-start text-xs shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:translate-x-0.5 active:shadow-none transition-transform shrink-0"
+                >
+                  CLOSE WINDOW
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
