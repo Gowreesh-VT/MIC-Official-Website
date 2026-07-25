@@ -70,7 +70,7 @@ const LeaderboardPage = () => {
 
   return (
     <div
-      className="w-full h-screen relative overflow-hidden select-none"
+      className="w-full min-h-[100dvh] h-[100dvh] relative overflow-x-hidden overflow-y-auto sm:overflow-hidden select-none"
       style={{
         background:
           'linear-gradient(180deg,#1188EE 0%,#0E8AEA 24.52%,#1093EB 35.07%,#1197EC 45.67%,#16B6F4 52.35%,#10CBF1 56.04%,#0FC6F1 59.73%,#15DEF0 64.76%,#15DEF0 81.25%)',
@@ -79,9 +79,9 @@ const LeaderboardPage = () => {
       {/* Retro 3D Close Button SVG Asset */}
       <Link
         href="/main"
-        className="absolute top-6 right-6 z-50 transition-transform active:translate-y-0.5"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 transition-transform active:translate-y-0.5 pointer-events-auto"
         style={{
-          width: 'clamp(36px, 4vw, 48px)',
+          width: 'clamp(32px, 4vw, 48px)',
           height: 'auto',
           cursor: 'pointer',
         }}
@@ -96,10 +96,12 @@ const LeaderboardPage = () => {
         />
       </Link>
 
-      {/* Floating clouds */}
-      {CLOUD_CONFIGS.map((cfg, i) => (
-        <FloatingCloud key={i} {...cfg} />
-      ))}
+      {/* Floating clouds - hidden on very small screens to avoid clutter */}
+      <div className="hidden sm:block">
+        {CLOUD_CONFIGS.map((cfg, i) => (
+          <FloatingCloud key={i} {...cfg} />
+        ))}
+      </div>
 
       {/* Big cloud backdrop */}
       <div
@@ -145,9 +147,9 @@ const LeaderboardPage = () => {
 
       {/* Bobbing bird */}
       <motion.div
-        className="absolute pointer-events-none select-none"
-        style={{ right: '12%', top: '20%', width: 56, height: 45, zIndex: 8 }}
-        animate={{ y: [0, -14, 0] }}
+        className="absolute pointer-events-none select-none z-10"
+        style={{ left: '4%', top: '15%', width: 44, height: 35 }}
+        animate={{ y: [0, -10, 0] }}
         transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Image src="/pixel_bird.svg" alt="Pixel Bird" fill className="object-contain" style={{ imageRendering: 'pixelated' }} />
@@ -155,11 +157,11 @@ const LeaderboardPage = () => {
 
       {/* ── CENTRAL COLUMN: ropes → signboard ─────────── */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none"
-        style={{ top: 0, width: 'clamp(320px, 62vw, 840px)', zIndex: 29 }}
+        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none w-[90vw] max-w-[350px] sm:max-w-[840px]"
+        style={{ top: 0, zIndex: 29 }}
       >
         {/* Ropes */}
-        <div className="relative w-full flex justify-between px-[12%]" style={{ height: 'clamp(120px, 16vh, 220px)' }}>
+        <div className="relative w-full flex justify-between px-[8%] sm:px-[12%]" style={{ height: 'clamp(65px, 11vh, 180px)' }}>
           <div className="relative" style={{ width: 14, height: '100%' }}>
             <Image src="/hanging_ropes.svg" alt="Left rope" fill className="object-top object-contain" />
           </div>

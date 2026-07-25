@@ -19,15 +19,14 @@ const NON_FFCS_DATA: LeaderboardEntry[] = [
   { name: 'Rahul K', points: 880 },
 ];
 
-// Custom pixel art Gold Trophy SVG (with flexShrink and explicit sizing to prevent collapse)
+// Custom pixel art Gold Trophy SVG
 const TrophyIcon = () => (
   <svg 
-    width="38" 
-    height="38" 
     viewBox="0 0 16 16" 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg" 
-    style={{ imageRendering: 'pixelated', flexShrink: 0, width: 38, height: 38 }}
+    className="w-5 h-5 sm:w-8 sm:h-8 shrink-0"
+    style={{ imageRendering: 'pixelated' }}
   >
     {/* Handles outline */}
     <rect x="1" y="3" width="2" height="5" fill="#4D2304" />
@@ -82,12 +81,11 @@ const MedalIcon: React.FC<MedalProps> = ({ rank }) => {
 
   return (
     <svg 
-      width="38" 
-      height="38" 
       viewBox="0 0 36 36" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg" 
-      style={{ imageRendering: 'pixelated', flexShrink: 0, width: 38, height: 38 }}
+      className="w-5 h-5 sm:w-8 sm:h-8 shrink-0"
+      style={{ imageRendering: 'pixelated' }}
     >
       {/* V-shaped Ribbon (Blue on Left, Red on Right) with black borders */}
       <path d="M8 2 L18 18 H14 L4 2 Z" fill="#4B69FF" stroke="#000000" strokeWidth="2" strokeLinejoin="round" />
@@ -134,169 +132,259 @@ export function LeaderboardSignboard() {
   };
 
   return (
-    <div 
-      className="relative w-full pointer-events-auto animate-fadeIn" 
-      style={{ 
-        aspectRatio: '895 / 455',
-        backgroundImage: "url('/signboard.svg')",
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      {/* 1. Header Title */}
-      <div 
-        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 font-press-start pointer-events-none select-none"
-        style={{ 
-          top: '5.5%',
-          textShadow: '3px 3px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304, 1px 1px 0 #4D2304',
-          whiteSpace: 'nowrap',
-          zIndex: 10,
-        }}
-      >
-        <TrophyIcon />
-        <h2
-          style={{
-            fontSize: 'clamp(1rem, 2.5vw, 2.2rem)',
-            color: '#E5A039', // Gold text color
-            fontWeight: 'bold',
-            letterSpacing: '0.05em',
-            margin: 0,
-            lineHeight: 1,
-          }}
-        >
-          LEADERBOARD
-        </h2>
-      </div>
+    <>
+      {/* ────────────────── MOBILE VIEW (Portrait Wooden Board matching Image 1) ────────────────── */}
+      <div className="block sm:hidden w-full relative z-30 pointer-events-auto select-none">
+        <div className="relative w-full bg-[#C8590C] border-[3.5px] border-black rounded-[22px] shadow-[6px_6px_0_rgba(0,0,0,0.35)] p-3.5 pt-4 pb-4 flex flex-col items-center select-none">
+          {/* 4 Corner Bolts/Screws */}
+          <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
+          <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
+          <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
+          <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
 
-      {/* 2. Inner Scoreboard Container */}
-      <div
-        className="absolute border-[4px] border-black rounded-[12px] flex flex-col items-center pointer-events-none select-none"
-        style={{
-          top: '20%',
-          left: '9%',
-          width: '82%',
-          height: '63%',
-          background: '#FBE4DF', // Correct pink/beige tone
-          padding: '2% 3%',
-          boxSizing: 'border-box',
-          zIndex: 5,
-        }}
-      >
-        {/* Members Badge */}
-        <div
-          className="absolute border-[3px] border-black rounded-[16px] flex items-center justify-center font-press-start"
-          style={{
-            top: '-7%',
-            width: '52%',
-            height: '13%',
-            background: '#9B3D24', // Red-brown background
-            color: '#000000', // Black text
-            fontSize: 'clamp(7px, 1.1vw, 11px)',
-            fontWeight: 'bold',
-            boxShadow: '0 3px 0 rgba(0, 0, 0, 0.2)',
-          }}
-        >
-          {tab === 'ffcs' ? 'FFCS MEMBERS' : 'NON-FFCS MEMBERS'}
-        </div>
-
-        {/* Table Headers */}
-        <div
-          className="w-full flex justify-between font-press-start text-black font-bold"
-          style={{
-            fontSize: 'clamp(8px, 1.2vw, 13px)',
-            marginTop: '3%',
-            paddingBottom: '1.5%',
-            borderBottom: '2px dashed rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          <span className="w-[20%] text-left">RANK</span>
-          <span className="w-[50%] text-center">NAME</span>
-          <span className="w-[30%] text-right text-black/80">POINTS</span>
-        </div>
-
-        {/* Table Body / Leaderboard Rows */}
-        <div className="w-full flex-1 flex flex-col justify-around mt-1.5">
-          {currentData.map((entry, index) => (
-            <div
-              key={entry.name + index}
-              className="w-full flex items-center justify-between border-[3px] border-black rounded-[8px] px-4 font-press-start text-black font-bold"
+          {/* 1. Header Title */}
+          <div className="flex items-center justify-center gap-2 font-press-start my-1 text-center">
+            <TrophyIcon />
+            <h2
+              className="text-[17px] text-[#E5A039] font-bold tracking-wider m-0 leading-none"
               style={{
-                height: '27%',
-                background: getRowBg(index),
-                fontSize: 'clamp(9px, 1.3vw, 15px)',
-                boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
+                textShadow: '2px 2px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304, 1px 1px 0 #4D2304',
               }}
             >
-              {/* Medal Icon & Rank */}
-              <div className="w-[20%] flex items-center justify-start">
-                <div className="-ml-1 flex items-center">
-                  <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
-                </div>
-              </div>
+              LEADERBOARD
+            </h2>
+          </div>
 
-              {/* Name */}
-              <span className="w-[50%] text-center truncate">{entry.name}</span>
-
-              {/* Points */}
-              <span className="w-[30%] text-right font-mono">{entry.points}</span>
+          {/* 2. Inner Scoreboard Container */}
+          <div className="w-full bg-[#FBE4DF] border-[3.5px] border-black rounded-[16px] px-3 pt-6 pb-4 flex flex-col items-center gap-3 relative my-3 shadow-[inset_0_-3px_0_rgba(0,0,0,0.08)]">
+            {/* FFCS / NON-FFCS MEMBERS Badge */}
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#9B3D24] text-black font-press-start text-[10px] font-bold px-4 py-1.5 rounded-full border-[2.5px] border-black shadow-[0_2px_0_rgba(0,0,0,0.2)] whitespace-nowrap">
+              {tab === 'ffcs' ? 'FFCS MEMBERS' : 'NON-FFCS MEMBERS'}
             </div>
-          ))}
+
+            {/* Table Header Pill */}
+            <div className="w-full bg-[#9B3D24] text-black font-press-start text-[9.5px] font-bold px-3 py-1.5 rounded-full border-[2.5px] border-black flex justify-between items-center text-center mt-1">
+              <span className="w-[22%] text-left">RANK</span>
+              <span className="w-[48%] text-center">NAME</span>
+              <span className="w-[30%] text-right text-black">POINTS</span>
+            </div>
+
+            {/* Score Entry Rows (3 Rows) */}
+            <div className="w-full flex flex-col gap-2.5 my-1">
+              {currentData.map((entry, index) => (
+                <div
+                  key={entry.name + index}
+                  className="w-full border-[2.5px] border-black rounded-[12px] px-3 py-2.5 flex items-center justify-between font-press-start font-bold"
+                  style={{
+                    background: getRowBg(index),
+                    boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
+                  }}
+                >
+                  <div className="w-[22%] flex items-center justify-start">
+                    <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
+                  </div>
+                  <span className="w-[48%] text-center truncate text-[12px] text-black">
+                    {entry.name}
+                  </span>
+                  <span className="w-[30%] text-right font-mono text-[12px] text-black">
+                    {entry.points}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Bottom Tabs */}
+          <div className="w-full flex justify-between gap-3 px-1 pt-1">
+            <button
+              onClick={() => setTab('ffcs')}
+              className={`flex-1 font-press-start text-[11px] font-bold py-2 rounded-[8px] border-[2.5px] border-black transition-all text-black cursor-pointer ${
+                tab === 'ffcs'
+                  ? 'bg-[#DCA348] shadow-[inset_0_2px_0_rgba(0,0,0,0.25)] translate-y-0.5'
+                  : 'bg-[#DCA348] shadow-[0_3px_0_#000000] active:translate-y-0.5'
+              }`}
+            >
+              ffcs
+            </button>
+            <button
+              onClick={() => setTab('non-ffcs')}
+              className={`flex-1 font-press-start text-[11px] font-bold py-2 rounded-[8px] border-[2.5px] border-black transition-all text-black cursor-pointer ${
+                tab === 'non-ffcs'
+                  ? 'bg-[#DCA348] shadow-[inset_0_2px_0_rgba(0,0,0,0.25)] translate-y-0.5'
+                  : 'bg-[#DCA348] shadow-[0_3px_0_#000000] active:translate-y-0.5'
+              }`}
+            >
+              non-ffcs
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ────────────────── DESKTOP VIEW (Landscape Signboard SVG) ────────────────── */}
+      <div 
+        className="hidden sm:block relative w-full pointer-events-auto animate-fadeIn select-none" 
+        style={{ 
+          aspectRatio: '895 / 455',
+          backgroundImage: "url('/signboard.svg')",
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* 1. Header Title */}
+        <div 
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 font-press-start pointer-events-none select-none"
+          style={{ 
+            top: '5.5%',
+            textShadow: '3px 3px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304, 1px 1px 0 #4D2304',
+            whiteSpace: 'nowrap',
+            zIndex: 10,
+          }}
+        >
+          <TrophyIcon />
+          <h2
+            style={{
+              fontSize: 'clamp(1rem, 2.5vw, 2.2rem)',
+              color: '#E5A039', // Gold text color
+              fontWeight: 'bold',
+              letterSpacing: '0.05em',
+              margin: 0,
+              lineHeight: 1,
+            }}
+          >
+            LEADERBOARD
+          </h2>
+        </div>
+
+        {/* 2. Inner Scoreboard Container */}
+        <div
+          className="absolute border-[4px] border-black rounded-[12px] flex flex-col items-center pointer-events-none select-none"
+          style={{
+            top: '20%',
+            left: '9%',
+            width: '82%',
+            height: '63%',
+            background: '#FBE4DF', // Correct pink/beige tone
+            padding: '2% 3%',
+            boxSizing: 'border-box',
+            zIndex: 5,
+          }}
+        >
+          {/* Members Badge */}
+          <div
+            className="absolute border-[3px] border-black rounded-[16px] flex items-center justify-center font-press-start"
+            style={{
+              top: '-7%',
+              width: '52%',
+              height: '13%',
+              background: '#9B3D24', // Red-brown background
+              color: '#000000', // Black text
+              fontSize: 'clamp(7px, 1.1vw, 11px)',
+              fontWeight: 'bold',
+              boxShadow: '0 3px 0 rgba(0, 0, 0, 0.2)',
+            }}
+          >
+            {tab === 'ffcs' ? 'FFCS MEMBERS' : 'NON-FFCS MEMBERS'}
+          </div>
+
+          {/* Table Headers */}
+          <div
+            className="w-full flex justify-between font-press-start text-black font-bold"
+            style={{
+              fontSize: 'clamp(8px, 1.2vw, 13px)',
+              marginTop: '3%',
+              paddingBottom: '1.5%',
+              borderBottom: '2px dashed rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            <span className="w-[20%] text-left">RANK</span>
+            <span className="w-[50%] text-center">NAME</span>
+            <span className="w-[30%] text-right text-black/80">POINTS</span>
+          </div>
+
+          {/* Table Body / Leaderboard Rows */}
+          <div className="w-full flex-1 flex flex-col justify-around mt-1.5">
+            {currentData.map((entry, index) => (
+              <div
+                key={entry.name + index}
+                className="w-full flex items-center justify-between border-[3px] border-black rounded-[8px] px-4 font-press-start text-black font-bold"
+                style={{
+                  height: '27%',
+                  background: getRowBg(index),
+                  fontSize: 'clamp(9px, 1.3vw, 15px)',
+                  boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                {/* Medal Icon & Rank */}
+                <div className="w-[20%] flex items-center justify-start">
+                  <div className="-ml-1 flex items-center">
+                    <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
+                  </div>
+                </div>
+
+                {/* Name */}
+                <span className="w-[50%] text-center truncate">{entry.name}</span>
+
+                {/* Points */}
+                <span className="w-[30%] text-right font-mono">{entry.points}</span>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        {/* 3. Bottom Tabs */}
+        <div 
+          className="absolute inset-x-0 pointer-events-none" 
+          style={{ 
+            bottom: '4.5%', 
+            height: '11%',
+            zIndex: 10,
+          }}
+        >
+          {/* FFCS Tab Button */}
+          <button
+            onClick={() => setTab('ffcs')}
+            className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
+            style={{
+              left: '9%',
+              width: '38%',
+              height: '100%',
+              background: '#DCA348',
+              color: '#000000',
+              fontSize: 'clamp(8px, 1.2vw, 12px)',
+              boxShadow: tab === 'ffcs' 
+                ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
+                : '0 4px 0 #000000',
+              transform: tab === 'ffcs' ? 'translateY(3px)' : 'translateY(0px)',
+              cursor: 'pointer',
+            }}
+          >
+            ffcs
+          </button>
+
+          {/* Non-FFCS Tab Button */}
+          <button
+            onClick={() => setTab('non-ffcs')}
+            className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
+            style={{
+              right: '9%',
+              width: '38%',
+              height: '100%',
+              background: '#DCA348',
+              color: '#000000',
+              fontSize: 'clamp(8px, 1.2vw, 12px)',
+              boxShadow: tab === 'non-ffcs' 
+                ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
+                : '0 4px 0 #000000',
+              transform: tab === 'non-ffcs' ? 'translateY(3px)' : 'translateY(0px)',
+              cursor: 'pointer',
+            }}
+          >
+            non-ffcs
+          </button>
         </div>
 
       </div>
-
-      {/* 3. Bottom Tabs */}
-      <div 
-        className="absolute inset-x-0 pointer-events-none" 
-        style={{ 
-          bottom: '4.5%', 
-          height: '11%',
-          zIndex: 10,
-        }}
-      >
-        {/* FFCS Tab Button */}
-        <button
-          onClick={() => setTab('ffcs')}
-          className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
-          style={{
-            left: '9%',
-            width: '38%',
-            height: '100%',
-            background: '#DCA348',
-            color: '#000000',
-            fontSize: 'clamp(8px, 1.2vw, 12px)',
-            boxShadow: tab === 'ffcs' 
-              ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
-              : '0 4px 0 #000000',
-            transform: tab === 'ffcs' ? 'translateY(3px)' : 'translateY(0px)',
-            cursor: 'pointer',
-          }}
-        >
-          ffcs
-        </button>
-
-        {/* Non-FFCS Tab Button */}
-        <button
-          onClick={() => setTab('non-ffcs')}
-          className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
-          style={{
-            right: '9%',
-            width: '38%',
-            height: '100%',
-            background: '#DCA348',
-            color: '#000000',
-            fontSize: 'clamp(8px, 1.2vw, 12px)',
-            boxShadow: tab === 'non-ffcs' 
-              ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
-              : '0 4px 0 #000000',
-            transform: tab === 'non-ffcs' ? 'translateY(3px)' : 'translateY(0px)',
-            cursor: 'pointer',
-          }}
-        >
-          non-ffcs
-        </button>
-      </div>
-
-    </div>
+    </>
   );
 }
