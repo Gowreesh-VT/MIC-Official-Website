@@ -225,9 +225,11 @@ const LandingPage = () => {
       <div className="absolute left-0 right-0 pointer-events-none select-none"
         style={{ bottom: "72px", height: "40vh", backgroundImage: "url('/big_cloud.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 2 }} />
 
-      {/* Cityscape */}
-      <div className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{ bottom: "72px", height: "28vh", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 3 }} />
+      {/* Cityscape (Left & Right edges) */}
+      <div className="absolute left-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "28vh", width: "50vw", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "bottom left", backgroundSize: "auto 100%", zIndex: 3 }} />
+      <div className="absolute right-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "28vh", width: "50vw", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "bottom right", backgroundSize: "auto 100%", zIndex: 3 }} />
 
       {/* Bushes */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
@@ -267,13 +269,16 @@ const LandingPage = () => {
         {/* Signboard */}
         <div className="relative w-full pointer-events-auto" style={{ aspectRatio: "895 / 455" }}>
           <Image src="/signboard.svg" alt="Signboard" fill className="object-contain" priority />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+          <div className="absolute inset-0 flex flex-col items-start justify-center text-left pl-[9.5%] pr-[4%] pointer-events-none">
             <h1
-              className="text-[#FCD7CE] font-bold uppercase leading-snug font-press-start"
+              className="text-[#F8A899] uppercase font-super-mario"
               style={{
-                fontSize: "clamp(1rem, 3.8vw, 3.2rem)",
-                textShadow: "4px 4px 0 #4d2304,-2px -2px 0 #4d2304,2px -2px 0 #4d2304,-2px 2px 0 #4d2304,2px 2px 0 #4d2304",
-                letterSpacing: "0.05em",
+                fontFamily: "'SuperMario85', sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(1.4rem, 6.7vw, 92px)",
+                lineHeight: "100%",
+                letterSpacing: "0%",
+                textShadow: "0.06em 0.06em 0 #000000, 0 0.06em 0 #000000, 0.06em 0 0 #000000",
               }}
             >
               M!CROSOFT<br />!NNOVAT!ONS<br />CLUB.
@@ -394,8 +399,15 @@ const LandingPage = () => {
         style={{ height: "72px", background: "#CC9339", borderTop: "8px solid #589B00", zIndex: 40 }}
       >
         <div className="relative flex overflow-x-hidden w-full pointer-events-none">
-          <div className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
-            style={{ color: "#5E3A00", fontSize: "clamp(10px,1.3vw,14px)" }}
+          <div className="animate-marquee whitespace-nowrap flex uppercase font-press-start"
+            style={{
+              color: "#CC7700",
+              fontFamily: '"Press Start 2P", cursive, sans-serif',
+              fontWeight: 400,
+              fontSize: "clamp(4px, 1.2vw, 16px)",
+              lineHeight: "100%",
+              letterSpacing: "0%",
+            }}
           >
             {Array.from({ length: 10 }).map((_, i) => (
               <span key={i} className="mx-8">MICROSOFT INNOVATIONS CLUB TENURE 2026-2027</span>
