@@ -293,7 +293,7 @@ const LandingPage = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Up scroll indicator — only shown when items above are hidden */}
+          {/* Up scroll indicator — only shown when items above are hidden 
           <motion.div
             animate={{ opacity: canScrollUp ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -308,7 +308,7 @@ const LandingPage = () => {
               height: "1.2em",
               lineHeight: 1,
             }}
-          >▲ more</motion.div>
+          >▲ more</motion.div>*/}
 
           {/* Clipping window — exactly VISIBLE items tall */}
           <div
@@ -370,7 +370,7 @@ const LandingPage = () => {
             </motion.div>
           </div>
 
-          {/* Down scroll indicator — only shown when items below are hidden */}
+          {/* Down scroll indicator — only shown when items below are hidden 
           <motion.div
             animate={{ opacity: canScrollDown ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -385,7 +385,7 @@ const LandingPage = () => {
               height: "1.2em",
               lineHeight: 1,
             }}
-          >▼ more</motion.div>
+          >▼ more</motion.div>*/}
         </nav>
       </div>
 
