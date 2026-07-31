@@ -224,20 +224,8 @@ body {
 }
 
 .Animated-Logo {
-  width: 40px;
-  height: 40px;
   transition: transform 0.2s ease, filter 0.2s ease;
   cursor: pointer;
-}
-
-/* Subtle hover: slight scale up and lift */
-.Animated-Logo:hover {
-  transform: scale(1.15) translateY(-2px);
-}
-
-/* Subtle press/click feel */
-.Animated-Logo:active {
-  transform: scale(0.95);
 }
 
 /* ── Custom Redesign Animations ─────────────────────────────── */

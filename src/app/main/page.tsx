@@ -5,54 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-/* ─── Floating cloud hook ──────────────────────────────────────────────── */
-interface CloudFloatOptions {
-  baseTopVh: number;
-  baseLeftVw: number;
-  amplitude?: number;
-  speed?: number;
-  phase?: number;
-}
 
-function useCloudFloat({
-  baseTopVh, baseLeftVw, amplitude = 10, speed = 0.4, phase = 0,
-}: CloudFloatOptions) {
-  const [offset, setOffset] = useState(0);
-  const frameRef = useRef(0);
-
-  useEffect(() => {
-    let running = true;
-    const animate = () => {
-      frameRef.current += 1;
-      setOffset(Math.sin((frameRef.current / 60) * speed + phase) * amplitude);
-      if (running) requestAnimationFrame(animate);
-    };
-    animate();
-    return () => { running = false; };
-  }, [amplitude, speed, phase]);
-
-  return {
-    top: `calc(${baseTopVh}vh + ${offset}px)`,
-    left: `${baseLeftVw}vw`,
-  };
-}
-
-/* ─── Cloud configs — larger, 2 left + 2 right ─────────────────────────── */
-const CLOUD_CONFIGS = [
-  { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
-  { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
-  { src: "/images/cloud1.png", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
-  { src: "/images/cloud2.png", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
-] as const;
-
-function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
-  const pos = useCloudFloat(floatOpts);
-  return (
-    <div className="absolute pointer-events-none select-none" style={{ top: pos.top, left: pos.left, zIndex: 6 }}>
-      <Image src={src} alt="Cloud" width={w} height={h} priority style={{ height: "auto" }} />
-    </div>
-  );
-}
 
 /* ─── Menu items (all pages) ───────────────────────────────────────────── */
 const MENU_ITEMS = [
@@ -202,24 +155,74 @@ const LandingPage = () => {
     >
 
       {/* Social icons */}
-      <div className="absolute top-4 right-5 z-50 flex items-center gap-2">
+      <div className="absolute top-4 right-5 z-50 flex items-center gap-3">
         {[
           { href: "https://www.instagram.com/microsoft.innovations.vitc/",            src: "/insta_pixel.svg",    alt: "Instagram" },
           { href: "https://www.linkedin.com/company/microsoft-innovations-club-vitc/", src: "/linkedin_pixel.svg", alt: "LinkedIn"  },
           { href: "mailto:mic.vit.chennai@gmail.com",                                  src: "/mail_pixel.svg",    alt: "Email"     },
         ].map(({ href, src, alt }) => (
-          <a key={alt} href={href} target="_blank" rel="noopener noreferrer" aria-label={alt}
-            className="Animated-Logo flex items-center justify-center"
-            style={{ background: "transparent", width: "clamp(36px,4.5vw,50px)", height: "clamp(36px,4.5vw,50px)", padding: "2px" }}
+          <a
+            key={alt}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={alt}
+            className="group relative flex items-center justify-center cursor-pointer select-none"
+            style={{ width: "clamp(38px, 4.4vw, 48px)", height: "clamp(38px, 4.4vw, 48px)" }}
           >
-            <Image src={src} alt={`${alt} Logo`} width={48} height={48}
-              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} priority />
+            {/* Base back black square */}
+            <div
+              className="absolute bottom-0 right-0 bg-[#000809] border-[3px] border-black rounded-[2px]"
+              style={{ width: "calc(100% - 6px)", height: "calc(100% - 6px)" }}
+            />
+
+            {/* Front colored icon box: sits top-left, translates down-right on hover directly over black square */}
+            <div
+              className="absolute top-0 left-0 transition-transform duration-200 ease-out group-hover:translate-x-[6px] group-hover:translate-y-[6px]"
+              style={{ width: "calc(100% - 6px)", height: "calc(100% - 6px)" }}
+            >
+              <Image
+                src={src}
+                alt={`${alt} Logo`}
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </a>
         ))}
       </div>
 
-      {/* Floating clouds */}
-      {CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
+      {/* Pixel clouds positioned to fill gap — floating together in sync */}
+      {/* 1. Left Cloud */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ left: "0%", top: "12%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Left" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
+
+      {/* 2. Top-Right Cloud (below social icons) */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ right: "-4%", top: "4%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Top Right" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
+
+      {/* 3. Middle-Right Cloud (below flappy bird) */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ right: "4%", top: "34%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Middle Right" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
 
       {/* Big cloud backdrop */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
