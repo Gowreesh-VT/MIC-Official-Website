@@ -81,7 +81,7 @@ const RetroArrow = ({ active }: { active: boolean }) => (
       display: "inline-block",
       width: "1.2em",
       flexShrink: 0,
-      color: "#fff700",
+      color: "#0000ff",
       textShadow: "1px 1px 0 #886600",
     }}
   >▶</motion.span>
