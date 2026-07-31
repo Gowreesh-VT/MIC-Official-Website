@@ -8,24 +8,24 @@ interface LeaderboardEntry {
 }
 
 const FFCS_DATA: LeaderboardEntry[] = [
-  { name: 'Gowreesh V T', points: 980 },
-  { name: 'Surya', points: 950 },
-  { name: 'Sakthivelan', points: 920 },
+  { name: 'Alex', points: 980 },
+  { name: 'Alex', points: 980 },
+  { name: 'Alex', points: 980 },
 ];
 
 const NON_FFCS_DATA: LeaderboardEntry[] = [
-  { name: 'Dhakshini', points: 940 },
-  { name: 'Akash Vishnu', points: 910 },
-  { name: 'Rahul K', points: 880 },
+  { name: 'Alex', points: 980 },
+  { name: 'Alex', points: 980 },
+  { name: 'Alex', points: 980 },
 ];
 
-// Custom pixel art Gold Trophy SVG
+// Custom pixel art Gold Trophy SVG matching reference design
 const TrophyIcon = () => (
   <svg 
     viewBox="0 0 16 16" 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg" 
-    className="w-5 h-5 sm:w-8 sm:h-8 shrink-0"
+    className="w-6 h-6 sm:w-8 sm:h-8 shrink-0"
     style={{ imageRendering: 'pixelated' }}
   >
     {/* Handles outline */}
@@ -84,7 +84,7 @@ const MedalIcon: React.FC<MedalProps> = ({ rank }) => {
       viewBox="0 0 36 36" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg" 
-      className="w-5 h-5 sm:w-8 sm:h-8 shrink-0"
+      className="w-6 h-6 sm:w-8 sm:h-8 shrink-0"
       style={{ imageRendering: 'pixelated' }}
     >
       {/* V-shaped Ribbon (Blue on Left, Red on Right) with black borders */}
@@ -117,7 +117,6 @@ export function LeaderboardSignboard() {
 
   const currentData = tab === 'ffcs' ? FFCS_DATA : NON_FFCS_DATA;
 
-  // Row background colors matching Image 2
   const getRowBg = (index: number) => {
     switch (index) {
       case 0:
@@ -133,14 +132,14 @@ export function LeaderboardSignboard() {
 
   return (
     <>
-      {/* ────────────────── MOBILE VIEW (Portrait Wooden Board matching Image 1) ────────────────── */}
+      {/* ────────────────── MOBILE VIEW ────────────────── */}
       <div className="block sm:hidden w-full relative z-30 pointer-events-auto select-none">
         <div className="relative w-full bg-[#C8590C] border-[3.5px] border-black rounded-[22px] shadow-[6px_6px_0_rgba(0,0,0,0.35)] p-3.5 pt-4 pb-4 flex flex-col items-center select-none">
           {/* 4 Corner Bolts/Screws */}
-          <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
-          <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
-          <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
-          <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-full shadow-inner" />
+          <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-lg shadow-inner" />
+          <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-lg shadow-inner" />
+          <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-lg shadow-inner" />
+          <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 bg-[#F8BEB3] border-[2px] border-black rounded-lg shadow-inner" />
 
           {/* 1. Header Title */}
           <div className="flex items-center justify-center gap-2 font-press-start my-1 text-center">
@@ -148,7 +147,7 @@ export function LeaderboardSignboard() {
             <h2
               className="text-[17px] text-[#E5A039] font-bold tracking-wider m-0 leading-none"
               style={{
-                textShadow: '2px 2px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304, 1px 1px 0 #4D2304',
+                textShadow: '2px 2px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304',
               }}
             >
               LEADERBOARD
@@ -158,14 +157,14 @@ export function LeaderboardSignboard() {
           {/* 2. Inner Scoreboard Container */}
           <div className="w-full bg-[#FBE4DF] border-[3.5px] border-black rounded-[16px] px-3 pt-6 pb-4 flex flex-col items-center gap-3 relative my-3 shadow-[inset_0_-3px_0_rgba(0,0,0,0.08)]">
             {/* FFCS / NON-FFCS MEMBERS Badge */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#9B3D24] text-black font-press-start text-[10px] font-bold px-4 py-1.5 rounded-full border-[2.5px] border-black shadow-[0_2px_0_rgba(0,0,0,0.2)] whitespace-nowrap">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#9B3D24] text-black font-press-start text-[10px] font-bold px-4 py-1.5 rounded-lg border-[2.5px] border-black shadow-[0_2px_0_rgba(0,0,0,0.2)] whitespace-nowrap">
               {tab === 'ffcs' ? 'FFCS MEMBERS' : 'NON-FFCS MEMBERS'}
             </div>
 
             {/* Table Header Pill */}
-            <div className="w-full bg-[#9B3D24] text-black font-press-start text-[9.5px] font-bold px-3 py-1.5 rounded-full border-[2.5px] border-black flex justify-between items-center text-center mt-1">
-              <span className="w-[22%] text-left">RANK</span>
-              <span className="w-[48%] text-center">NAME</span>
+            <div className="w-full bg-[#9B3D24] text-black font-press-start text-[9.5px] font-bold px-4 py-1.5 rounded-lg border-[2.5px] border-black flex justify-between items-center text-center mt-1">
+              <span className="w-[25%] text-left">RANK</span>
+              <span className="w-[45%] text-center">NAME</span>
               <span className="w-[30%] text-right text-black">POINTS</span>
             </div>
 
@@ -174,19 +173,19 @@ export function LeaderboardSignboard() {
               {currentData.map((entry, index) => (
                 <div
                   key={entry.name + index}
-                  className="w-full border-[2.5px] border-black rounded-[12px] px-3 py-2.5 flex items-center justify-between font-press-start font-bold"
+                  className="w-full border-[2.5px] border-black rounded-[12px] px-3 py-2.5 flex items-center justify-between font-press-start font-bold text-black"
                   style={{
                     background: getRowBg(index),
                     boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
                   }}
                 >
-                  <div className="w-[22%] flex items-center justify-start">
+                  <div className="w-[25%] flex items-center justify-start">
                     <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
                   </div>
-                  <span className="w-[48%] text-center truncate text-[12px] text-black">
+                  <span className="w-[45%] text-center truncate text-[14px]">
                     {entry.name}
                   </span>
-                  <span className="w-[30%] text-right font-mono text-[12px] text-black">
+                  <span className="w-[30%] text-right text-[14px]">
                     {entry.points}
                   </span>
                 </div>
@@ -194,35 +193,41 @@ export function LeaderboardSignboard() {
             </div>
           </div>
 
-          {/* 3. Bottom Tabs */}
+          {/* 3. Bottom SVG Buttons */}
           <div className="w-full flex justify-between gap-3 px-1 pt-1">
             <button
               onClick={() => setTab('ffcs')}
-              className={`flex-1 font-press-start text-[11px] font-bold py-2 rounded-[8px] border-[2.5px] border-black transition-all text-black cursor-pointer ${
-                tab === 'ffcs'
-                  ? 'bg-[#DCA348] shadow-[inset_0_2px_0_rgba(0,0,0,0.25)] translate-y-0.5'
-                  : 'bg-[#DCA348] shadow-[0_3px_0_#000000] active:translate-y-0.5'
-              }`}
+              className="relative flex-1 h-[42px] font-press-start text-[11px] font-bold text-black uppercase cursor-pointer flex items-center justify-center transition-transform active:translate-y-0.5 outline-none"
+              style={{ transform: tab === 'ffcs' ? 'translateY(2px)' : 'translateY(0px)' }}
             >
-              ffcs
+              <img
+                src="/ffcs.svg"
+                alt="ffcs"
+                className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+                style={{ filter: tab === 'ffcs' ? 'brightness(1.1)' : 'brightness(0.95)' }}
+              />
+              <span className="relative z-10">ffcs</span>
             </button>
             <button
               onClick={() => setTab('non-ffcs')}
-              className={`flex-1 font-press-start text-[11px] font-bold py-2 rounded-[8px] border-[2.5px] border-black transition-all text-black cursor-pointer ${
-                tab === 'non-ffcs'
-                  ? 'bg-[#DCA348] shadow-[inset_0_2px_0_rgba(0,0,0,0.25)] translate-y-0.5'
-                  : 'bg-[#DCA348] shadow-[0_3px_0_#000000] active:translate-y-0.5'
-              }`}
+              className="relative flex-1 h-[42px] font-press-start text-[11px] font-bold text-black uppercase cursor-pointer flex items-center justify-center transition-transform active:translate-y-0.5 outline-none"
+              style={{ transform: tab === 'non-ffcs' ? 'translateY(2px)' : 'translateY(0px)' }}
             >
-              non-ffcs
+              <img
+                src="/non-ffcs.svg"
+                alt="non-ffcs"
+                className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+                style={{ filter: tab === 'non-ffcs' ? 'brightness(1.1)' : 'brightness(0.95)' }}
+              />
+              <span className="relative z-10">non-ffcs</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* ────────────────── DESKTOP VIEW (Landscape Signboard SVG) ────────────────── */}
+      {/* ────────────────── DESKTOP VIEW ────────────────── */}
       <div 
-        className="hidden sm:block relative w-full pointer-events-auto animate-fadeIn select-none" 
+        className="hidden sm:block relative w-lg pointer-events-auto animate-fadeIn select-none" 
         style={{ 
           aspectRatio: '895 / 455',
           backgroundImage: "url('/signboard.svg')",
@@ -234,8 +239,8 @@ export function LeaderboardSignboard() {
         <div 
           className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 font-press-start pointer-events-none select-none"
           style={{ 
-            top: '5.5%',
-            textShadow: '3px 3px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304, 1px 1px 0 #4D2304',
+            top: '4.5%',
+            textShadow: '2px 2px 0 #4D2304, -1px -1px 0 #4D2304, 1px -1px 0 #4D2304, -1px 1px 0 #4D2304',
             whiteSpace: 'nowrap',
             zIndex: 10,
           }}
@@ -243,8 +248,8 @@ export function LeaderboardSignboard() {
           <TrophyIcon />
           <h2
             style={{
-              fontSize: 'clamp(1rem, 2.5vw, 2.2rem)',
-              color: '#E5A039', // Gold text color
+              fontSize: 'clamp(1.1rem, 2.7vw, 2.3rem)',
+              color: '#E5A039',
               fontWeight: 'bold',
               letterSpacing: '0.05em',
               margin: 0,
@@ -257,13 +262,13 @@ export function LeaderboardSignboard() {
 
         {/* 2. Inner Scoreboard Container */}
         <div
-          className="absolute border-[4px] border-black rounded-[12px] flex flex-col items-center pointer-events-none select-none"
+          className="absolute border-[3.5px] border-black rounded-[16px] flex flex-col items-center pointer-events-none select-none"
           style={{
-            top: '20%',
-            left: '9%',
-            width: '82%',
-            height: '63%',
-            background: '#FBE4DF', // Correct pink/beige tone
+            top: '18%',
+            left: '7.5%',
+            width: '85%',
+            height: '67%',
+            background: '#FBE4DF',
             padding: '2% 3%',
             boxSizing: 'border-box',
             zIndex: 5,
@@ -271,118 +276,106 @@ export function LeaderboardSignboard() {
         >
           {/* Members Badge */}
           <div
-            className="absolute border-[3px] border-black rounded-[16px] flex items-center justify-center font-press-start"
+            className="border-[2.5px] border-black rounded-lg flex items-center justify-center font-press-start text-black font-bold whitespace-nowrap"
             style={{
               top: '-7%',
-              width: '52%',
+              width: '46%',
               height: '13%',
-              background: '#9B3D24', // Red-brown background
-              color: '#000000', // Black text
-              fontSize: 'clamp(7px, 1.1vw, 11px)',
-              fontWeight: 'bold',
-              boxShadow: '0 3px 0 rgba(0, 0, 0, 0.2)',
+              background: '#9B3D24',
+              fontSize: 'clamp(8px, 1.2vw, 13px)',
+              boxShadow: '0 2px 0 rgba(0, 0, 0, 0.2)',
             }}
           >
             {tab === 'ffcs' ? 'FFCS MEMBERS' : 'NON-FFCS MEMBERS'}
           </div>
 
-          {/* Table Headers */}
+          {/* Table Headers Pill */}
           <div
-            className="w-full flex justify-between font-press-start text-black font-bold"
+            className="w-full bg-[#9B3D24] text-black font-press-start font-bold border-[2.5px] border-black rounded-lg flex justify-between items-center px-6"
             style={{
-              fontSize: 'clamp(8px, 1.2vw, 13px)',
-              marginTop: '3%',
-              paddingBottom: '1.5%',
-              borderBottom: '2px dashed rgba(0, 0, 0, 0.15)',
+              height: '13%',
+              fontSize: 'clamp(9px, 1.2vw, 13px)',
+              marginTop: '2.5%',
             }}
           >
-            <span className="w-[20%] text-left">RANK</span>
-            <span className="w-[50%] text-center">NAME</span>
-            <span className="w-[30%] text-right text-black/80">POINTS</span>
+            <span className="w-[25%] text-left">RANK</span>
+            <span className="w-[45%] text-center">NAME</span>
+            <span className="w-[30%] text-right">POINTS</span>
           </div>
 
           {/* Table Body / Leaderboard Rows */}
-          <div className="w-full flex-1 flex flex-col justify-around mt-1.5">
+          <div className="w-full flex-1 flex flex-col justify-between my-2">
             {currentData.map((entry, index) => (
               <div
                 key={entry.name + index}
-                className="w-full flex items-center justify-between border-[3px] border-black rounded-[8px] px-4 font-press-start text-black font-bold"
+                className="w-full flex items-center justify-between border-[3px] border-black rounded-[12px] px-5 font-press-start text-black font-bold"
                 style={{
-                  height: '27%',
+                  height: '28%',
                   background: getRowBg(index),
-                  fontSize: 'clamp(9px, 1.3vw, 15px)',
+                  fontSize: 'clamp(11px, 1.6vw, 18px)',
                   boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
                 }}
               >
                 {/* Medal Icon & Rank */}
-                <div className="w-[20%] flex items-center justify-start">
-                  <div className="-ml-1 flex items-center">
-                    <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
-                  </div>
+                <div className="w-[25%] flex items-center justify-start">
+                  <MedalIcon rank={(index + 1) as 1 | 2 | 3} />
                 </div>
 
                 {/* Name */}
-                <span className="w-[50%] text-center truncate">{entry.name}</span>
+                <span className="w-[45%] text-center truncate">{entry.name}</span>
 
                 {/* Points */}
-                <span className="w-[30%] text-right font-mono">{entry.points}</span>
+                <span className="w-[30%] text-right">{entry.points}</span>
               </div>
             ))}
           </div>
 
         </div>
 
-        {/* 3. Bottom Tabs */}
-        <div 
-          className="absolute inset-x-0 pointer-events-none" 
-          style={{ 
-            bottom: '4.5%', 
-            height: '11%',
+        {/* 3. Bottom SVG Buttons */}
+        {/* ffcs SVG Button */}
+        <button
+          onClick={() => setTab('ffcs')}
+          className="absolute pointer-events-auto font-press-start font-bold text-black uppercase cursor-pointer flex items-center justify-center transition-all duration-100 active:scale-95 outline-none"
+          style={{
+            left: '7.5%',
+            bottom: '3.5%',
+            width: '135px',
+            height: '42px',
+            transform: tab === 'ffcs' ? 'translateY(2px)' : 'translateY(0px)',
             zIndex: 10,
           }}
         >
-          {/* FFCS Tab Button */}
-          <button
-            onClick={() => setTab('ffcs')}
-            className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
-            style={{
-              left: '9%',
-              width: '38%',
-              height: '100%',
-              background: '#DCA348',
-              color: '#000000',
-              fontSize: 'clamp(8px, 1.2vw, 12px)',
-              boxShadow: tab === 'ffcs' 
-                ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
-                : '0 4px 0 #000000',
-              transform: tab === 'ffcs' ? 'translateY(3px)' : 'translateY(0px)',
-              cursor: 'pointer',
-            }}
-          >
-            ffcs
-          </button>
+          <img
+            src="/ffcs.svg"
+            alt="ffcs"
+            className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+            style={{ filter: tab === 'ffcs' ? 'brightness(1.1)' : 'brightness(0.95)' }}
+          />
+          <span className="relative z-10 text-[12px] sm:text-[14px]">ffcs</span>
+        </button>
 
-          {/* Non-FFCS Tab Button */}
-          <button
-            onClick={() => setTab('non-ffcs')}
-            className="absolute pointer-events-auto font-press-start rounded-[6px] border-[3px] border-black flex items-center justify-center font-bold transition-all duration-100 active:scale-95"
-            style={{
-              right: '9%',
-              width: '38%',
-              height: '100%',
-              background: '#DCA348',
-              color: '#000000',
-              fontSize: 'clamp(8px, 1.2vw, 12px)',
-              boxShadow: tab === 'non-ffcs' 
-                ? 'inset 0 3px 0 rgba(0,0,0,0.2)' 
-                : '0 4px 0 #000000',
-              transform: tab === 'non-ffcs' ? 'translateY(3px)' : 'translateY(0px)',
-              cursor: 'pointer',
-            }}
-          >
-            non-ffcs
-          </button>
-        </div>
+        {/* non-ffcs SVG Button */}
+        <button
+          onClick={() => setTab('non-ffcs')}
+          className="absolute pointer-events-auto font-press-start font-bold text-black uppercase cursor-pointer flex items-center justify-center transition-all duration-100 active:scale-95 outline-none"
+          style={{
+            right: '7.5%',
+            bottom: '3.5%',
+            width: '200px',
+            height: '42px',
+            transform: tab === 'non-ffcs' ? 'translateY(2px)' : 'translateY(0px)',
+            zIndex: 10,
+          }}
+        >
+          <img
+            src="/non-ffcs.svg"
+            alt="non-ffcs"
+            className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+            style={{ filter: tab === 'non-ffcs' ? 'brightness(1.1)' : 'brightness(0.95)' }}
+          />
+          <span className="relative z-10 text-[12px] sm:text-[14px]">non-ffcs</span>
+        </button>
 
       </div>
     </>
