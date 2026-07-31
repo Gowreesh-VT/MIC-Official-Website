@@ -200,10 +200,10 @@ const getLayout = (width: number) => {
     { left: g3 - 26, top: 125, height: 235, isTop: true },
     { left: g4 - 26, top: 0, height: 370, isTop: true },
     
-    { left: g1 - 26, bottom: 99, height: 350, isTop: false },
-    { left: g2 - 26, bottom: 99, height: 380, isTop: false },
-    { left: g3 - 26, bottom: 99, height: 350, isTop: false },
-    { left: g4 - 26, bottom: 99, height: 370, isTop: false }
+    { left: g1 - 26, bottom: 90, height: 350, isTop: false },
+    { left: g2 - 26, bottom: 90, height: 380, isTop: false },
+    { left: g3 - 26, bottom: 90, height: 350, isTop: false },
+    { left: g4 - 26, bottom: 90, height: 370, isTop: false }
   ];
   
   return { frames, pipes };
@@ -540,9 +540,55 @@ const GalleryPage: React.FC = () => {
           <Link href="/main" onClick={() => playRetroSound("select")}>
             <Image src="/mic_logo_pixel.svg" alt="MIC Pixel Logo" width={48} height={48} className="pixelated" priority />
           </Link>
-          <Link href="/main" onClick={() => playRetroSound("select")}>
-            <Image src="/close_button.svg" alt="Close" width={40} height={40} priority />
-          </Link>
+        <Link href="/main" className="group absolute top-6 right-6 z-50">
+      <svg
+        width="82"
+        height="78"
+        viewBox="0 0 82 78"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-[35px] h-[33px] md:w-[53px] md:h-[50px] cursor-pointer"
+        style={{ imageRendering: 'pixelated' }}
+      >
+        {/* STATIC BACKGROUND SHADOW */}
+        <rect
+          x="12.5"
+          y="12.5"
+          width="66"
+          height="62"
+          fill="#000809"
+          stroke="black"
+          strokeWidth="7"
+        />
+
+        {/* FOREGROUND (Red box + X) */}
+        {/* The 'group-active' classes push this group down exactly 9px to overlap the background */}
+        <g className="transition-transform duration-100 ease-out group-hover:translate-x-[9px] group-hover:translate-y-[9px] group-active:translate-x-[9px] group-active:translate-y-[9px]">
+          <rect
+            x="3.5"
+            y="3.5"
+            width="66"
+            height="62"
+            fill="#F3413B"
+            stroke="black"
+            strokeWidth="7"
+          />
+          <g clipPath="url(#clip0_2274_4885)">
+            <path
+              d="M23.7322 20.7322C22.7559 21.7085 22.7559 23.2914 23.7322 24.2678L32.6951 33.2306L23.7322 42.1936C22.7559 43.1698 22.7559 44.7528 23.7322 45.7291C24.7085 46.7053 26.2915 46.7053 27.2678 45.7291L36.2306 36.7661L45.1936 45.7291C46.1698 46.7053 47.7528 46.7053 48.7291 45.7291C49.7053 44.7528 49.7053 43.1698 48.7291 42.1936L39.7661 33.2306L48.7291 24.2678C49.7053 23.2915 49.7053 21.7086 48.7291 20.7323C47.7526 19.756 46.1698 19.756 45.1936 20.7323L36.2306 29.6951L27.2678 20.7322C26.2915 19.7559 24.7085 19.7559 23.7322 20.7322Z"
+              fill="#0F0F0F"
+            />
+          </g>
+        </g>
+
+        <defs>
+          {/* Note: clip-path was changed to clipPath for React */}
+          <clipPath id="clip0_2274_4885">
+            <rect width="60" height="60" fill="white" transform="translate(19 19)" />
+          </clipPath>
+        </defs>
+      </svg>
+    </Link>
         </div>
 
         {/* Page Title */}
@@ -587,23 +633,7 @@ const GalleryPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Marquee Ground Footer */}
-        <div className="w-full h-14 border-t-4 border-black bg-[#DD9955] overflow-hidden flex items-center shrink-0 mt-auto">
-          <div className="flex whitespace-nowrap animate-marquee">
-            {[0, 1].map((r) => (
-              <span key={r} className="inline-flex items-center shrink-0 text-[11px] text-[#CC7700] uppercase font-bold font-press-start">
-                {Array(4)
-                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
-                  .map((t, i) => (
-                    <React.Fragment key={i}>
-                      <span>{t}</span>
-                      <img src="/mic_logo_pixel.png" alt="" className="w-4 h-4 mx-4 pixelated" />
-                    </React.Fragment>
-                  ))}
-              </span>
-            ))}
-          </div>
-        </div>
+       
 
         {/* Event Details Modal Popup */}
         <AnimatePresence>
@@ -761,7 +791,7 @@ const GalleryPage: React.FC = () => {
             key={`bush-${idx}`}
             src="/pixel_bushes.svg"
             alt="Bushes"
-            className="absolute top-[739px] w-[1456px] h-[200px] z-3 pointer-events-none select-none pixelated"
+            className="absolute  top-[769px] w-[1456px] h-[200px] z-3 pointer-events-none select-none pixelated"
             style={{ left: `${idx * 1409}px` }}
           />
         ))}
@@ -783,7 +813,7 @@ const GalleryPage: React.FC = () => {
           />
         </Link>
 
-        {/* Top-Right: Close Button */}
+        {/* Top-Right: Close Button 
         <Link
           href="/main"
           onClick={() => playRetroSound("select")}
@@ -799,7 +829,56 @@ const GalleryPage: React.FC = () => {
             priority
           />
         </Link>
+*/}
+<Link href="/main" className="group absolute top-6 right-6 z-50">
+      <svg
+        width="82"
+        height="78"
+        viewBox="0 0 82 78"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-[35px] h-[33px] md:w-[53px] md:h-[50px] cursor-pointer"
+        style={{ imageRendering: 'pixelated' }}
+      >
+        {/* STATIC BACKGROUND SHADOW */}
+        <rect
+          x="12.5"
+          y="12.5"
+          width="66"
+          height="62"
+          fill="#000809"
+          stroke="black"
+          strokeWidth="7"
+        />
 
+        {/* FOREGROUND (Red box + X) */}
+        {/* The 'group-active' classes push this group down exactly 9px to overlap the background */}
+        <g className="transition-transform duration-100 ease-out group-hover:translate-x-[9px] group-hover:translate-y-[9px] group-active:translate-x-[9px] group-active:translate-y-[9px]">
+          <rect
+            x="3.5"
+            y="3.5"
+            width="66"
+            height="62"
+            fill="#F3413B"
+            stroke="black"
+            strokeWidth="7"
+          />
+          <g clipPath="url(#clip0_2274_4885)">
+            <path
+              d="M23.7322 20.7322C22.7559 21.7085 22.7559 23.2914 23.7322 24.2678L32.6951 33.2306L23.7322 42.1936C22.7559 43.1698 22.7559 44.7528 23.7322 45.7291C24.7085 46.7053 26.2915 46.7053 27.2678 45.7291L36.2306 36.7661L45.1936 45.7291C46.1698 46.7053 47.7528 46.7053 48.7291 45.7291C49.7053 44.7528 49.7053 43.1698 48.7291 42.1936L39.7661 33.2306L48.7291 24.2678C49.7053 23.2915 49.7053 21.7086 48.7291 20.7323C47.7526 19.756 46.1698 19.756 45.1936 20.7323L36.2306 29.6951L27.2678 20.7322C26.2915 19.7559 24.7085 19.7559 23.7322 20.7322Z"
+              fill="#0F0F0F"
+            />
+          </g>
+        </g>
+
+        <defs>
+          {/* Note: clip-path was changed to clipPath for React */}
+          <clipPath id="clip0_2274_4885">
+            <rect width="60" height="60" fill="white" transform="translate(19 19)" />
+          </clipPath>
+        </defs>
+      </svg>
+    </Link>
         {/* Centered Heading */}
         <h1 className="absolute top-12 left-1/2 -translate-x-1/2 font-press-start text-3xl md:text-5xl text-black tracking-wider text-center select-none z-30 drop-shadow-[3px_3px_0px_rgba(255,255,255,0.4)]">
           Gallery Wall
@@ -816,7 +895,16 @@ const GalleryPage: React.FC = () => {
             isTop={pipe.isTop}
           />
         ))}
-
+ <motion.div
+            className="absolute left-[25vw] top-[55vh] z-20 w-20  pointer-events-none"
+          >
+            <img
+              src="/images/bird.png"
+              alt="Flappy Bird"
+              className="w-full h-auto object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </motion.div>
         {/* Event Cards (Gallery Frames) */}
         {layout.frames.map((frame) => {
           const event = EVENTS.find(e => e.id === frame.id);
@@ -855,47 +943,19 @@ const GalleryPage: React.FC = () => {
         })}
 
         {/* Ground & Scrolling Marquee */}
-        <div
-          className="absolute top-[925px] left-0 h-[150px] z-30 flex flex-col select-none pointer-events-none"
-          style={{ width: canvasWidth }}
-        >
-          <div className="w-full h-5 bg-[#52AE26] border-t-4 border-b-4 border-black flex flex-col justify-between shrink-0">
-            <div className="w-full h-[3px] bg-[#72F418]" />
-            <div className="w-full h-[3px] bg-[#3FA70E]" />
-          </div>
-          <div className="w-full flex-grow bg-[#DD9955] border-b-4 border-black relative overflow-hidden flex items-start pt-3">
-            <div className="flex whitespace-nowrap animate-marquee">
-              <span className="inline-flex items-center shrink-0 text-[18px] text-[#CC7700] tracking-wider uppercase font-bold font-press-start">
-                {Array(Math.max(6, Math.ceil(canvasWidth / 300)))
-                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
-                  .map((text, idx) => (
-                    <React.Fragment key={idx}>
-                      <span>{text}</span>
-                      <img
-                        src="/mic_logo_pixel.png"
-                        alt="MIC"
-                        className="w-6 h-6 mx-8 shrink-0 pixelated"
-                      />
-                    </React.Fragment>
-                  ))}
-              </span>
-              <span className="inline-flex items-center shrink-0 text-[18px] text-[#CC7700] tracking-wider uppercase font-bold font-press-start">
-                {Array(Math.max(6, Math.ceil(canvasWidth / 300)))
-                  .fill("MICROSOFT INNOVATIONS CLUB TENURE 2026-2027")
-                  .map((text, idx) => (
-                    <React.Fragment key={idx}>
-                      <span>{text}</span>
-                      <img
-                        src="/mic_logo_pixel.png"
-                        alt="MIC"
-                        className="w-6 h-6 mx-8 shrink-0 pixelated"
-                      />
-                    </React.Fragment>
-                  ))}
-              </span>
-            </div>
+         <div className="absolute bottom-0 left-0 right-0 flex items-center overflow-hidden"
+        style={{top: "952px", height: "72px", background: "#CC9339", borderTop: "8px solid #589B00", zIndex: 40 }}
+      >
+        <div className="relative flex overflow-x-hidden w-full pointer-events-none">
+          <div className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
+            style={{ color: "#5E3A00", fontSize: "clamp(10px,1.3vw,14px)" }}
+          >
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={i} className="mx-8">MICROSOFT INNOVATIONS CLUB TENURE 2026-2027</span>
+            ))}
           </div>
         </div>
+      </div>
       </div>
 
       {/* Retro Event Details Modal Popup */}

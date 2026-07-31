@@ -298,7 +298,7 @@ const EventsPage = () => {
 					/>
 				</motion.div>
 
-				{/* Top-Right: Close Button */}
+				{/* Top-Right: Close Button 
 				<Link
 					href="/main"
 					className="absolute top-6 right-6 md:right-12 z-50 hover:scale-105 transition-transform duration-200"
@@ -316,8 +316,56 @@ const EventsPage = () => {
 						priority
 						style={{ height: "auto" }}
 					/>
-				</Link>
+				</Link>*/}
+<Link href="/main" className="group absolute top-6 right-6 z-50">
+      <svg
+        width="82"
+        height="78"
+        viewBox="0 0 82 78"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-[35px] h-[33px] md:w-[53px] md:h-[50px] cursor-pointer"
+        style={{ imageRendering: 'pixelated' }}
+      >
+        {/* STATIC BACKGROUND SHADOW */}
+        <rect
+          x="12.5"
+          y="12.5"
+          width="66"
+          height="62"
+          fill="#000809"
+          stroke="black"
+          strokeWidth="7"
+        />
 
+        {/* FOREGROUND (Red box + X) */}
+        {/* The 'group-active' classes push this group down exactly 9px to overlap the background */}
+        <g className="transition-transform duration-100 ease-out group-hover:translate-x-[9px] group-hover:translate-y-[9px] group-active:translate-x-[9px] group-active:translate-y-[9px]">
+          <rect
+            x="3.5"
+            y="3.5"
+            width="66"
+            height="62"
+            fill="#F3413B"
+            stroke="black"
+            strokeWidth="7"
+          />
+          <g clipPath="url(#clip0_2274_4885)">
+            <path
+              d="M23.7322 20.7322C22.7559 21.7085 22.7559 23.2914 23.7322 24.2678L32.6951 33.2306L23.7322 42.1936C22.7559 43.1698 22.7559 44.7528 23.7322 45.7291C24.7085 46.7053 26.2915 46.7053 27.2678 45.7291L36.2306 36.7661L45.1936 45.7291C46.1698 46.7053 47.7528 46.7053 48.7291 45.7291C49.7053 44.7528 49.7053 43.1698 48.7291 42.1936L39.7661 33.2306L48.7291 24.2678C49.7053 23.2915 49.7053 21.7086 48.7291 20.7323C47.7526 19.756 46.1698 19.756 45.1936 20.7323L36.2306 29.6951L27.2678 20.7322C26.2915 19.7559 24.7085 19.7559 23.7322 20.7322Z"
+              fill="#0F0F0F"
+            />
+          </g>
+        </g>
+
+        <defs>
+          {/* Note: clip-path was changed to clipPath for React */}
+          <clipPath id="clip0_2274_4885">
+            <rect width="60" height="60" fill="white" transform="translate(19 19)" />
+          </clipPath>
+        </defs>
+      </svg>
+    </Link>
 				<h1
 					className="font-press-start text-black text-center mb-10 tracking-wider select-none shrink-0"
 					style={{
@@ -392,7 +440,7 @@ const EventsPage = () => {
 						>
 							{/* Modal Header */}
 							<div className="h-[44px] flex items-center justify-center bg-[#A93710] border-b-4 border-black rounded-t-[8px] rounded-b-[12px] w-full px-8">
-								<span className="font-press-start text-[12px] md:text-[14px] text-white font-bold uppercase tracking-wider truncate">
+								<span className="font-press-start text-[12px] md:text-[14px] text-black font-bold uppercase tracking-wider truncate">
 									{events[openCard].title}
 								</span>
 							</div>
@@ -424,19 +472,13 @@ const EventsPage = () => {
 										</p>
 									</div>
 
-									{/* Close Action Button */}
-									<button
-										className="mt-2 py-2 px-4 bg-[#A93710] border-4 border-black text-white hover:bg-red-800 transition-colors uppercase font-press-start text-[10px] w-full rounded"
-										onClick={() => setOpenCard(null)}
-									>
-										CLOSE WINDOW
-									</button>
+									
 								</div>
 							</div>
 
 							{/* Close Button X */}
 							<button
-								className="absolute -top-3 -right-3 w-8 h-8 bg-red-600 border-4 border-black text-white hover:bg-red-700 font-bold flex items-center justify-center text-sm shadow-md"
+								className="absolute top-3 right-3 w-8 h-8 text-black hover:bg-red-700 font-bold flex items-center justify-center text-xl shadow-md"
 								onClick={() => setOpenCard(null)}
 								style={{ imageRendering: "pixelated" }}
 							>
