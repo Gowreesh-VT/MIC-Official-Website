@@ -33,15 +33,8 @@ export default function ConditionalNavbar() {
     };
   }, [pathname]);
 
-  // Don't render navbar on home page, events page, or leaderboard page
-  if (pathname === '/leaderboard') {
-    return (
-      <Link href="/main">
-        <Logo />
-      </Link>
-    );
-  }
-  if (pathname === '/' || pathname === '/events') {
+  // Don't render navbar on home page
+  if (pathname === '/') {
     return <Logo />;
   }
 
