@@ -73,8 +73,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${pressStart2P.variable} antialiased`}>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body className={`${pressStart2P.variable} antialiased`} suppressHydrationWarning>
         {children}
         <ConditionalNavbar />
       </body>
