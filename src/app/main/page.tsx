@@ -5,54 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-/* ─── Floating cloud hook ──────────────────────────────────────────────── */
-interface CloudFloatOptions {
-  baseTopVh: number;
-  baseLeftVw: number;
-  amplitude?: number;
-  speed?: number;
-  phase?: number;
-}
 
-function useCloudFloat({
-  baseTopVh, baseLeftVw, amplitude = 10, speed = 0.4, phase = 0,
-}: CloudFloatOptions) {
-  const [offset, setOffset] = useState(0);
-  const frameRef = useRef(0);
-
-  useEffect(() => {
-    let running = true;
-    const animate = () => {
-      frameRef.current += 1;
-      setOffset(Math.sin((frameRef.current / 60) * speed + phase) * amplitude);
-      if (running) requestAnimationFrame(animate);
-    };
-    animate();
-    return () => { running = false; };
-  }, [amplitude, speed, phase]);
-
-  return {
-    top: `calc(${baseTopVh}vh + ${offset}px)`,
-    left: `${baseLeftVw}vw`,
-  };
-}
-
-/* ─── Cloud configs — larger, 2 left + 2 right ─────────────────────────── */
-const CLOUD_CONFIGS = [
-  { src: "/images/cloud1.png", w: 270, h: 174, floatOpts: { baseTopVh: 4,  baseLeftVw: 1,  amplitude: 8,  speed: 0.4,  phase: 0   } },
-  { src: "/images/cloud2.png", w: 320, h: 192, floatOpts: { baseTopVh: 19, baseLeftVw: 4,  amplitude: 12, speed: 0.5,  phase: 1.5 } },
-  { src: "/images/cloud1.png", w: 250, h: 160, floatOpts: { baseTopVh: 5,  baseLeftVw: 66, amplitude: 8,  speed: 0.35, phase: 3   } },
-  { src: "/images/cloud2.png", w: 300, h: 180, floatOpts: { baseTopVh: 21, baseLeftVw: 74, amplitude: 10, speed: 0.45, phase: 4.5 } },
-] as const;
-
-function FloatingCloud({ src, w, h, floatOpts }: (typeof CLOUD_CONFIGS)[number]) {
-  const pos = useCloudFloat(floatOpts);
-  return (
-    <div className="absolute pointer-events-none select-none" style={{ top: pos.top, left: pos.left, zIndex: 6 }}>
-      <Image src={src} alt="Cloud" width={w} height={h} priority style={{ height: "auto" }} />
-    </div>
-  );
-}
 
 /* ─── Menu items (all pages) ───────────────────────────────────────────── */
 const MENU_ITEMS = [
@@ -81,7 +34,7 @@ const RetroArrow = ({ active }: { active: boolean }) => (
       display: "inline-block",
       width: "1.2em",
       flexShrink: 0,
-      color: "#fff700",
+      color: "#0000ff",
       textShadow: "1px 1px 0 #886600",
     }}
   >▶</motion.span>
@@ -202,32 +155,84 @@ const LandingPage = () => {
     >
 
       {/* Social icons */}
-      <div className="absolute top-4 right-5 z-50 flex items-center gap-2">
+      <div className="absolute top-4 right-5 z-50 flex items-center gap-3">
         {[
           { href: "https://www.instagram.com/microsoft.innovations.vitc/",            src: "/insta_pixel.svg",    alt: "Instagram" },
           { href: "https://www.linkedin.com/company/microsoft-innovations-club-vitc/", src: "/linkedin_pixel.svg", alt: "LinkedIn"  },
           { href: "mailto:mic.vit.chennai@gmail.com",                                  src: "/mail_pixel.svg",    alt: "Email"     },
         ].map(({ href, src, alt }) => (
-          <a key={alt} href={href} target="_blank" rel="noopener noreferrer" aria-label={alt}
-            className="Animated-Logo flex items-center justify-center"
-            style={{ background: "transparent", width: "clamp(36px,4.5vw,50px)", height: "clamp(36px,4.5vw,50px)", padding: "2px" }}
+          <a
+            key={alt}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={alt}
+            className="group relative flex items-center justify-center cursor-pointer select-none"
+            style={{ width: "clamp(38px, 4.4vw, 48px)", height: "clamp(38px, 4.4vw, 48px)" }}
           >
-            <Image src={src} alt={`${alt} Logo`} width={48} height={48}
-              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} priority />
+            {/* Base back black square */}
+            <div
+              className="absolute bottom-0 right-0 bg-[#000809] border-[3px] border-black rounded-[2px]"
+              style={{ width: "calc(100% - 6px)", height: "calc(100% - 6px)" }}
+            />
+
+            {/* Front colored icon box: sits top-left, translates down-right on hover directly over black square */}
+            <div
+              className="absolute top-0 left-0 transition-transform duration-200 ease-out group-hover:translate-x-[6px] group-hover:translate-y-[6px]"
+              style={{ width: "calc(100% - 6px)", height: "calc(100% - 6px)" }}
+            >
+              <Image
+                src={src}
+                alt={`${alt} Logo`}
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </a>
         ))}
       </div>
 
-      {/* Floating clouds */}
-      {CLOUD_CONFIGS.map((cfg, i) => <FloatingCloud key={i} {...cfg} />)}
+      {/* Pixel clouds positioned to fill gap — floating together in sync */}
+      {/* 1. Left Cloud */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ left: "0%", top: "12%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Left" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
+
+      {/* 2. Top-Right Cloud (below social icons) */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ right: "-4%", top: "4%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Top Right" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
+
+      {/* 3. Middle-Right Cloud (below flappy bird) */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{ right: "4%", top: "34%", width: "clamp(450px, 22.5vw, 360px)", zIndex: 6 }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      >
+        <Image src="/cloud_pixel.svg" alt="Cloud Middle Right" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+      </motion.div>
 
       {/* Big cloud backdrop */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
         style={{ bottom: "72px", height: "40vh", backgroundImage: "url('/big_cloud.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 2 }} />
 
-      {/* Cityscape */}
-      <div className="absolute left-0 right-0 pointer-events-none select-none"
-        style={{ bottom: "72px", height: "28vh", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "repeat-x", backgroundPosition: "bottom", backgroundSize: "auto 100%", zIndex: 3 }} />
+      {/* Cityscape (Left & Right edges) */}
+      <div className="absolute left-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "28vh", width: "50vw", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "bottom left", backgroundSize: "auto 100%", zIndex: 3 }} />
+      <div className="absolute right-0 pointer-events-none select-none"
+        style={{ bottom: "72px", height: "28vh", width: "50vw", backgroundImage: "url('/cityscape.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "bottom right", backgroundSize: "auto 100%", zIndex: 3 }} />
 
       {/* Bushes */}
       <div className="absolute left-0 right-0 pointer-events-none select-none"
@@ -267,13 +272,16 @@ const LandingPage = () => {
         {/* Signboard */}
         <div className="relative w-full pointer-events-auto" style={{ aspectRatio: "895 / 455" }}>
           <Image src="/signboard.svg" alt="Signboard" fill className="object-contain" priority />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+          <div className="absolute inset-0 flex flex-col items-start justify-center text-left pl-[9.5%] pr-[4%] pointer-events-none">
             <h1
-              className="text-[#FCD7CE] font-bold uppercase leading-snug font-press-start"
+              className="text-[#F8A899] uppercase font-super-mario"
               style={{
-                fontSize: "clamp(1rem, 3.8vw, 3.2rem)",
-                textShadow: "4px 4px 0 #4d2304,-2px -2px 0 #4d2304,2px -2px 0 #4d2304,-2px 2px 0 #4d2304,2px 2px 0 #4d2304",
-                letterSpacing: "0.05em",
+                fontFamily: "'SuperMario85', sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(1.4rem, 6.7vw, 92px)",
+                lineHeight: "100%",
+                letterSpacing: "0%",
+                textShadow: "0.06em 0.06em 0 #000000, 0 0.06em 0 #000000, 0.06em 0 0 #000000",
               }}
             >
               M!CROSOFT<br />!NNOVAT!ONS<br />CLUB.
@@ -293,7 +301,7 @@ const LandingPage = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Up scroll indicator — only shown when items above are hidden */}
+          {/* Up scroll indicator — only shown when items above are hidden 
           <motion.div
             animate={{ opacity: canScrollUp ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -308,7 +316,7 @@ const LandingPage = () => {
               height: "1.2em",
               lineHeight: 1,
             }}
-          >▲ more</motion.div>
+          >▲ more</motion.div>*/}
 
           {/* Clipping window — exactly VISIBLE items tall */}
           <div
@@ -370,7 +378,7 @@ const LandingPage = () => {
             </motion.div>
           </div>
 
-          {/* Down scroll indicator — only shown when items below are hidden */}
+          {/* Down scroll indicator — only shown when items below are hidden 
           <motion.div
             animate={{ opacity: canScrollDown ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -385,7 +393,7 @@ const LandingPage = () => {
               height: "1.2em",
               lineHeight: 1,
             }}
-          >▼ more</motion.div>
+          >▼ more</motion.div>*/}
         </nav>
       </div>
 
@@ -394,8 +402,15 @@ const LandingPage = () => {
         style={{ height: "72px", background: "#CC9339", borderTop: "8px solid #589B00", zIndex: 40 }}
       >
         <div className="relative flex overflow-x-hidden w-full pointer-events-none">
-          <div className="animate-marquee whitespace-nowrap flex uppercase tracking-widest font-press-start"
-            style={{ color: "#5E3A00", fontSize: "clamp(10px,1.3vw,14px)" }}
+          <div className="animate-marquee whitespace-nowrap flex uppercase font-press-start"
+            style={{
+              color: "#CC7700",
+              fontFamily: '"Press Start 2P", cursive, sans-serif',
+              fontWeight: 400,
+              fontSize: "clamp(4px, 1.2vw, 16px)",
+              lineHeight: "100%",
+              letterSpacing: "0%",
+            }}
           >
             {Array.from({ length: 10 }).map((_, i) => (
               <span key={i} className="mx-8">MICROSOFT INNOVATIONS CLUB TENURE 2026-2027</span>

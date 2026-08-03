@@ -96,11 +96,24 @@ const LeaderboardPage = () => {
         />
       </Link>
 
-      {/* Floating clouds - hidden on very small screens to avoid clutter */}
+      {/* Pixel clouds */}
       <div className="hidden sm:block">
-        {CLOUD_CONFIGS.map((cfg, i) => (
-          <FloatingCloud key={i} {...cfg} />
-        ))}
+        <motion.div
+          className="absolute pointer-events-none select-none"
+          style={{ left: "1%", top: "18%", width: "clamp(240px, 22.5vw, 360px)", zIndex: 6 }}
+          animate={{ y: [0, -14, 0] }}
+          transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+        >
+          <Image src="/cloud_pixel.svg" alt="Cloud Left" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+        </motion.div>
+        <motion.div
+          className="absolute pointer-events-none select-none"
+          style={{ right: "1%", top: "11%", width: "clamp(240px, 22.5vw, 360px)", zIndex: 6 }}
+          animate={{ y: [0, -14, 0] }}
+          transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+        >
+          <Image src="/cloud_pixel.svg" alt="Cloud Top Right" width={346} height={224} className="w-full h-auto object-contain" priority style={{ imageRendering: "pixelated" }} />
+        </motion.div>
       </div>
 
       {/* Big cloud backdrop */}
@@ -117,15 +130,29 @@ const LeaderboardPage = () => {
         }}
       />
 
-      {/* Cityscape */}
+      {/* Cityscape (Left & Right edges) */}
       <div
-        className="absolute left-0 right-0 pointer-events-none select-none"
+        className="absolute left-0 pointer-events-none select-none"
         style={{
           bottom: '72px',
           height: '28vh',
+          width: '50vw',
           backgroundImage: "url('/cityscape.svg')",
-          backgroundRepeat: 'repeat-x',
-          backgroundPosition: 'bottom',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'bottom left',
+          backgroundSize: 'auto 100%',
+          zIndex: 3,
+        }}
+      />
+      <div
+        className="absolute right-0 pointer-events-none select-none"
+        style={{
+          bottom: '72px',
+          height: '28vh',
+          width: '50vw',
+          backgroundImage: "url('/cityscape.svg')",
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'bottom right',
           backgroundSize: 'auto 100%',
           zIndex: 3,
         }}
