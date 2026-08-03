@@ -248,14 +248,20 @@ const MeetTheBoardPage: React.FC = () => {
         <div className="relative flex items-center w-full sm:w-auto">
           <button
             onClick={() => setView('core')}
-            className={`font-press-start text-[14px] sm:text-[18px] w-full sm:w-[220px] py-4 rounded-[8px] border-4 border-black text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none`}
+            className="relative font-press-start text-[13px] sm:text-[16px] w-full sm:w-[240px] h-[52px] text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none cursor-pointer group"
             style={{
-              background: view === 'core' ? '#A1E51C' : '#73C500',
-              transform: view === 'core' ? 'translateY(4px)' : 'translateY(0px)',
-              boxShadow: view === 'core' ? 'none' : '0 6px 0 0 #101010',
+              transform: view === 'core' ? 'translateY(3px)' : 'translateY(0px)',
             }}
           >
-            BOARD
+            <img
+              src="/board.svg"
+              alt="Board background"
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+              style={{
+                filter: view === 'core' ? 'brightness(1.15)' : 'brightness(0.95)',
+              }}
+            />
+            <span className="relative z-10 pb-1">BOARD</span>
           </button>
         </div>
 
@@ -263,14 +269,20 @@ const MeetTheBoardPage: React.FC = () => {
         <div className="relative flex items-center w-full sm:w-auto">
           <button
             onClick={() => setView('board')}
-            className={`font-press-start text-[14px] sm:text-[18px] w-full sm:w-[220px] py-4 rounded-[8px] border-4 border-black text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none`}
+            className="relative font-press-start text-[13px] sm:text-[16px] w-full sm:w-[240px] h-[52px] text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none cursor-pointer group"
             style={{
-              background: view === 'board' ? '#A1E51C' : '#73C500',
-              transform: view === 'board' ? 'translateY(4px)' : 'translateY(0px)',
-              boxShadow: view === 'board' ? 'none' : '0 6px 0 0 #101010',
+              transform: view === 'board' ? 'translateY(3px)' : 'translateY(0px)',
             }}
           >
-            CABINET
+            <img
+              src="/cabinet.svg"
+              alt="Cabinet background"
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+              style={{
+                filter: view === 'board' ? 'brightness(1.15)' : 'brightness(0.95)',
+              }}
+            />
+            <span className="relative z-10 pb-1">CABINET</span>
           </button>
         </div>
 
@@ -278,14 +290,20 @@ const MeetTheBoardPage: React.FC = () => {
         <div className="relative flex items-center w-full sm:w-auto">
           <button
             onClick={() => setView('departments')}
-            className={`font-press-start text-[14px] sm:text-[18px] w-full sm:w-[220px] py-4 rounded-[8px] border-4 border-black text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none`}
+            className="relative font-press-start text-[11px] sm:text-[14px] w-full sm:w-[240px] h-[52px] text-black font-bold uppercase transition-all duration-100 flex items-center justify-center outline-none focus:outline-none cursor-pointer group"
             style={{
-              background: view === 'departments' ? '#A1E51C' : '#73C500',
-              transform: view === 'departments' ? 'translateY(4px)' : 'translateY(0px)',
-              boxShadow: view === 'departments' ? 'none' : '0 6px 0 0 #101010',
+              transform: view === 'departments' ? 'translateY(3px)' : 'translateY(0px)',
             }}
           >
-            DEPARTMENTS
+            <img
+              src="/departments.svg"
+              alt="Departments background"
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+              style={{
+                filter: view === 'departments' ? 'brightness(1.15)' : 'brightness(0.95)',
+              }}
+            />
+            <span className="relative z-10 pb-1">DEPARTMENTS</span>
           </button>
           <motion.div
             className="absolute left-[105%] pointer-events-none select-none z-20 hidden md:block"
